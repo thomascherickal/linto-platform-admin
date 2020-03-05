@@ -1,0 +1,10 @@
+**/node_modules
+**/.env
+**/settings.tmp.js
+**/json_tmp
+**/public/tockapp.json
+**/package-lock.json
+**/dist
+**/.vscode
+**/webserver/acousticModels
+**/docker-compose.yml
