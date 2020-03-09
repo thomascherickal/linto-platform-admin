@@ -46,7 +46,7 @@ function configureDefaults() {
         process.env.DEFAULT_LANGUE = ifHas(process.env.DEFAULT_LANGUE, envdefault.DEFAULT_LANGUE)
         process.env.TZ = ifHas(process.env.TZ, envdefault.TZ)
         process.env.ADMIN_URL = ifHas(process.env.ADMIN_URL, envdefault.ADMIN_URL)
-        process.env.WHITELIST_DOMAINS = ifHasNotThrow(process.env.WHITELIST_DOMAINS, 'No whitelist found. Please edit ".env" file')
+        process.env.WHITELIST_DOMAINS = ifHas(process.env.WHITELIST_DOMAINS, envdefault.WHITELIST_DOMAINS)
 
         // BLS
         process.env.BUSINESS_LOGIC_SERVER_URL = ifHas(process.env.BUSINESS_LOGIC_SERVER_URL, envdefault.BUSINESS_LOGIC_SERVER_URL)
