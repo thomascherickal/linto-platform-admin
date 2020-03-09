@@ -7,4 +7,3 @@
 **/dist
 **/.vscode
 **/webserver/acousticModels
-**/docker-compose.yml

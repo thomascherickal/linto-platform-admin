@@ -19,8 +19,8 @@ while [ "$1" != "" ]; do
             VUE_APP_NODERED=https://$LINTO_STACK_DOMAIN/bls" >.env.production
         else
             echo "VUE_APP_URL=
-            VUE_APP_NLU_URL=https://$LINTO_STACK_DOMAIN/tock
-            VUE_APP_NODERED=https://$LINTO_STACK_DOMAIN/bls" >.env.production
+            VUE_APP_NLU_URL=http://$LINTO_STACK_DOMAIN/tock
+            VUE_APP_NODERED=http://$LINTO_STACK_DOMAIN/bls" >.env.production
         fi
         cd /usr/src/app/linto-admin/vue_app
         npm install &&
