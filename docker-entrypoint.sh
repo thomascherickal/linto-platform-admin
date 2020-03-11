@@ -12,20 +12,36 @@ set -e
 while [ "$1" != "" ]; do
     case $1 in
     --rebuild-vue-app)
+        cd /usr/src/app/linto-admin/vue_app
         echo "REBUILDING VUE APP"
         if [[ "$LINTO_STACK_USE_SSL" == true ]]; then
             echo "VUE_APP_URL=
             VUE_APP_NLU_URL=https://$LINTO_STACK_DOMAIN/tock
-            VUE_APP_NODERED=https://$LINTO_STACK_DOMAIN/bls" >.env.production
+            VUE_APP_NODERED=https://$LINTO_STACK_DOMAIN/redui" >.env.production
         else
             echo "VUE_APP_URL=
             VUE_APP_NLU_URL=http://$LINTO_STACK_DOMAIN/tock
-            VUE_APP_NODERED=http://$LINTO_STACK_DOMAIN/bls" >.env.production
+            VUE_APP_NODERED=http://$LINTO_STACK_DOMAIN/redui" >.env.production
         fi
-        cd /usr/src/app/linto-admin/vue_app
         npm install &&
             npm install --save node-sass &&
             npm run build-app
+        ;;
+    --rebuild-vue-app-dev)
+        cd /usr/src/app/linto-admin/vue_app
+        echo "REBUILDING VUE APP IN DEVELOPMENT MODE"
+        if [[ "$LINTO_STACK_USE_SSL" == true ]]; then
+            echo "VUE_APP_URL=
+            VUE_APP_NLU_URL=https://$LINTO_STACK_DOMAIN/tock
+            VUE_APP_NODERED=https://$LINTO_STACK_DOMAIN/redui" >.env.development
+        else
+            echo "VUE_APP_URL=
+            VUE_APP_NLU_URL=https://$LINTO_STACK_DOMAIN/tock
+            VUE_APP_NODERED=https://$LINTO_STACK_DOMAIN/redui" >.env.development
+        fi
+        npm install &&
+            npm install --save node-sass &&
+            npm run build-dev
         ;;
     --reinstall-webserver)
         echo "REBUILDING WEBSERVER APP"
@@ -37,7 +53,7 @@ while [ "$1" != "" ]; do
             script=$2
             shift
         else
-            die 'ERROR: "--run-npm-script" requires a non-empty option argument.'
+            die 'ERROR: "--run-cmd" requires a non-empty option argument.'
         fi
         ;;
     --run-cmd?*)
@@ -56,7 +72,5 @@ done
 
 echo "RUNNING : $script"
 cd /usr/src/app/linto-admin/webserver
+
 eval "$script"
-
-
-#exec "$@"
