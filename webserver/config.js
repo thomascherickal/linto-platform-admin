@@ -39,50 +39,48 @@ function configureDefaults() {
         dotenv.config()
         const envdefault = dotenv.parse(fs.readFileSync('.envdefault'))
 
-        //Server properties
+        // Global
         process.env.NODE_ENV = ifHas(process.env.NODE_ENV, envdefault.NODE_ENV)
-        process.env.HTTP_PORT = ifHas(process.env.HTTP_PORT, envdefault.HTTP_PORT)
-        process.env.CITY = ifHas(process.env.DEFAULT_CITY, envdefault.DEFAULT_CITY)
-        process.env.DEFAULT_LANGUE = ifHas(process.env.DEFAULT_LANGUE, envdefault.DEFAULT_LANGUE)
         process.env.TZ = ifHas(process.env.TZ, envdefault.TZ)
-        process.env.ADMIN_URL = ifHas(process.env.ADMIN_URL, envdefault.ADMIN_URL)
-        process.env.WHITELIST_DOMAINS = ifHas(process.env.WHITELIST_DOMAINS, envdefault.WHITELIST_DOMAINS)
+
+        // Webserver
+        process.env.LINTO_STACK_ADMIN_HTTP_PORT = ifHas(process.env.LINTO_STACK_ADMIN_HTTP_PORT, envdefault.LINTO_STACK_ADMIN_HTTP_PORT)
+        process.env.LINTO_STACK_DOMAIN = ifHas(process.env.LINTO_STACK_DOMAIN, envdefault.LINTO_STACK_DOMAIN)
+        process.env.LINTO_STACK_ADMIN_API_WHITELIST_DOMAINS = ifHas(process.env.LINTO_STACK_ADMIN_API_WHITELIST_DOMAINS, envdefault.LINTO_STACK_ADMIN_API_WHITELIST_DOMAINS)
 
         // BLS
-        process.env.BUSINESS_LOGIC_SERVER_URL = ifHas(process.env.BUSINESS_LOGIC_SERVER_URL, envdefault.BUSINESS_LOGIC_SERVER_URL)
-        process.env.BUSINESS_LOGIC_SERVER_URI = ifHas(process.env.BUSINESS_LOGIC_SERVER_URI, envdefault.BUSINESS_LOGIC_SERVER_URI)
-        process.env.BLS_AUTH = ifHas(process.env.BLS_AUTH, envdefault.BLS_AUTH)
-        process.env.BLS_LOGIN = ifHas(process.env.BLS_LOGIN, envdefault.BLS_LOGIN)
-        process.env.BLS_PSWD = ifHas(process.env.BLS_PSWD, envdefault.BLS_PSWD)
+        process.env.LINTO_STACK_BLS_SERVICE = ifHas(process.env.LINTO_STACK_BLS_SERVICE, envdefault.LINTO_STACK_BLS_SERVICE)
+        process.env.LINTO_STACK_BLS_USE_LOGIN = ifHas(process.env.LINTO_STACK_BLS_USE_LOGIN, envdefault.LINTO_STACK_BLS_USE_LOGIN)
+        process.env.LINTO_STACK_BLS_USER = ifHas(process.env.LINTO_STACK_BLS_USER, envdefault.LINTO_STACK_BLS_USER)
+        process.env.LINTO_STACK_BLS_PASSWORD = ifHas(process.env.LINTO_STACK_BLS_PASSWORD, envdefault.LINTO_STACK_BLS_PASSWORD)
 
-        //Mqtt
-        process.env.LOGIC_MQTT_ADDRESS = ifHas(process.env.LOGIC_MQTT_ADDRESS, envdefault.LOGIC_MQTT_ADDRESS)
-        process.env.LOGIC_MQTT_PORT = ifHas(process.env.LOGIC_MQTT_PORT, envdefault.LOGIC_MQTT_PORT)
-        process.env.LOGIC_MQTT_USER = ifHas(process.env.LOGIC_MQTT_USER, envdefault.LOGIC_MQTT_USER)
-        process.env.LOGIC_MQTT_PWD = ifHas(process.env.LOGIC_MQTT_PWD, envdefault.LOGIC_MQTT_PWD)
-        process.env.LOGIC_MQTT_USE_LOGIN = ifHas(process.env.LOGIC_MQTT_USE_LOGIN, envdefault.LOGIC_MQTT_USE_LOGIN)
-        process.env.LOGIC_MQTT_HW_SCOPE = ifHas(process.env.LOGIC_MQTT_HW_SCOPE, envdefault.LOGIC_MQTT_HW_SCOPE)
+        // Mqtt
+        process.env.LINTO_STACK_MQTT_HOST = ifHas(process.env.LINTO_STACK_MQTT_HOST, envdefault.LINTO_STACK_MQTT_HOST)
+        process.env.LINTO_STACK_MQTT_PORT = ifHas(process.env.LINTO_STACK_MQTT_PORT, envdefault.LINTO_STACK_MQTT_PORT)
+        process.env.LINTO_STACK_MQTT_USER = ifHas(process.env.LINTO_STACK_MQTT_USER, envdefault.LINTO_STACK_MQTT_USER)
+        process.env.LINTO_STACK_MQTT_PASSWORD = ifHas(process.env.LINTO_STACK_MQTT_PASSWORD, envdefault.LINTO_STACK_MQTT_PASSWORD)
+        process.env.LINTO_STACK_MQTT_USE_LOGIN = ifHas(process.env.LINTO_STACK_MQTT_USE_LOGIN, envdefault.LINTO_STACK_MQTT_USE_LOGIN)
+        process.env.LINTO_STACK_MQTT_DEFAULT_HW_SCOPE = ifHas(process.env.LINTO_STACK_MQTT_DEFAULT_HW_SCOPE, envdefault.LINTO_STACK_MQTT_DEFAULT_HW_SCOPE)
 
-        //Database (mongodb)
-        process.env.BDD_TYPE = ifHas(process.env.BDD_TYPE, envdefault.BDD_TYPE)
-        process.env.MONGODB_DBNAME = ifHas(process.env.MONGODB_DBNAME, envdefault.MONGODB_DBNAME)
-        process.env.MONGODB_HOST = ifHas(process.env.MONGODB_HOST, envdefault.MONGODB_HOST)
-        process.env.MONGODB_PORT = ifHas(process.env.MONGODB_PORT, envdefault.MONGODB_PORT)
-        process.env.MONGODB_REQUIRE_LOGIN = ifHas(process.env.MONGODB_REQUIRE_LOGIN, envdefault.MONGODB_REQUIRE_LOGIN)
-        process.env.MONGODB_USER = ifHas(process.env.MONGODB_USER, envdefault.MONGODB_USER)
-        process.env.MOGODB_PSWD = ifHas(process.env.MOGODB_PSWD, envdefault.MOGODB_PSWD)
+        // Database (mongodb)
+        process.env.LINTO_STACK_MONGODB_DBNAME = ifHas(process.env.LINTO_STACK_MONGODB_DBNAME, envdefault.LINTO_STACK_MONGODB_DBNAME)
+        process.env.LINTO_STACK_MONGODB_SERVICE = ifHas(process.env.LINTO_STACK_MONGODB_SERVICE, envdefault.LINTO_STACK_MONGODB_SERVICE)
+        process.env.LINTO_STACK_MONGODB_PORT = ifHas(process.env.LINTO_STACK_MONGODB_PORT, envdefault.LINTO_STACK_MONGODB_PORT)
+        process.env.LINTO_STACK_MONGODB_USE_LOGIN = ifHas(process.env.LINTO_STACK_MONGODB_USE_LOGIN, envdefault.LINTO_STACK_MONGODB_USE_LOGIN)
+        process.env.LINTO_STACK_MONGODB_USER = ifHas(process.env.LINTO_STACK_MONGODB_USER, envdefault.LINTO_STACK_MONGODB_USER)
+        process.env.LINTO_STACK_MONGODB_PASSWORD = ifHas(process.env.LINTO_STACK_MONGODB_PASSWORD, envdefault.LINTO_STACK_MONGODB_PASSWORD)
 
         // Redis
-        process.env.REDIS_PORT = ifHas(process.env.REDIS_PORT, envdefault.REDIS_PORT)
-        process.env.REDIS_HOST = ifHas(process.env.REDIS_HOST, envdefault.REDIS_HOST)
+        process.env.LINTO_STACK_REDIS_SESSION_SERVICE_PORT = ifHas(process.env.LINTO_STACK_REDIS_SESSION_SERVICE_PORT, envdefault.LINTO_STACK_REDIS_SESSION_SERVICE_PORT)
+        process.env.LINTO_STACK_REDIS_SESSION_SERVICE = ifHas(process.env.LINTO_STACK_REDIS_SESSION_SERVICE, envdefault.LINTO_STACK_REDIS_SESSION_SERVICE)
 
         // NLU - TOCK
-        process.env.NLU_TOCK_HOST = ifHas(process.env.NLU_TOCK_HOST, envdefault.NLU_TOCK_HOST)
-        process.env.NLU_TOCK_USER = ifHas(process.env.NLU_TOCK_USER, envdefault.NLU_TOCK_USER)
-        process.env.NLU_TOCK_PSWD = ifHas(process.env.NLU_TOCK_PSWD, envdefault.NLU_TOCK_PSWD)
+        process.env.LINTO_STACK_TOCK_SERVICE = ifHas(process.env.LINTO_STACK_TOCK_SERVICE, envdefault.LINTO_STACK_TOCK_SERVICE)
+        process.env.LINTO_STACK_TOCK_LOGIN = ifHas(process.env.LINTO_STACK_TOCK_LOGIN, envdefault.LINTO_STACK_TOCK_LOGIN)
+        process.env.LINTO_STACK_TOCK_PASSWORD = ifHas(process.env.LINTO_STACK_TOCK_PASSWORD, envdefault.LINTO_STACK_TOCK_PASSWORD)
 
         // STT service-manager
-        process.env.SERVICE_MANAGER_URL = ifHas(process.env.SERVICE_MANAGER_URL, envdefault.SERVICE_MANAGER_URL)
+        process.env.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE = ifHas(process.env.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE, envdefault.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE)
 
     } catch (e) {
         console.error(debug.namespace, e)

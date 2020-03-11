@@ -88,10 +88,6 @@ export default {
       }
     },
     async sendForm () {
-      console.log('payload', {
-          workspaceId: this.workspaceId,
-          patternId: this.selectedPattern.value
-        })
       const sendForm = await axios(`${process.env.VUE_APP_URL}/api/flow/loadpattern`, {
         method: 'put',
         data: {

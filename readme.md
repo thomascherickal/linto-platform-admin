@@ -66,25 +66,25 @@ cp .env_default .env
 ```
 # Server settings
 NODE_ENV=production
-HTTP_PORT=9000
+LINTO_STACK_ADMIN_HTTP_PORT=9000
 DEFAULT_CITY=Paris
 DEFAULT_LANGUE=fr-FR
 APP_URL=http://localhost:9000
 ```
 - **NODE_ENV**: webserver running mode = ['production', 'development']
-- **HTTP_PORT**: webserver running port
-- **APP_URL**: URL of your project. If you want to run the project locally, be careful to set the same port as *HTTP_PORT* variable
+- **LINTO_STACK_ADMIN_HTTP_PORT**: webserver running port
+- **APP_URL**: URL of your project. If you want to run the project locally, be careful to set the same port as *LINTO_STACK_ADMIN_HTTP_PORT* variable
 
 #### Redis settings
 *Edit **/webserver/.env***
 ```
 ...
 # Redis settings
-REDIS_PORT=6379
-REDIS_HOST=localhost
+LINTO_STACK_REDIS_SESSION_SERVICE_PORT=6379
+LINTO_STACK_REDIS_SESSION_SERVICE=localhost
 ```
-- **REDIS_PORT**: redis-server service running port
-- **REDIS_HOST**: redis-server service host
+- **LINTO_STACK_REDIS_SESSION_SERVICE_PORT**: redis-server service running port
+- **LINTO_STACK_REDIS_SESSION_SERVICE**: redis-server service host
 
 #### MongoDB settings
 *Edit **/webserver/.env***
@@ -92,26 +92,26 @@ REDIS_HOST=localhost
 ...
 # Mongodb settings
 BDD_TYPE=mongodb
-MONGODB_HOST=127.0.0.1
-MONGODB_PORT=27017
-MONGODB_DBNAME=lintoAdmin
-MONGODB_REQUIRE_LOGIN=true
-MONGODB_USER=root
-MOGODB_PSWD=example
+LINTO_STACK_MONGODB_SERVICE=127.0.0.1
+LINTO_STACK_MONGODB_PORT=27017
+LINTO_STACK_MONGODB_DBNAME=lintoAdmin
+LINTO_STACK_MONGODB_USE_LOGIN=true
+LINTO_STACK_MONGODB_USER=root
+LINTO_STACK_MONGODB_PASSWORD=example
 ```
-- **MONGODB_HOST**: mongodb running host
-- **MONGODB_PORT**: mongodb running port
-- **MONGODB_DBNAME**: mongodb database name
-- **MONGODB_REQUIRE_LOGIN**: Enable or disable mongoDb authentication = [‘true’, ‘false’]
-- **MONGODB_USER**: Login for mongoDb authentication (default = "root")
-- **MOGODB_PSWD**: Password for mongoDb authentication (default = "example")
+- **LINTO_STACK_MONGODB_SERVICE**: mongodb running host
+- **LINTO_STACK_MONGODB_PORT**: mongodb running port
+- **LINTO_STACK_MONGODB_DBNAME**: mongodb database name
+- **LINTO_STACK_MONGODB_USE_LOGIN**: Enable or disable mongoDb authentication = [‘true’, ‘false’]
+- **LINTO_STACK_MONGODB_USER**: Login for mongoDb authentication (default = "root")
+- **LINTO_STACK_MONGODB_PASSWORD**: Password for mongoDb authentication (default = "example")
 
-If you want to modify `MONGODB_USER` and `MONGODB_PSWD`, please read the following instructions :
+If you want to modify `LINTO_STACK_MONGODB_USER` and `MONGODB_PSWD`, please read the following instructions :
 - 1/ edit the current **.env** with the values you want :
 ```
 (example)
-MONGODB_USER=myUserName
-MOGODB_PSWD=myPassword
+LINTO_STACK_MONGODB_USER=myUserName
+LINTO_STACK_MONGODB_PASSWORD=myPassword
 ```
 - 2/ Once it's done, you'll have to edit the initialisation file of mongodb that set a user and password. Edit the following file :`mongodb/seed/user.js`
 ```
@@ -130,39 +130,39 @@ db.createUser({
 ```
 ...
 # Business Logic Server
-BUSINESS_LOGIC_SERVER_URI=BUSINESS_LOGIC_SERVER_URI
-BLS_AUTH=true
+LINTO_STACK_BLS_REDUI=LINTO_STACK_BLS_REDUI
+LINTO_STACK_BLS_USE_LOGIN=true
 # Default login settings
-BLS_LOGIN=admin
-BLS_PSWD=password
+LINTO_STACK_BLS_USER=admin
+LINTO_STACK_BLS_PASSWORD=password
 ```
-- **BUSINESS_LOGIC_SERVER_URI**: Url of you business logic server
-- **BLS_AUTH**: Enable or disable Business Logic Server authentication = ['true', 'false']
-- **BLS_LOGIN**: Login for BLS authentication (default = "admin")
-- **BLS_PSWD**: Password for BLS authentication (default = "password")
+- **LINTO_STACK_BLS_REDUI**: Url of you business logic server
+- **LINTO_STACK_BLS_USE_LOGIN**: Enable or disable Business Logic Server authentication = ['true', 'false']
+- **LINTO_STACK_BLS_USER**: Login for BLS authentication (default = "admin")
+- **LINTO_STACK_BLS_PASSWORD**: Password for BLS authentication (default = "password")
 
-If you want to modify `BLS_LOGIN` and `BLS_PSWD`, please read the following instructions : [Lien vers les explications]
+If you want to modify `LINTO_STACK_BLS_USER` and `LINTO_STACK_BLS_PASSWORD`, please read the following instructions : [Lien vers les explications]
 
 #### Logic MQTT server settings
 *Edit **/webserver/.env***
 ```
 ...
 #Logic MQTT server
-LOGIC_MQTT_ADDRESS=localhost
-LOGIC_MQTT_PORT=1883
-LOGIC_MQTT_USER=LOGIC_MQTT_USER
-LOGIC_MQTT_PWD=LOGIC_MQTT_PWD
-LOGIC_MQTT_USE_LOGIN=true
+LINTO_STACK_MQTT_HOST=localhost
+LINTO_STACK_MQTT_PORT=1883
+LINTO_STACK_MQTT_USER=LINTO_STACK_MQTT_USER
+LINTO_STACK_MQTT_PASSWORD=LINTO_STACK_MQTT_PASSWORD
+LINTO_STACK_MQTT_USE_LOGIN=true
 LOGIC_CLIENT_CODE=blk
 ```
-- **LOGIC_MQTT_ADDRESS**: Logic MQTT address
-- **LOGIC_MQTT_PORT**: Logic MQTT running port
-- **LOGIC_MQTT_USER**: Logic MQTT authentication user
-- **LOGIC_MQTT_PWD**: Logic MQTT authentication password
-- **LOGIC_MQTT_USE_LOGIN**: Enable or disable Logic MQTT Server authentication = ['true', 'false']
+- **LINTO_STACK_MQTT_HOST**: Logic MQTT address
+- **LINTO_STACK_MQTT_PORT**: Logic MQTT running port
+- **LINTO_STACK_MQTT_USER**: Logic MQTT authentication user
+- **LINTO_STACK_MQTT_PASSWORD**: Logic MQTT authentication password
+- **LINTO_STACK_MQTT_USE_LOGIN**: Enable or disable Logic MQTT Server authentication = ['true', 'false']
 - **LOGIC_CLIENT_CODE**: Logic MQTT topic client code
 
-If you want to modify `LOGIC_MQTT_USER` and `LOGIC_MQTT_PWD`, please read the following instructions : [Lien vers les explications]
+If you want to modify `LINTO_STACK_MQTT_USER` and `LINTO_STACK_MQTT_PASSWORD`, please read the following instructions : [Lien vers les explications]
 
 #### NLU / Tock interface settings
 *Edit **/webserver/.env***

@@ -1,4 +1,4 @@
-const DBmodel = require(`${process.cwd()}/model/${process.env.BDD_TYPE}`)
+const DBmodel = require(`${process.cwd()}/model/mongodb`)
 const model = new DBmodel()
 const request = require('request')
 const fs = require('fs')

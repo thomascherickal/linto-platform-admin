@@ -3,7 +3,13 @@
     <div class="header__logo flex1">
       <img src="/assets/img/admin-logo-dark@2x.png" alt="linto admin">
     </div>
-    <div class="header__nav flex3"></div>
+    <div class="header__nav flex3">
+      <a 
+        href="/logout" 
+        class="button button--img button--img__logout">
+        <span class="icon logout"></span>
+      </a>
+    </div>
   </header>
 </template>
 <script>

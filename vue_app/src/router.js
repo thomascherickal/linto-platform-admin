@@ -10,6 +10,7 @@ import FleetManagement from './views/FleetManagement.vue'
 import FleetMonitoring from './views/FleetMonitoring.vue'
 import SttManagement from './views/SttManagement.vue'
 import TockView from './views/TockView.vue'
+import page404 from './views/404.vue'
 
 Vue.use(Router)
 const router = new Router({
@@ -65,7 +66,13 @@ const router = new Router({
             path: '/admin/stt/overview',
             name: 'STT management',
             component: SttManagement
-        }
+        },
+        // Other routes > 404
+        {
+            path: '/admin/*',
+            name: '404',
+            component: page404,
+        },
     ]
 })
 

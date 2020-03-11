@@ -9,8 +9,8 @@ const IoHandler = require('./iohandler')
 const CORS = require('cors')
 let corsOptions = {}
 let whitelistDomains = []
-if (process.env.WHITELIST_DOMAINS.length > 0) {
-    whitelistDomains = process.env.WHITELIST_DOMAINS.split(',')
+if (process.env.LINTO_STACK_ADMIN_API_WHITELIST_DOMAINS.length > 0) {
+    whitelistDomains = process.env.LINTO_STACK_ADMIN_API_WHITELIST_DOMAINS.split(',')
     corsOptions = {
         origin: function(origin, callback) {
             if (!origin ||  whitelistDomains.indexOf(origin) !== -1 ||  origin === 'undefined') {
@@ -27,8 +27,8 @@ if (process.env.NODE_ENV == 'production') {
     redis = require('redis')
     redisStore = require('connect-redis')(Session)
     redisClient = redis.createClient({
-        host: process.env.REDIS_HOST,
-        port: process.env.REDIS_PORT,
+        host: process.env.LINTO_STACK_REDIS_SESSION_SERVICE,
+        port: process.env.LINTO_STACK_REDIS_SESSION_SERVICE_PORT,
     })
 }
 
@@ -59,8 +59,8 @@ class WebServer extends EventEmitter {
         // Redis store if "production"
         if (process.env.NODE_ENV == 'production') {
             sessionConfig.store = new redisStore({
-                host: process.env.REDIS_HOST,
-                port: process.env.REDIS_PORT,
+                host: process.env.LINTO_STACK_REDIS_SESSION_SERVICE,
+                port: process.env.LINTO_STACK_REDIS_SESSION_SERVICE_PORT,
                 client: redisClient
             })
             redisClient.on('error', (err) => {
@@ -70,10 +70,10 @@ class WebServer extends EventEmitter {
 
         this.session = Session(sessionConfig)
         this.app.use(this.session)
-        this.httpServer = this.app.listen(process.env.HTTP_PORT, "0.0.0.0", (err) => {
+        this.httpServer = this.app.listen(process.env.LINTO_STACK_ADMIN_HTTP_PORT, "0.0.0.0", (err) => {
             if (err) console.error(err)
         })
-
+        console.log('Webserver started on port : ', process.env.LINTO_STACK_ADMIN_HTTP_PORT)
         return this.init()
     }
     async init() {

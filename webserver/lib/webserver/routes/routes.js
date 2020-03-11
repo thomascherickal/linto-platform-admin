@@ -19,15 +19,17 @@
 const debug = require('debug')('linto-admin:routes')
 
 module.exports = (webServer) => {
-  return {
-    "/": require('./_root')(webServer),
-    "/login": require('./login')(webServer),
-    "/admin": require('./admin')(webServer),
-    "/api": require('./api')(webServer),
-    "/api/flow": require('./api/flow')(webServer),
-    "/api/tock": require('./api/tock')(webServer),
-    "/api/lintos": require('./api/lintos')(webServer),
-    "/api/context": require('./api/context')(webServer),
-    "/api/stt": require('./api/stt')(webServer)
-  }
+    return {
+
+        "/login": require('./login')(webServer),
+        "/logout": require('./logout')(webServer),
+        "/admin": require('./admin')(webServer),
+        "/api": require('./api')(webServer),
+        "/api/flow": require('./api/flow')(webServer),
+        "/api/tock": require('./api/tock')(webServer),
+        "/api/lintos": require('./api/lintos')(webServer),
+        "/api/context": require('./api/context')(webServer),
+        "/api/stt": require('./api/stt')(webServer),
+        "/": require('./_root')(webServer),
+    }
 }

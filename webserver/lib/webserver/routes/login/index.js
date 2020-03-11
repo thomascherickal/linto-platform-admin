@@ -1,6 +1,6 @@
 const debug = require('debug')('linto-admin:login')
 const sha1 = require('sha1')
-const DBmodel = require(`${process.cwd()}/model/${process.env.BDD_TYPE}`)
+const DBmodel = require(`${process.cwd()}/model/mongodb`)
 const model = new DBmodel()
 
 module.exports = (webServer) => {
@@ -10,8 +10,12 @@ module.exports = (webServer) => {
             requireAuth: false,
             controller: async(req, res, next) => {
                 try {
-                    res.setHeader("Content-Type", "text/html")
-                    res.sendFile(process.cwd() + '/dist/login.html')
+                    if (!!req.session && req.session.logged === 'on') {
+                        res.redirect('/admin/fleet')
+                    } else {
+                        res.setHeader("Content-Type", "text/html")
+                        res.sendFile(process.cwd() + '/dist/login.html')
+                    }
                 } catch (err) {
                     console.error(err)
                 }
@@ -51,6 +55,7 @@ module.exports = (webServer) => {
                                         })
                                     }
                                 })
+
                             } else {
                                 // Invalid password
                                 throw "Invalid password"

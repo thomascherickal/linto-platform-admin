@@ -1,13 +1,13 @@
 const debug = require('debug')('linto-admin:model:mongodb')
-const MONGODB_DBNAME = process.env.MONGODB_DBNAME
+const LINTO_STACK_MONGODB_DBNAME = process.env.LINTO_STACK_MONGODB_DBNAME
 const mongoDb = require('mongodb')
 let urlMongo = 'mongodb://'
-if (process.env.MONGODB_REQUIRE_LOGIN) {
-    urlMongo += process.env.MONGODB_USER + ':' + process.env.MOGODB_PSWD + '@'
+if (process.env.LINTO_STACK_MONGODB_USE_LOGIN) {
+    urlMongo += process.env.LINTO_STACK_MONGODB_USER + ':' + process.env.LINTO_STACK_MONGODB_PASSWORD + '@'
 }
-urlMongo += process.env.MONGODB_HOST + ':' + process.env.MONGODB_PORT + '/'
-if (process.env.MONGODB_REQUIRE_LOGIN) {
-    urlMongo += '?authSource=' + process.env.MONGODB_DBNAME
+urlMongo += process.env.LINTO_STACK_MONGODB_SERVICE + ':' + process.env.LINTO_STACK_MONGODB_PORT + '/'
+if (process.env.LINTO_STACK_MONGODB_USE_LOGIN) {
+    urlMongo += '?authSource=' + process.env.LINTO_STACK_MONGODB_DBNAME
 }
 debug(urlMongo)
 
@@ -17,12 +17,12 @@ class modelMongoDb {
         this.urlMongo = urlMongo
         this.client = mongoDb.MongoClient
         this.dbOptions = {
-            host: process.env.MONGODB_HOST,
-            port: process.env.MONGODB_PORT,
-            database: process.env.MONGODB_DBNAME,
-            auth: process.env.MONGODB_REQUIRE_LOGIN,
-            user: process.env.MONGODB_USER,
-            password: process.env.MOGODB_PSWD
+            host: process.env.LINTO_STACK_MONGODB_SERVICE,
+            port: process.env.LINTO_STACK_MONGODB_PORT,
+            database: process.env.LINTO_STACK_MONGODB_DBNAME,
+            auth: process.env.LINTO_STACK_MONGODB_USE_LOGIN,
+            user: process.env.LINTO_STACK_MONGODB_USER,
+            password: process.env.LINTO_STACK_MONGODB_PASSWORD
         }
         return this
     }
@@ -318,7 +318,7 @@ class modelMongoDb {
                         db.close()
                         reject(err)
                     }
-                    const dbo = db.db(MONGODB_DBNAME)
+                    const dbo = db.db(LINTO_STACK_MONGODB_DBNAME)
                     dbo.collection(collection).updateOne(query, {
                         $set: values
                     }, function(error, res) {
@@ -353,7 +353,7 @@ class modelMongoDb {
                         db.close()
                         reject(err)
                     }
-                    const dbo = db.db(MONGODB_DBNAME)
+                    const dbo = db.db(LINTO_STACK_MONGODB_DBNAME)
                     dbo.collection(collection).insertOne(payload, function(error, res) {
                         if (error) {
                             db.close()
@@ -385,7 +385,7 @@ class modelMongoDb {
                         db.close()
                         reject(err)
                     }
-                    const dbo = db.db(MONGODB_DBNAME)
+                    const dbo = db.db(LINTO_STACK_MONGODB_DBNAME)
                     dbo.collection(collection).find(query).toArray((error, result) => {
                         if (error) {
                             db.close()
@@ -417,7 +417,7 @@ class modelMongoDb {
                         db.close()
                         reject(err)
                     }
-                    const dbo = db.db(MONGODB_DBNAME)
+                    const dbo = db.db(LINTO_STACK_MONGODB_DBNAME)
                     dbo.collection(collection).deleteOne(query, function(error, obj) {
                         if (error) {
                             db.close()
@@ -443,7 +443,7 @@ class modelMongoDb {
                         db.close()
                         reject(err)
                     }
-                    const dbo = db.db(MONGODB_DBNAME)
+                    const dbo = db.db(LINTO_STACK_MONGODB_DBNAME)
                     dbo.collection(collection).insertMany(payload, function(error, res) {
                         if (error) {
                             db.close()
@@ -468,7 +468,7 @@ class modelMongoDb {
                         db.close()
                         reject(err)
                     }
-                    const dbo = db.db(MONGODB_DBNAME)
+                    const dbo = db.db(LINTO_STACK_MONGODB_DBNAME)
                     dbo.collection(collection).drop(function(error, result) {
                         if (error) {
                             db.close()
@@ -495,7 +495,7 @@ class modelMongoDb {
                         reject(err)
                     }
                     let collectionBson = require('./collections/' + collection)
-                    const dbo = db.db(MONGODB_DBNAME)
+                    const dbo = db.db(LINTO_STACK_MONGODB_DBNAME)
                     dbo.createCollection(collection, collectionBson, (error, res) => {
                         if (error) {
                             db.close()
@@ -520,7 +520,7 @@ class modelMongoDb {
                         db.close()
                         reject(err)
                     }
-                    const dbo = db.db(MONGODB_DBNAME)
+                    const dbo = db.db(LINTO_STACK_MONGODB_DBNAME)
                     dbo.listCollections().toArray(function(error, collections) {
                         if (error) {
                             db.close()

@@ -1,4 +1,4 @@
-const DBmodel = require(`${process.cwd()}/model/${process.env.BDD_TYPE}`)
+const DBmodel = require(`${process.cwd()}/model/mongodb`)
 const model = new DBmodel()
 const moment = require('moment')
 const axios = require('axios')
@@ -11,7 +11,7 @@ module.exports = (webServer) => {
             requireAuth: false,
             controller: async(req, res, next) => {
                 try {
-                    const getBls = await axios(process.env.BUSINESS_LOGIC_SERVER_URI)
+                    const getBls = await axios(`${process.env.LINTO_STACK_BLS_SERVICE}/redui`)
                     if (getBls.status === 200) {
                         res.json({
                             status: 'success',
@@ -38,7 +38,7 @@ module.exports = (webServer) => {
                     let sandBoxId = null
 
                     // Get all workflows deployed
-                    const fullFlow = await axios(`${process.env.BUSINESS_LOGIC_SERVER_URI}/flows`, {
+                    const fullFlow = await axios(`${process.env.LINTO_STACK_BLS_SERVICE}/redui/flows`, {
                         method: 'get',
                         headers: {
                             'charset': 'utf-8',
@@ -143,7 +143,7 @@ module.exports = (webServer) => {
                     const workspaceId = req.body.workspaceId
 
                     // Get current BLS workspace
-                    const getCurrentWorkspaceFlow = await axios(`${process.env.BUSINESS_LOGIC_SERVER_URI}/flow/${workspaceId}`, {
+                    const getCurrentWorkspaceFlow = await axios(`${process.env.LINTO_STACK_BLS_SERVICE}/redui/flow/${workspaceId}`, {
                         method: 'get',
                         headers: {
                             'charset': 'utf-8',
@@ -163,7 +163,7 @@ module.exports = (webServer) => {
 
                     // Format Patten: update id, format workflow for request
                     let formattedPattern = nodered.createFlowPattern(pattern, workspaceId, workspaceLabel)
-                    const blsUpdate = await axios(`${process.env.BUSINESS_LOGIC_SERVER_URI}/flow/${workspaceId}`, {
+                    const blsUpdate = await axios(`${process.env.LINTO_STACK_BLS_SERVICE}/redui/flow/${workspaceId}`, {
                         method: 'put',
                         headers: {
                             'charset': 'utf-8',
@@ -230,7 +230,7 @@ module.exports = (webServer) => {
                         const sttconfig = context.flow.nodes.filter(c => c.type === 'linto-config-transcribe')[0]
                         const splitHost = sttconfig.host.split('/')
                         const service_name = splitHost[splitHost.length - 1]
-                        const sttLexicalSeeding = await axios(`${process.env.ADMIN_URL}/api/stt/lexicalseeding`, {
+                        const sttLexicalSeeding = await axios(`${process.env.LINTO_STACK_DOMAIN}/api/stt/lexicalseeding`, {
                             method: 'post',
                             data: {
                                 flowId,
@@ -239,7 +239,7 @@ module.exports = (webServer) => {
                         })
 
                         // Tock lexical seeding
-                        const nluLexicalSeeding = await axios(`${process.env.ADMIN_URL}/api/tock/lexicalseeding`, {
+                        const nluLexicalSeeding = await axios(`${process.env.LINTO_STACK_DOMAIN}/api/tock/lexicalseeding`, {
                             method: 'post',
                             data: {
                                 flowId
@@ -341,7 +341,7 @@ module.exports = (webServer) => {
 
                     // POST WORKFLOW ON BLS
                     const accessToken = await nodered.getBLSAccessToken()
-                    let blsPost = await axios(`${process.env.BUSINESS_LOGIC_SERVER_URI}/flow`, {
+                    let blsPost = await axios(`${process.env.LINTO_STACK_BLS_SERVICE}/redui/flow`, {
                         method: 'post',
                         headers: {
                             'charset': 'utf-8',

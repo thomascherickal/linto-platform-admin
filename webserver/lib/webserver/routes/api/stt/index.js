@@ -1,4 +1,4 @@
-const DBmodel = require(`${process.cwd()}/model/${process.env.BDD_TYPE}`)
+const DBmodel = require(`${process.cwd()}/model/mongodb`)
 const model = new DBmodel()
 const axios = require('axios')
 const multer = require('multer')
@@ -28,7 +28,7 @@ async function filterLMData(type, modelId, newData) {
         getDataroutePath = 'entities'
     }
     // Current Values of the langage model
-    const getData = await axios.get(`${process.env.SERVICE_MANAGER_URL}/langmodel/${modelId}/${getDataroutePath}`)
+    const getData = await axios.get(`${process.env.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE}/langmodel/${modelId}/${getDataroutePath}`)
     const currentData = getData.data.data
     let dataToSend = []
 
@@ -71,7 +71,7 @@ async function updateLangModel(payload, modelId) {
             const name = payload.data[i].name
             const items = payload.data[i].items
             const method = payload.data[i].method
-            const url = `${process.env.SERVICE_MANAGER_URL}/langmodel/${modelId}/${type}/${name}`
+            const url = `${process.env.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE}/langmodel/${modelId}/${type}/${name}`
             const req = await axios(url, {
                 method,
                 data: items
@@ -102,7 +102,7 @@ module.exports = (webServer) => {
             requireAuth: true,
             controller: async(req, res, next) => {
                 try {
-                    const getServices = await axios(`${process.env.SERVICE_MANAGER_URL}/services`, {
+                    const getServices = await axios(`${process.env.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE}/services`, {
                         method: 'get'
                     })
                     res.json({ services: getServices.data })
@@ -120,7 +120,7 @@ module.exports = (webServer) => {
             controller: async(req, res, next) => {
                 try {
                     const payload = req.body
-                    const createService = await axios(`${process.env.SERVICE_MANAGER_URL}/service/${payload.serviceId}`, {
+                    const createService = await axios(`${process.env.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE}/service/${payload.serviceId}`, {
                         method: 'post',
                         data: payload
                     })
@@ -152,7 +152,7 @@ module.exports = (webServer) => {
             requireAuth: true,
             controller: async(req, res, next) => {
                 try {
-                    const getLanguageModels = await axios(`${process.env.SERVICE_MANAGER_URL}/langmodels`, {
+                    const getLanguageModels = await axios(`${process.env.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE}/langmodels`, {
                         method: 'get'
                     })
                     res.json({ services: getLanguageModels.data })
@@ -169,7 +169,7 @@ module.exports = (webServer) => {
                 try {
                     const acmodel = req.body.acmodelname
                     const lmodel = req.body.lmodelname.replace(/\s/g, '_')
-                    const createLM = await axios(`${process.env.SERVICE_MANAGER_URL}/langmodel/${lmodel}`, {
+                    const createLM = await axios(`${process.env.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE}/langmodel/${lmodel}`, {
                         method: 'post',
                         data: {
                             acousticModel: acmodel
@@ -204,7 +204,7 @@ module.exports = (webServer) => {
             controller: async(req, res, next) => {
                 try {
                     const modelId = req.body.modelId
-                    const deleteModel = await axios(`${process.env.SERVICE_MANAGER_URL}/langmodel/${modelId}`, {
+                    const deleteModel = await axios(`${process.env.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE}/langmodel/${modelId}`, {
                         method: 'delete'
                     })
                     if (!!deleteModel.status && deleteModel.status === 200) {
@@ -235,7 +235,7 @@ module.exports = (webServer) => {
             requireAuth: true,
             controller: async(req, res, next) => {
                 try {
-                    const getACModels = await axios(`${process.env.SERVICE_MANAGER_URL}/acmodels`, {
+                    const getACModels = await axios(`${process.env.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE}/acmodels`, {
                         method: 'get'
                     })
                     res.json({ services: getACModels.data })
@@ -260,7 +260,7 @@ module.exports = (webServer) => {
                         const file = req.files[0]
                         const acModelName = infos.acmodel.replace(/\s/g, '_')
                         request.post({
-                            url: `${process.env.SERVICE_MANAGER_URL}/acmodel/${acModelName}`,
+                            url: `${process.env.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE}/acmodel/${acModelName}`,
                             formData: {
                                 file: fs.createReadStream(AMPath + file.filename),
                                 filetype: file.mimetype,
@@ -304,7 +304,7 @@ module.exports = (webServer) => {
             controller: async(req, res, next) => {
                 try {
                     const modelId = req.body.modelId
-                    const deleteModel = await axios(`${process.env.SERVICE_MANAGER_URL}/acmodel/${modelId}`, {
+                    const deleteModel = await axios(`${process.env.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE}/acmodel/${modelId}`, {
                         method: 'delete'
                     })
                     if (!!deleteModel.status && deleteModel.status === 200) {
@@ -340,7 +340,7 @@ module.exports = (webServer) => {
 
                     // Get stt service data
                     const accessToken = await nodered.getBLSAccessToken()
-                    const getSttService = await axios(`${process.env.SERVICE_MANAGER_URL}/service/${service_name}`, {
+                    const getSttService = await axios(`${process.env.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE}/service/${service_name}`, {
                         method: 'get',
                         headers: {
                             'charset': 'utf-8',
@@ -351,7 +351,7 @@ module.exports = (webServer) => {
                     const sttService = getSttService.data.data
 
                     // Get lexical seeding data
-                    const getSttLexicalSeeding = await axios(`${process.env.BUSINESS_LOGIC_SERVER_URL}/red-nodes/${flowId}/dataset/linstt`, {
+                    const getSttLexicalSeeding = await axios(`${process.env.LINTO_STACK_BLS_SERVICE}/red-nodes/${flowId}/dataset/linstt`, {
                         method: 'get',
                         headers: {
                             'charset': 'utf-8',
@@ -392,7 +392,7 @@ module.exports = (webServer) => {
                         entitiesUpdated = true
                     }
 
-                    const getUpdatedSttLangModel = await axios(`${process.env.SERVICE_MANAGER_URL}/langmodel/${sttService.LModelId}`, {
+                    const getUpdatedSttLangModel = await axios(`${process.env.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE}/langmodel/${sttService.LModelId}`, {
                         method: 'get',
                         headers: {
                             'charset': 'utf-8',
@@ -404,7 +404,7 @@ module.exports = (webServer) => {
                     // Generate Graph if model updated
                     if (getUpdatedSttLangModel.data.data.isDirty === 1 && getUpdatedSttLangModel.data.data.updateState === 0) {
                         try {
-                            const req = await axios(`${process.env.ADMIN_URL}/api/stt/generategraph`, {
+                            const req = await axios(`${process.env.LINTO_STACK_DOMAIN}/api/stt/generategraph`, {
                                 method: 'post',
                                 data: {
                                     service_name
@@ -457,11 +457,11 @@ module.exports = (webServer) => {
             controller: async(req, res, next) => {
                 try {
                     const service_name = req.body.service_name
-                    const getSttService = await axios(`${process.env.SERVICE_MANAGER_URL}/service/${service_name}`, {
+                    const getSttService = await axios(`${process.env.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE}/service/${service_name}`, {
                         method: 'get'
                     })
                     const sttService = getSttService.data.data
-                    const generateGraph = await axios(`${process.env.SERVICE_MANAGER_URL}/langmodel/${sttService.LModelId}/generate/graph`, {
+                    const generateGraph = await axios(`${process.env.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE}/langmodel/${sttService.LModelId}/generate/graph`, {
                         method: 'get'
                     })
                     res.json({
@@ -482,7 +482,7 @@ module.exports = (webServer) => {
             requireAuth: true,
             controller: async(req, res, next) => {
                 try {
-                    const getSttManager = await axios(process.env.SERVICE_MANAGER_URL)
+                    const getSttManager = await axios(process.env.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE)
                     if (getSttManager.status === 200) {
                         res.json({
                             status: 'success',

@@ -146,10 +146,11 @@ export default {
       sttLangModelsLoaded: false
     }
   },
-  created () {
-    this.dispatchStore('getSttServices')
-    this.dispatchStore('getSttAcousticModels')
-    this.dispatchStore('getSttLanguageModels')
+  beforeRouteEnter (to, form, next) {
+    // Check that all the needed services are up
+    next((vm) => {
+      vm.isSttUp()
+    })
   },
   computed: {
     dataLoaded () {
@@ -173,6 +174,27 @@ export default {
     }
   },
   methods: {
+     // Check if STT services are available
+    async isSttUp () {
+      try {
+        const connectSTT = await axios.get(`${process.env.VUE_APP_URL}/api/stt/healthcheck`)
+        if (connectSTT.data.status === 'success') {
+          this.sttUp = true
+          this.dispatchStore('getSttServices')
+          this.dispatchStore('getSttAcousticModels')
+          this.dispatchStore('getSttLanguageModels')
+        }
+        else {
+          throw 'error'
+        }
+      } catch (error) {
+        bus.$emit('app_notif', {
+          status: 'error',
+          msg: 'Cannot connect to STT service manager',
+          timeout: false
+        })
+      }
+    },
     addSttService () {
       bus.$emit('add_stt_service', {})
     },

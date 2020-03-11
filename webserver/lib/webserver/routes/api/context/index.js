@@ -1,4 +1,4 @@
-const DBmodel = require(`${process.cwd()}/model/${process.env.BDD_TYPE}`)
+const DBmodel = require(`${process.cwd()}/model/mongodb`)
 const model = new DBmodel()
 const middlewares = require(`${process.cwd()}/lib/webserver/middlewares`)
 const nodered = require(`${process.cwd()}/lib/webserver/middlewares/nodered.js`)
@@ -32,7 +32,7 @@ module.exports = (webServer) => {
 
                     // Get workflow
                     const accessToken = await nodered.getBLSAccessToken()
-                    const getFinalFlow = await axios(`${process.env.BUSINESS_LOGIC_SERVER_URI}/flow/${flowId}`, {
+                    const getFinalFlow = await axios(`${process.env.LINTO_STACK_BLS_SERVICE}/redui}/flow/${flowId}`, {
                         method: 'get',
                         headers: {
                             'charset': 'utf-8',
@@ -109,7 +109,7 @@ module.exports = (webServer) => {
                 try {
                     res.json([{
                         "service_name": "tock",
-                        "host": process.env.NLU_TOCK_HOST
+                        "host": `${process.env.LINTO_STACK_TOCK_SERVICE}/tock`
                     }])
                 } catch (error) {
                     console.error(error.toString())
@@ -125,9 +125,9 @@ module.exports = (webServer) => {
             controller: async(req, res, next) => {
                 try {
                     res.json({
-                        "host": process.env.LOGIC_MQTT_ADDRESS,
-                        "port": process.env.LOGIC_MQTT_PORT,
-                        "scope": process.env.LOGIC_MQTT_HW_SCOPE
+                        "host": process.env.LINTO_STACK_MQTT_HOST,
+                        "port": process.env.LINTO_STACK_MQTT_PORT,
+                        "scope": process.env.LINTO_STACK_MQTT_DEFAULT_HW_SCOPE
                     })
                 } catch (error) {
                     console.error(error.toString())

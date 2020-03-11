@@ -12,8 +12,8 @@ module.exports = (webServer) => {
             requireAuth: true,
             controller: async(req, res, next) => {
                 try {
-                    const tockToken = middlewares.basicAuthToken(process.env.NLU_TOCK_USER, process.env.NLU_TOCK_PSWD)
-                    const getTockApplications = await axios(`${process.env.NLU_TOCK_REST_HOST}/admin/applications`, {
+                    const tockToken = middlewares.basicAuthToken(process.env.LINTO_STACK_TOCK_USER, process.env.LINTO_STACK_TOCK_PASSWORD)
+                    const getTockApplications = await axios(`${process.env.LINTO_STACK_TOCK_SERVICE}/rest/admin/applications`, {
                         method: 'get',
                         headers: {
                             'Authorization': tockToken
@@ -34,7 +34,8 @@ module.exports = (webServer) => {
             requireAuth: true,
             controller: async(req, res, next) => {
                 try {
-                    const getTock = await axios.get(process.env.NLU_TOCK_HOST)
+                    const getTock = await axios.get(`${process.env.LINTO_STACK_TOCK_SERVICE}/tock`)
+                    console.log(getTock)
                     if (getTock.status === 200) {
                         res.json({
                             status: 'success',
@@ -60,7 +61,7 @@ module.exports = (webServer) => {
                     const accessToken = await nodered.getBLSAccessToken()
 
                     // Get lexical seeding object to send to TOCK
-                    const getNluLexicalSeeding = await axios(`${process.env.BUSINESS_LOGIC_SERVER_URL}/red-nodes/${flowId}/dataset/tock`, {
+                    const getNluLexicalSeeding = await axios(`${process.env.LINTO_STACK_BLS_SERVICE}/red-nodes/${flowId}/dataset/tock`, {
                         method: 'get',
                         headers: {
                             'charset': 'utf-8',
@@ -73,7 +74,7 @@ module.exports = (webServer) => {
                     const jsonContent = JSON.stringify(getNluLexicalSeeding.data.application)
 
                     // get Tock auth token
-                    const token = middlewares.basicAuthToken(process.env.NLU_TOCK_USER, process.env.NLU_TOCK_PSWD)
+                    const token = middlewares.basicAuthToken(process.env.LINTO_STACK_TOCK_USER, process.env.LINTO_STACK_TOCK_PASSWORD)
 
                     // Tmp json file path
                     const filePath = process.cwd() + '/public/tockapp.json'
@@ -84,7 +85,7 @@ module.exports = (webServer) => {
                         else {
                             // Tock service post request
                             request.post({
-                                url: process.env.NLU_TOCK_REST_HOST + '/admin/dump/sentences',
+                                url: process.env.LINTO_STACK_TOCK_SERVICE + '/rest/admin/dump/sentences',
                                 headers: {
                                     'Authorization': token
                                 },

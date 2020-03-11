@@ -45,6 +45,8 @@ export default {
         if (connectTock.data.status === 'success') {
           this.tockUp = true
           this.iframeUrl = process.env.VUE_APP_NLU_URL
+        } else {
+          throw 'Cannont connect Tock interface'
         }
       } catch (error) {
         bus.$emit('app_notif', {

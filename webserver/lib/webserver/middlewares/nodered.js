@@ -111,7 +111,7 @@ function generateContextFlow(flow, payload) {
         // uppdate STT node
         else if (f.type === 'linto-config-transcribe') {
             f.id = sttId
-            f.host = `${process.env.SERVICE_MANAGER_URL}/${payload.stt.service_name}`
+            f.host = `${process.env.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE}/${payload.stt.service_name}`
             f.api = 'linstt'
         }
         // uppdate NLU node
@@ -154,12 +154,12 @@ function generateContextFlow(flow, payload) {
 
 /* Get a business logic server bearer token */
 async function getBLSAccessToken() {
-    if (!process.env.BLS_AUTH || process.env.BLS_AUTH === 'false') {
+    if (!process.env.LINTO_STACK_BLS_USE_LOGIN || process.env.LINTO_STACK_BLS_USE_LOGIN === 'false') {
         return ''
     }
-    const login = process.env.BLS_LOGIN
-    const pswd = process.env.BLS_PSWD
-    const request = await axios(`${process.env.BUSINESS_LOGIC_SERVER_URI}/auth/token`, {
+    const login = process.env.LINTO_STACK_BLS_USER
+    const pswd = process.env.LINTO_STACK_BLS_PASSWORD
+    const request = await axios(`${process.env.LINTO_STACK_BLS_SERVICE}/redui}/auth/token`, {
         method: 'post',
         data: {
             "client_id": "node-red-admin",
@@ -175,7 +175,7 @@ async function getBLSAccessToken() {
 async function putBLSFlow(flowId, workflow) {
     try {
         const accessToken = await getBLSAccessToken()
-        let blsUpdate = await axios(`${process.env.BUSINESS_LOGIC_SERVER_URI}/flow/${flowId}`, {
+        let blsUpdate = await axios(`${process.env.LINTO_STACK_BLS_SERVICE}/redui}/flow/${flowId}`, {
             method: 'put',
             headers: {
                 'charset': 'utf-8',
