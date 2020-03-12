@@ -5,7 +5,7 @@ set -e
     exit 1
 }
 [ -z "$LINTO_STACK_USE_SSL" ] && {
-    echo "Missing LINTO_STACK_DOMAIN"
+    echo "Missing LINTO_STACK_USE_SSL"
     exit 1
 }
 
