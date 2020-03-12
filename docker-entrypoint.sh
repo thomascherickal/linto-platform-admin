@@ -9,6 +9,11 @@ set -e
     exit 1
 }
 
+echo "Waiting redis, MQTT and mongo..."
+/wait-for-it.sh $LINTO_STACK_REDIS_SESSION_SERVICE:$LINTO_STACK_REDIS_SESSION_SERVICE_PORT --timeout=20 --strict -- echo " $LINTO_STACK_REDIS_SESSION_SERVICE:$LINTO_STACK_REDIS_SESSION_SERVICE_PORT is up"
+/wait-for-it.sh $LINTO_STACK_MONGODB_SERVICE:$LINTO_STACK_MONGODB_PORT --timeout=20 --strict -- echo " $LINTO_STACK_MONGODB_SERVICE:$LINTO_STACK_REDIS_SESSION_SERVICE_PORT is up"
+/wait-for-it.sh $LINTO_STACK_MQTT_HOST:$LINTO_STACK_MQTT_PORT --timeout=20 --strict -- echo " $LINTO_STACK_MQTT_HOST:$LINTO_STACK_MQTT_PORT is up"
+
 while [ "$1" != "" ]; do
     case $1 in
     --rebuild-vue-app)

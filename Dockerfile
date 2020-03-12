@@ -6,6 +6,7 @@ RUN apt-get update -y && \
 COPY ./vue_app /usr/src/app/linto-admin/vue_app
 COPY ./webserver /usr/src/app/linto-admin/webserver
 COPY ./docker-entrypoint.sh /
+COPY ./wait-for-it.sh /
 
 WORKDIR /usr/src/app/linto-admin/webserver
 HEALTHCHECK CMD node docker-healthcheck.js || exit 1
