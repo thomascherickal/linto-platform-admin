@@ -10,6 +10,7 @@ COPY ./docker-entrypoint.sh /
 WORKDIR /usr/src/app/linto-admin/webserver
 HEALTHCHECK CMD node docker-healthcheck.js || exit 1
 
+EXPOSE 80
 # Entrypoint handles the passed arguments
 ENTRYPOINT ["/docker-entrypoint.sh"]
 # CMD ["npm", "run", "start"]

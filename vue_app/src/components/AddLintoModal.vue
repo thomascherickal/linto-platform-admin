@@ -81,15 +81,17 @@ export default {
         this.serialNumber.error = 'This field is required'
         this.serialNumber.valid = false
       } else {
-        this.lintos.map(l => {
-          if (l.sn === this.serialNumber.value) {
-            snExist = true
-          }
-        })
-        if (snExist) {
-          this.serialNumber.error = 'This serial number is already used'
-          this.serialNumber.valid = false
-        } else {
+        if(this.lintos.length > 0) {
+          this.lintos.map(l => {
+            if (l.sn === this.serialNumber.value) {
+              snExist = true
+            }
+          })
+          if (snExist) {
+            this.serialNumber.error = 'This serial number is already used'
+            this.serialNumber.valid = false
+        } 
+      } else {
           this.serialNumber.valid = true
         }
       }

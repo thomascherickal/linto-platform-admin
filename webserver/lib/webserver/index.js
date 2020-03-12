@@ -65,6 +65,7 @@ class WebServer extends EventEmitter {
             })
             redisClient.on('error', (err) => {
                 console.error('Redis error: ', err)
+                process.exit(1)
             })
         }
 
