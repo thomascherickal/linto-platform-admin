@@ -21,10 +21,10 @@ services:
         delay: 5s
         max_attempts: 3
     healthcheck:
-      interval: 180s
-      timeout: 20s
-      retries: 1
-      start_period: 180s
+      interval: 15s
+      timeout: 10s
+      retries: 4
+      start_period: 50s
     env_file: .docker_env # Remove when running from stack
     volumes:
       - "/etc/localtime:/etc/localtime:ro"
