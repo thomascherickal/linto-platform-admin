@@ -1,7 +1,7 @@
-const modelMongoDb = require(`${process.cwd()}/model/mongodb/init.js`)
+const ModelMongoDb = require(`${process.cwd()}/model/mongodb/init.js`)
 
 // This class is a child of 'modelMongoDb' class. It contains all methods and requests to database used on API routes.
-class modelMongoDbCollections extends modelMongoDb {
+class modelMongoDbCollections extends ModelMongoDb {
     constructor() {
         super()
     }
@@ -64,7 +64,7 @@ class modelMongoDbCollections extends modelMongoDb {
         try {
             return await this.mongoRequest('lintos', { type: 'fleet' })
         } catch (err) {
-            console.error('ERROR/', err)
+            console.error(err)
             return err
         }
     }

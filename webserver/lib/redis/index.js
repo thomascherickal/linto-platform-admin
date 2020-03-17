@@ -4,7 +4,7 @@ const redisStore = require('connect-redis')(Session)
 
 class redisClient {
     constructor() {
-        this.poolOpitons = {
+        this.settings = {
             host: process.env.LINTO_STACK_REDIS_SESSION_SERVICE,
             port: process.env.LINTO_STACK_REDIS_SESSION_SERVICE_PORT,
         }
@@ -16,14 +16,12 @@ class redisClient {
 
     init() {
         this.client = redis.createClient({
-            host: this.poolOpitons.host,
-            port: this.poolOpitons.port,
+            host: this.settings.host,
+            port: this.settings.port,
             retry_strategy: function(options) {
                 try {
-                    console.log(options)
-                        //console.log('retry strategy options', options)
                     if (options.error && options.error.code === "ECONNREFUSED" && options.attempt < this.maxAttempt) {
-                        console.log('try to RECONNECT')
+                        console.log('REDIs > try to RECONNECT')
                     }
                     if (options.total_retry_time > 1000 * 60 * 60) {
                         // End reconnecting after a specific timeout and flush all commands
@@ -38,7 +36,6 @@ class redisClient {
                     return Math.min(options.attempt * 100, 3000);
                 } catch (error) {
                     console.error('Redis error :', error)
-                    process.exit(1)
                 }
             }
         })
@@ -53,14 +50,14 @@ class redisClient {
             console.log('> Redis : Connected')
         })
         this.client.on('reconnect', () => {
-            console.log('> Redis reconnect')
+            console.log('> Redis : reconnect')
         })
         this.client.on('error', (e) => {
-            console.log('REDIS Error :')
-            console.log(e)
+            console.log('> Redis ERROR :')
+            console.error(e)
         })
         this.client.on('end', (e) => {
-            console.log('REDIS: Disconnected')
+            console.log('> Redis : Disconnected')
         })
     }
 

@@ -35,7 +35,6 @@ module.exports = (webServer) => {
             controller: async(req, res, next) => {
                 try {
                     const getTock = await axios.get(`${process.env.LINTO_STACK_TOCK_SERVICE}/tock`)
-                    console.log(getTock)
                     if (getTock.status === 200) {
                         res.json({
                             status: 'success',

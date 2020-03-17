@@ -8,7 +8,6 @@ if (process.env.LINTO_STACK_MONGODB_USE_LOGIN) {
     urlMongo += '?authSource=' + process.env.LINTO_STACK_MONGODB_DBNAME
 }
 
-
 // Connect to the db
 class modelMongoDb {
     constructor() {
@@ -23,16 +22,6 @@ class modelMongoDb {
             useNewUrlParser: true,
             useUnifiedTopology: false
         }
-        this.dbOptions = {
-            host: process.env.LINTO_STACK_MONGODB_SERVICE,
-            port: process.env.LINTO_STACK_MONGODB_PORT,
-            database: process.env.LINTO_STACK_MONGODB_DBNAME,
-            auth: process.env.LINTO_STACK_MONGODB_USE_LOGIN,
-            user: process.env.LINTO_STACK_MONGODB_USER,
-            password: process.env.LINTO_STACK_MONGODB_PASSWORD
-        }
-        this.cnx_attempt = 0
-        this.connect()
     }
 
     /* ====================== */
@@ -41,49 +30,86 @@ class modelMongoDb {
 
     // Try to connect to mongo database
     async connect() {
-        return new Promise((resolve, reject) => {
-            try {
-                this.client.connect(this.urlMongo, this.poolOptions,
-                    (err, db) => {
-                        if (err) {
-                            this.cnx_attempt += 1
-                            if (this.cnx_attempt > this.poolOptions.numberOfRetries) {
-                                // Kill process after 5 tries if cannot connect
-                                console.error('MongoDB : To many connection attempts > EXIT PROCESS')
-                                process.exit(1)
-                            } else {
-                                // Log attempts to connect
-                                console.error('MongoDB : connect attempt -', this.cnx_attempt)
-                                setTimeout(async() => {
-                                    this.connect()
-                                }, this.poolOptions.connectTimeoutMS)
-                            }
-                        } else {
-                            // Connection success
-                            console.log('> MongoDB : Connected')
-                            this.cnx_attempt = 0
-                            this.db = db.db(process.env.LINTO_STACK_MONGODB_DBNAME)
-                            resolve(this.db)
-                        }
-                    })
-            } catch (error) {
-                console.error('mongo:connect:error')
-                console.error(error)
-            }
-        })
+        try {
+            await this.client.connect(this.urlMongo, this.poolOptions,
+                (err, client) => {
+                    if (err) {
+                        console.error('> MongoDB ERROR :', err.toString())
+                        return (err.toString())
+                    } else {
+                        // Connection success
+                        console.log('> MongoDB : Connected')
+                        this.db = client.db(process.env.LINTO_STACK_MONGODB_DBNAME)
+
+                        client.topology.on('close', () => {
+                            console.error('> MongoDb : Connection lost ')
+                        })
+                        client.topology.on('error', (e) => {
+                            console.error('> MongoDb ERROR: ', e)
+                        })
+                        client.topology.on('reconnect', () => {
+                            console.error('> MongoDb : reconnect')
+                        })
+
+                        /* ALL EVENTS */
+                        /*
+                        commandStarted: [Function (anonymous)],
+                        commandSucceeded: [Function (anonymous)],
+                        commandFailed: [Function (anonymous)],
+                        serverOpening: [Function (anonymous)],
+                        serverClosed: [Function (anonymous)],
+                        serverDescriptionChanged: [Function (anonymous)],
+                        serverHeartbeatStarted: [Function (anonymous)],
+                        serverHeartbeatSucceeded: [Function (anonymous)],
+                        serverHeartbeatFailed: [Function (anonymous)],
+                        topologyOpening: [Function (anonymous)],
+                        topologyClosed: [Function (anonymous)],
+                        topologyDescriptionChanged: [Function (anonymous)],
+                        joined: [Function (anonymous)],
+                        left: [Function (anonymous)],
+                        ping: [Function (anonymous)],
+                        ha: [Function (anonymous)],
+                        connectionPoolCreated: [Function (anonymous)],
+                        connectionPoolClosed: [Function (anonymous)],
+                        connectionCreated: [Function (anonymous)],
+                        connectionReady: [Function (anonymous)],
+                        connectionClosed: [Function (anonymous)],
+                        connectionCheckOutStarted: [Function (anonymous)],
+                        connectionCheckOutFailed: [Function (anonymous)],
+                        connectionCheckedOut: [Function (anonymous)],
+                        connectionCheckedIn: [Function (anonymous)],
+                        connectionPoolCleared: [Function (anonymous)],
+                        authenticated: [Function (anonymous)],
+                        error: [ [Function (anonymous)], [Function: listener] ],
+                        timeout: [ [Function (anonymous)], [Function: listener] ],
+                        close: [ [Function (anonymous)], [Function: listener] ],
+                        parseError: [ [Function (anonymous)], [Function: listener] ],
+                        open: [ [Function], [Function] ],
+                        fullsetup: [ [Function], [Function] ],
+                        all: [ [Function], [Function] ],
+                        reconnect: [ [Function (anonymous)], [Function: listener] ]
+                        */
+                    }
+                })
+        } catch (error) {
+            console.error('mongo:connect:error')
+            console.error(error)
+        }
     }
 
     // Check mongo database connection status
     async checkConnection() {
         try {
-            return this.db.serverConfig.isConnected()
+            if (!!this.db && this.db.serverConfig) {
+                return this.db.serverConfig.isConnected()
+            } else {
+                return false
+            }
 
         } catch (error) {
             console.error(error)
         }
     }
-
-
 
     /* ========================= */
     /* ===== MONGO METHODS ===== */
@@ -96,27 +122,19 @@ class modelMongoDb {
      * @returns {Pomise}
      */
     async mongoRequest(collection, query) {
-        if (await this.checkConnection()) {
-            return new Promise((resolve, reject) => {
-                try {
-                    this.db.collection(collection).find(query).toArray((error, result) => {
-                        if (error) {
-                            reject(error)
-                        }
-                        resolve(result)
-                    })
-                } catch (error) {
-                    console.error(error.toString())
-                    reject(error)
-                }
-            })
-        } else {
-            console.error('Cannot connect MongoDB: trying to reconnect...')
-            this.connect()
-            return {
-                error: 'Trying to reconnect database...'
+        return new Promise((resolve, reject) => {
+            try {
+                this.db.collection(collection).find(query).toArray((error, result) => {
+                    if (error) {
+                        reject(error)
+                    }
+                    resolve(result)
+                })
+            } catch (error) {
+                console.error(error.toString())
+                reject(error)
             }
-        }
+        })
     }
 
     /**
@@ -127,28 +145,19 @@ class modelMongoDb {
      * @returns {Pomise}
      */
     async mongoInsert(collection, payload) {
-        if (await this.checkConnection()) {
-            return new Promise((resolve, reject) => {
-                try {
-                    this.db.collection(collection).insertOne(payload, function(error, result) {
-                        if (error) {
-                            reject(error)
-                        }
-                        resolve('success')
-                    })
-                } catch (error) {
-                    console.error(error.toString())
-                    reject(error)
-                }
-            })
-        } else {
-            console.error('Cannot connect MongoDB: trying to reconnect...')
-            this.connect()
-            return {
-                status: 'error',
-                msg: 'Trying to reconnect database...'
+        return new Promise((resolve, reject) => {
+            try {
+                this.db.collection(collection).insertOne(payload, function(error, result) {
+                    if (error) {
+                        reject(error)
+                    }
+                    resolve('success')
+                })
+            } catch (error) {
+                console.error(error.toString())
+                reject(error)
             }
-        }
+        })
     }
 
     /**
@@ -159,33 +168,24 @@ class modelMongoDb {
      * @returns {Pomise}
      */
     async mongoUpdate(collection, query, values) {
-        if (await this.checkConnection()) {
-            if (values._id) {
-                delete values._id
-            }
-            return new Promise((resolve, reject) => {
-                try {
-                    this.db.collection(collection).updateOne(query, {
-                        $set: values
-                    }, function(error, result) {
-                        if (error) {
-                            reject(error)
-                        }
-                        resolve('success')
-                    })
-                } catch (error) {
-                    console.error(error.toString())
-                    reject(error)
-                }
-            })
-        } else {
-            console.error('Cannot connect MongoDB: trying to reconnect...')
-            this.connect()
-            return {
-                status: 'error',
-                msg: 'Trying to reconnect database...'
-            }
+        if (values._id) {
+            delete values._id
         }
+        return new Promise((resolve, reject) => {
+            try {
+                this.db.collection(collection).updateOne(query, {
+                    $set: values
+                }, function(error, result) {
+                    if (error) {
+                        reject(error)
+                    }
+                    resolve('success')
+                })
+            } catch (error) {
+                console.error(error.toString())
+                reject(error)
+            }
+        })
     }
 
     /**
@@ -195,28 +195,19 @@ class modelMongoDb {
      * @returns {Pomise}
      */
     async mongoDelete(collection, query) {
-        if (await this.checkConnection()) {
-            return new Promise((resolve, reject) => {
-                try {
-                    this.db.collection(collection).deleteOne(query, function(error, result) {
-                        if (error) {
-                            reject(error)
-                        }
-                        resolve("success")
-                    })
-                } catch (error) {
-                    console.error(error.toString())
-                    reject(error)
-                }
-            })
-        } else {
-            console.error('Cannot connect MongoDB: trying to reconnect...')
-            this.connect()
-            return {
-                status: 'error',
-                msg: 'Trying to reconnect database...'
+        return new Promise((resolve, reject) => {
+            try {
+                this.db.collection(collection).deleteOne(query, function(error, result) {
+                    if (error) {
+                        reject(error)
+                    }
+                    resolve("success")
+                })
+            } catch (error) {
+                console.error(error.toString())
+                reject(error)
             }
-        }
+        })
     }
 }
 

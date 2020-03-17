@@ -1,8 +1,5 @@
 db.createUser({
-  user: "root",
-  pwd: "example",
-  roles: [{
-    role: "readWrite",
-    db: "lintoAdmin"
-  }]
+    user: "root",
+    pwd: "example",
+    roles: ["readWrite"]
 })

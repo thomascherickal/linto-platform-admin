@@ -69,7 +69,8 @@ class WebServer extends EventEmitter {
         this.ioHandler = new IoHandler(this)
 
         // Mongo DB
-        this.app.mongo = await new mongoDbFunctions()
+        this.app.mongo = new mongoDbFunctions()
+        await this.app.mongo.connect()
 
         // Router
         require('./routes')(this)
