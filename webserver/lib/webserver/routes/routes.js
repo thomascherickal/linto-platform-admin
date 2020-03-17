@@ -24,6 +24,7 @@ module.exports = (webServer) => {
         "/login": require('./login')(webServer),
         "/logout": require('./logout')(webServer),
         "/admin": require('./admin')(webServer),
+        "/healthcheck": require('./healthcheck')(webServer),
         "/api": require('./api')(webServer),
         "/api/flow": require('./api/flow')(webServer),
         "/api/tock": require('./api/tock')(webServer),

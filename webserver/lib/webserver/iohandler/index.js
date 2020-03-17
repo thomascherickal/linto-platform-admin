@@ -15,7 +15,7 @@ class IoHandler extends EventEmitter {
                 }
             })
             webServer.io.on('connection', (socket) => {
-                console.log('Connection socketio ???')
+                console.log('Socket io: Connected')
                 debug(webServer.io)
                     //Secures websocket usage with session
                 if (process.env.NODE_ENV !== 'production') {

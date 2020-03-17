@@ -1,5 +1,3 @@
-const DBmodel = require(`${process.cwd()}/model/mongodb`)
-const model = new DBmodel()
 const moment = require('moment')
 const axios = require('axios')
 const nodered = require(`${process.cwd()}/lib/webserver/middlewares/nodered.js`)
@@ -70,7 +68,7 @@ module.exports = (webServer) => {
             requireAuth: true,
             controller: async(req, res, next) => {
                 try {
-                    const allPatterns = await model.getAllWorkflowPatterns()
+                    const allPatterns = await webServer.app.mongo.getAllWorkflowPatterns()
                     res.json(allPatterns)
                 } catch (e) {
                     console.error(e)
@@ -88,7 +86,7 @@ module.exports = (webServer) => {
                     const patternName = req.body.patternName
                     const contextType = req.body.contextType
                     const date = moment().format()
-                    let getAllPatterns = await model.getAllWorkflowPatterns()
+                    let getAllPatterns = await webServer.app.mongo.getAllWorkflowPatterns()
                     let patternNameExist = false
 
                     // Test if pattern name already exist
@@ -104,7 +102,7 @@ module.exports = (webServer) => {
                         })
                     } else {
                         // Get workflow object to create
-                        let tmpFlow = await model.getTmpFlow()
+                        let tmpFlow = await webServer.app.mongo.getTmpFlow()
                         const payload = {
                             name: patternName,
                             type: contextType,
@@ -113,7 +111,7 @@ module.exports = (webServer) => {
                         }
 
                         // Create new workflow pattern
-                        let addNewPattern = await model.addWorkflowPattern(payload)
+                        let addNewPattern = await webServer.app.mongo.addWorkflowPattern(payload)
                         if (addNewPattern === 'success') {
                             res.json({
                                 status: 'success',
@@ -158,7 +156,7 @@ module.exports = (webServer) => {
 
                     // Get selected flow pattern data
                     const patternId = req.body.patternId
-                    let getPattern = await model.getWorkflowPatternById(patternId)
+                    let getPattern = await webServer.app.mongo.getWorkflowPatternById(patternId)
                     let pattern = getPattern.flow
 
                     // Format Patten: update id, format workflow for request
@@ -206,7 +204,7 @@ module.exports = (webServer) => {
                     let contextUpdated = false
 
                     // Get workflow to update
-                    const getWorkflow = await model.getFullTmpFlow()
+                    const getWorkflow = await webServer.app.mongo.getFullTmpFlow()
                     const workflow = getWorkflow
                     const formattedFlow = nodered.formatFlowGroupedNodes(workflow)
 
@@ -217,10 +215,10 @@ module.exports = (webServer) => {
                     }
 
                     // Update context
-                    const getContext = await model.getContextById(contextId)
+                    const getContext = await webServer.app.mongo.getContextById(contextId)
                     let context = getContext[0]
                     context.flow = formattedFlow
-                    const updateContext = await model.updateContext(context)
+                    const updateContext = await webServer.app.mongo.updateContext(context)
                     if (updateContext === 'success') {
                         contextUpdated = true
                     }
@@ -275,7 +273,7 @@ module.exports = (webServer) => {
             requireAuth: true,
             controller: async(req, res, next) => {
                 try {
-                    const tmpPattern = await model.getFullTmpFlow()
+                    const tmpPattern = await webServer.app.mongo.getFullTmpFlow()
                     res.json([tmpPattern])
                 } catch (error) {
                     console.error(error.toString())
@@ -295,7 +293,7 @@ module.exports = (webServer) => {
                 try {
                     let payload = req.body.payload
                     let workspaceId = req.body.workspaceId
-                    let updateTmpFlow = await model.updateTmpFlow({
+                    let updateTmpFlow = await webServer.app.mongo.updateTmpFlow({
                         flow: payload,
                         workspaceId
                     })
@@ -335,7 +333,7 @@ module.exports = (webServer) => {
                     // FORMAT WORKFLOW
                     const payload = req.body.payload
                     const workflowName = payload.workflowPattern
-                    const getWorkflowPattern = await model.getWorkflowPatternByName(workflowName)
+                    const getWorkflowPattern = await webServer.app.mongo.getWorkflowPatternByName(workflowName)
                     let flow = getWorkflowPattern[0].flow
                     const updatedFlow = nodered.generateContextFlow(flow, payload)
 

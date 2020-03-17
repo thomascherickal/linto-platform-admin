@@ -106,8 +106,8 @@ export default {
       lintoLoaded: false
     }
   },
-  created () {
-    this.dispatchLintos()
+  async created () {
+    const test = await  this.dispatchLintos()
   },
   watch: {
     dataLoaded (data) {
@@ -127,7 +127,7 @@ export default {
       return this.$store.getters.ASSOCIATED_LINTO_FLEET
     },
     dataLoaded () {
-      return this.lintoLoaded
+      return (this.lintoLoaded.status === 'success')
     }
   },
   methods: {
@@ -136,6 +136,15 @@ export default {
     },
     async dispatchLintos () {
       this.lintoLoaded = await this.$options.filters.dispatchStore('getLintoFleet')
+
+      if(this.lintoLoaded.status === 'error') {
+        bus.$emit('app_notif', {
+          status: this.lintoLoaded.status,
+          msg: this.lintoLoaded.msg,
+          timeout: false,
+          redirect: false
+        })
+      }
     }
   }
 }

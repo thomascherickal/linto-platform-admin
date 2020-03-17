@@ -1,5 +1,3 @@
-const DBmodel = require(`${process.cwd()}/model/mongodb`)
-const model = new DBmodel()
 const axios = require('axios')
 const multer = require('multer')
 const moment = require('moment')

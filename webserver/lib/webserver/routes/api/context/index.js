@@ -1,6 +1,3 @@
-const DBmodel = require(`${process.cwd()}/model/mongodb`)
-const model = new DBmodel()
-const middlewares = require(`${process.cwd()}/lib/webserver/middlewares`)
 const nodered = require(`${process.cwd()}/lib/webserver/middlewares/nodered.js`)
 const axios = require('axios')
 const moment = require('moment')
@@ -13,7 +10,7 @@ module.exports = (webServer) => {
             requireAuth: true,
             controller: async(req, res, next) => {
                 try {
-                    const fleetContexts = await model.getFleetContexts()
+                    const fleetContexts = await webServer.app.mongo.getFleetContexts()
                     res.json(fleetContexts)
                 } catch (error) {
                     res.json({ error })
@@ -65,7 +62,7 @@ module.exports = (webServer) => {
                         updated_date: now,
                         flow
                     }
-                    const postContext = await model.createContext(contextPayload)
+                    const postContext = await webServer.app.mongo.createContext(contextPayload)
 
                     // Validation
                     if (postContext === 'success') {
@@ -92,7 +89,7 @@ module.exports = (webServer) => {
             requireAuth: true,
             controller: async(req, res, next) => {
                 try {
-                    const contextTypes = await model.getContextTypes()
+                    const contextTypes = await webServer.app.mongo.getContextTypes()
                     res.json(contextTypes)
                 } catch (error) {
                     console.error(error.toString())

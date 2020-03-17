@@ -7,8 +7,12 @@ const cookieParser = require('cookie-parser')
 const path = require('path')
 const IoHandler = require('./iohandler')
 const CORS = require('cors')
+const redisClient = require(`${process.cwd()}/lib/redis`)
+
+const mongoDbFunctions = require(`${process.cwd()}/model/mongodb/collections.js`)
 let corsOptions = {}
 let whitelistDomains = []
+
 if (process.env.LINTO_STACK_ADMIN_API_WHITELIST_DOMAINS.length > 0) {
     whitelistDomains = process.env.LINTO_STACK_ADMIN_API_WHITELIST_DOMAINS.split(',')
     corsOptions = {
@@ -20,16 +24,6 @@ if (process.env.LINTO_STACK_ADMIN_API_WHITELIST_DOMAINS.length > 0) {
             }
         }
     }
-}
-
-let redis, redisStore, redisClient
-if (process.env.NODE_ENV == 'production') {
-    redis = require('redis')
-    redisStore = require('connect-redis')(Session)
-    redisClient = redis.createClient({
-        host: process.env.LINTO_STACK_REDIS_SESSION_SERVICE,
-        port: process.env.LINTO_STACK_REDIS_SESSION_SERVICE_PORT,
-    })
 }
 
 class WebServer extends EventEmitter {
@@ -56,17 +50,10 @@ class WebServer extends EventEmitter {
             }
         }
 
-        // Redis store if "production"
-        if (process.env.NODE_ENV == 'production') {
-            sessionConfig.store = new redisStore({
-                host: process.env.LINTO_STACK_REDIS_SESSION_SERVICE,
-                port: process.env.LINTO_STACK_REDIS_SESSION_SERVICE_PORT,
-                client: redisClient
-            })
-            redisClient.on('error', (err) => {
-                console.error('Redis error: ', err)
-                process.exit(1)
-            })
+        /* ====== REDIS ===== */
+        if (process.env.NODE_ENV === 'production') {
+            this.app.redis = new redisClient()
+            sessionConfig.store = this.app.redis.redisStore
         }
 
         this.session = Session(sessionConfig)
@@ -80,6 +67,9 @@ class WebServer extends EventEmitter {
     async init() {
         // Set ioHandler
         this.ioHandler = new IoHandler(this)
+
+        // Mongo DB
+        this.app.mongo = await new mongoDbFunctions()
 
         // Router
         require('./routes')(this)

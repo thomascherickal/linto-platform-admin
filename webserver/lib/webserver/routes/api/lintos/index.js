@@ -1,8 +1,3 @@
-const DBmodel = require(`${process.cwd()}/model/mongodb`)
-const model = new DBmodel()
-const request = require('request')
-const fs = require('fs')
-const axios = require('axios')
 module.exports = (webServer) => {
     return [{
             // Get all LinTO devices (fleet) from database
@@ -11,7 +6,7 @@ module.exports = (webServer) => {
             requireAuth: true,
             controller: async(req, res, next) => {
                 try {
-                    const getLintos = await model.getLintoFleet()
+                    const getLintos = await webServer.app.mongo.getLintoFleet()
                     res.json(getLintos)
                 } catch (error) {
                     console.error(error.toString())
@@ -27,7 +22,7 @@ module.exports = (webServer) => {
             controller: async(req, res, next) => {
                 try {
                     const sn = req.body.sn
-                    let addLinto = await model.addLintoFleet(sn)
+                    let addLinto = await webServer.app.mongo.addLintoFleet(sn)
 
                     // Validation
                     if (addLinto === 'success') {
@@ -59,7 +54,7 @@ module.exports = (webServer) => {
                     if (payload.type === 'Fleet') {
 
                         // Get Linto data
-                        const getLinto = await model.getLintoBySn(sn)
+                        const getLinto = await webServer.app.mongo.getLintoBySn(sn)
                         let lintoPayload = getLinto[0]
 
                         // Test LinTO serial number
@@ -72,7 +67,7 @@ module.exports = (webServer) => {
 
                         // Update LINTO
                         lintoPayload.associated_context = payload.context_name
-                        const updateLinto = await model.updateLinto(lintoPayload)
+                        const updateLinto = await webServer.app.mongo.updateLinto(lintoPayload)
 
                         // Validation
                         if (updateLinto === 'success') {
