@@ -9,7 +9,7 @@ if (process.env.LINTO_STACK_MONGODB_USE_LOGIN) {
 }
 
 // Connect to the db
-class modelMongoDb {
+class MongoClient {
     constructor() {
         this.mongoDb = mongoDb
         this.urlMongo = urlMongo
@@ -211,4 +211,4 @@ class modelMongoDb {
     }
 }
 
-module.exports = modelMongoDb
+module.exports = MongoClient

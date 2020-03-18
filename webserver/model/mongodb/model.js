@@ -1,7 +1,7 @@
-const ModelMongoDb = require(`${process.cwd()}/model/mongodb/init.js`)
+const MongoClient = require(`${process.cwd()}/model/mongodb/client.js`)
 
 // This class is a child of 'modelMongoDb' class. It contains all methods and requests to database used on API routes.
-class modelMongoDbCollections extends ModelMongoDb {
+class MongoModel extends MongoClient {
     constructor() {
         super()
     }
@@ -270,4 +270,4 @@ class modelMongoDbCollections extends ModelMongoDb {
     }
 }
 
-module.exports = modelMongoDbCollections
+module.exports = MongoModel

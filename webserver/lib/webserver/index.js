@@ -9,7 +9,7 @@ const IoHandler = require('./iohandler')
 const CORS = require('cors')
 const redisClient = require(`${process.cwd()}/lib/redis`)
 
-const mongoDbFunctions = require(`${process.cwd()}/model/mongodb/collections.js`)
+const MogngoModel = require(`${process.cwd()}/model/mongodb/model.js`)
 let corsOptions = {}
 let whitelistDomains = []
 
@@ -50,7 +50,7 @@ class WebServer extends EventEmitter {
             }
         }
 
-        /* ====== REDIS ===== */
+        // Redis
         if (process.env.NODE_ENV === 'production') {
             this.app.redis = new redisClient()
             sessionConfig.store = this.app.redis.redisStore
@@ -69,7 +69,7 @@ class WebServer extends EventEmitter {
         this.ioHandler = new IoHandler(this)
 
         // Mongo DB
-        this.app.mongo = new mongoDbFunctions()
+        this.app.mongo = new MogngoModel()
         await this.app.mongo.connect()
 
         // Router
