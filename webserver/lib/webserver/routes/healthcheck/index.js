@@ -2,6 +2,14 @@ const debug = require('debug')('linto-admin:routes/api/healthcheck')
 const redisTest = require(`${process.cwd()}/lib/redis`)
 module.exports = (webServer) => {
     return [{
+            path: '/overview',
+            method: 'get',
+            requireAuth: false,
+            controller: async(req, res, next) => {
+                res.setHeader("Content-Type", "text/html")
+                res.sendFile(process.cwd() + '/dist/healthcheck.html')
+            }
+        }, {
             path: '/mongo',
             method: 'get',
             controller: async(req, res, next) => {

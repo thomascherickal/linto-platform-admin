@@ -23,6 +23,12 @@ module.exports = {
             filename: 'index.html',
             title: 'ADMIN'
         },
+        healthcheck: {
+            entry: 'src/healthcheck.js',
+            template: 'public/default.html',
+            filename: 'healthcheck.html',
+            title: '404'
+        },
         page404: {
             entry: 'src/page404.js',
             template: 'public/404.html',
