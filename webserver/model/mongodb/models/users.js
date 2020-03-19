@@ -2,6 +2,8 @@ const MongoModel = require(`${process.cwd()}/model/mongodb/model.js`)
 
 // This class is a child of 'modelMongoDb' class. It contains all methods and requests to database used on API routes.
 class UsersModel extends MongoModel {
+
+    // Get a user by its "id"
     async getUser(id) {
         try {
             const query = {
@@ -14,6 +16,7 @@ class UsersModel extends MongoModel {
         }
     }
 
+    // Get a user by its name
     async getUserByName(userName) {
         try {
             const query = {
@@ -26,6 +29,7 @@ class UsersModel extends MongoModel {
         }
     }
 
+    // Get all users
     async getUsers() {
         try {
             const query = {}
@@ -36,6 +40,7 @@ class UsersModel extends MongoModel {
         }
     }
 
+    // Update a user data
     async updateUser(payload) {
         try {
             const query = {

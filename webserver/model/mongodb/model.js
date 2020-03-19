@@ -1,14 +1,12 @@
 const MongoDriver = require(`${process.cwd()}/model/mongodb/driver.js`)
 
-
-// This class is a child of 'modelMongoDb' class. It contains all methods and requests to database used on API routes.
 class MongoModel {
 
     /* ========================= */
     /* ===== MONGO METHODS ===== */
     /* ========================= */
     /**
-     * Request function for mongoDB. This function will make a request on the "collection", filtered by the "query" passed in paramters.
+     * Request function for mongoDB. This function will make a request on the "collection", filtered by the "query" passed in parameters.
      * @param {string} collection
      * @param {Object} query
      * @returns {Pomise}

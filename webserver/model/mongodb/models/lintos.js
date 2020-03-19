@@ -1,8 +1,8 @@
 const MongoModel = require(`${process.cwd()}/model/mongodb/model.js`)
 
-// This class is a child of 'modelMongoDb' class. It contains all methods and requests to database used on API routes.
-class LintoModel extends MongoModel {
+class LintosModel extends MongoModel {
 
+    // Get all lintos that have "fleet" type 
     async getLintoFleet() {
         try {
             return await this.mongoRequest('lintos', { type: 'fleet' })
@@ -11,6 +11,8 @@ class LintoModel extends MongoModel {
             return err
         }
     }
+
+    // Get a linto by its "sn" (serial number)
     async getLintoBySn(sn) {
         try {
             return await this.mongoRequest('lintos', { sn })
@@ -20,18 +22,18 @@ class LintoModel extends MongoModel {
         }
     }
 
+    // Update a linto
     async updateLinto(payload) {
         try {
             let mutableElements = payload
             delete mutableElements._id
-
             return await this.mongoUpdate('lintos', { _id: MongoClient.mongoDb.ObjectID(payload._id) }, mutableElements)
-
         } catch (err) {
             return err
         }
     }
 
+    // Create a new linto that have "fleet" type
     async addLintoFleet(sn) {
         try {
             const payload = {
@@ -60,4 +62,4 @@ class LintoModel extends MongoModel {
     }
 }
 
-module.exports = new LintoModel()
+module.exports = new LintosModel()

@@ -6,7 +6,6 @@ module.exports = (webServer) => {
             method: 'get',
             requireAuth: false,
             controller: async(req, res, next) => {
-
                 res.setHeader("Content-Type", "text/html")
                 res.sendFile(process.cwd() + '/dist/healthcheck.html')
             }

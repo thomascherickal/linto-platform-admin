@@ -1,7 +1,7 @@
 const axios = require('axios')
 const moment = require('moment')
-const lintoModel = require(`${process.cwd()}/model/mongodb/collections/lintos.js`)
-const contextModel = require(`${process.cwd()}/model/mongodb/collections/context.js`)
+const lintoModel = require(`${process.cwd()}/model/mongodb/models/lintos.js`)
+const contextModel = require(`${process.cwd()}/model/mongodb/models/context.js`)
 const nodered = require(`${process.cwd()}/lib/webserver/middlewares/nodered.js`)
 
 module.exports = (webServer) => {

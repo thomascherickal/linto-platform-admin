@@ -1,4 +1,5 @@
-const lintosModel = require(`${process.cwd()}/model/mongodb/collections/lintos.js`)
+const lintosModel = require(`${process.cwd()}/model/mongodb/models/lintos.js`)
+
 module.exports = (webServer) => {
     return [{
             // Get all LinTO devices (fleet) from database

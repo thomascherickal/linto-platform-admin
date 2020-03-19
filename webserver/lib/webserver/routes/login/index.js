@@ -1,6 +1,6 @@
 const debug = require('debug')('linto-admin:login')
 const sha1 = require('sha1')
-const userModel = require(`${process.cwd()}/model/mongodb/collections/users.js`)
+const userModel = require(`${process.cwd()}/model/mongodb/models/users.js`)
 
 module.exports = (webServer) => {
     return [{

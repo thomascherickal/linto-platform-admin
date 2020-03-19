@@ -2,9 +2,9 @@ const moment = require('moment')
 const axios = require('axios')
 const nodered = require(`${process.cwd()}/lib/webserver/middlewares/nodered.js`)
 
-const contextModel = require(`${process.cwd()}/model/mongodb/collections/context.js`)
-const flowPatternModel = require(`${process.cwd()}/model/mongodb/collections/flowpattern.js`)
-const flowPatternTmpModel = require(`${process.cwd()}/model/mongodb/collections/flowpatterntmp.js`)
+const contextModel = require(`${process.cwd()}/model/mongodb/models/context.js`)
+const flowPatternModel = require(`${process.cwd()}/model/mongodb/models/flowpattern.js`)
+const flowPatternTmpModel = require(`${process.cwd()}/model/mongodb/models/flowpatterntmp.js`)
 
 module.exports = (webServer) => {
     return [{

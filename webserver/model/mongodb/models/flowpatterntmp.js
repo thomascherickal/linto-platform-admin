@@ -2,6 +2,8 @@ const MongoModel = require(`${process.cwd()}/model/mongodb/model.js`)
 
 // This class is a child of 'modelMongoDb' class. It contains all methods and requests to database used on API routes.
 class FLowPatternTmpModel extends MongoModel {
+
+    // Get formatted object of the workflow that you are working on
     async getFullTmpFlow() {
         try {
             const query = {}
@@ -19,6 +21,7 @@ class FLowPatternTmpModel extends MongoModel {
         }
     }
 
+    // Get current working workflow
     async getTmpFlow() {
         try {
             const query = {}
@@ -29,6 +32,7 @@ class FLowPatternTmpModel extends MongoModel {
         }
     }
 
+    // update current working workflow
     async updateTmpFlow(payload) {
         try {
             const query = {

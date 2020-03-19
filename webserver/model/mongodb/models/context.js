@@ -1,7 +1,8 @@
 const MongoModel = require(`${process.cwd()}/model/mongodb/model.js`)
 
-// This class is a child of 'modelMongoDb' class. It contains all methods and requests to database used on API routes.
 class ContextModel extends MongoModel {
+
+    // Get all contexts
     async getContexts() {
         try {
             const query = {}
@@ -12,6 +13,7 @@ class ContextModel extends MongoModel {
         }
     }
 
+    // Get a context by its "id"
     async getContextById(id) {
         try {
             const query = {
@@ -24,6 +26,7 @@ class ContextModel extends MongoModel {
         }
     }
 
+    // Get all contexts that have "fleet" type
     async getFleetContexts() {
         try {
             const query = { type: 'Fleet' }
@@ -34,6 +37,7 @@ class ContextModel extends MongoModel {
         }
     }
 
+    // Get all existing context types
     async getContextTypes() {
         try {
             const query = {}
@@ -44,6 +48,7 @@ class ContextModel extends MongoModel {
         }
     }
 
+    // Create a new context
     async createContext(payload) {
         try {
             return await this.mongoInsert('context', payload)
@@ -53,6 +58,7 @@ class ContextModel extends MongoModel {
         }
     }
 
+    // update existing context data
     async updateContext(payload) {
         try {
             const query = {

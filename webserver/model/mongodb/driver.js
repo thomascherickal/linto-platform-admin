@@ -8,7 +8,7 @@ if (process.env.LINTO_STACK_MONGODB_USE_LOGIN) {
     urlMongo += '?authSource=' + process.env.LINTO_STACK_MONGODB_DBNAME
 }
 
-// Connect to the db
+// Create an instance of Mongodb Client. Handle connexion, closeConnection, reconnect and error
 class MongoDriver {
     static mongoDb = mongoDb
     static urlMongo = urlMongo
