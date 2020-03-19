@@ -2,9 +2,6 @@ const MongoClient = require(`${process.cwd()}/model/mongodb/client.js`)
 
 // This class is a child of 'modelMongoDb' class. It contains all methods and requests to database used on API routes.
 class MongoModel extends MongoClient {
-    constructor() {
-        super()
-    }
 
     /*************/
     /*** USERS ***/
