@@ -1,6 +1,8 @@
-const nodered = require(`${process.cwd()}/lib/webserver/middlewares/nodered.js`)
 const axios = require('axios')
 const moment = require('moment')
+const lintoModel = require(`${process.cwd()}/model/mongodb/collections/lintos.js`)
+const contextModel = require(`${process.cwd()}/model/mongodb/collections/context.js`)
+const nodered = require(`${process.cwd()}/lib/webserver/middlewares/nodered.js`)
 
 module.exports = (webServer) => {
     return [{
@@ -10,7 +12,7 @@ module.exports = (webServer) => {
             requireAuth: true,
             controller: async(req, res, next) => {
                 try {
-                    const fleetContexts = await webServer.app.mongo.getFleetContexts()
+                    const fleetContexts = await lintoModel.getFleetContexts()
                     res.json(fleetContexts)
                 } catch (error) {
                     res.json({ error })
@@ -62,7 +64,7 @@ module.exports = (webServer) => {
                         updated_date: now,
                         flow
                     }
-                    const postContext = await webServer.app.mongo.createContext(contextPayload)
+                    const postContext = await contextModel.createContext(contextPayload)
 
                     // Validation
                     if (postContext === 'success') {
@@ -89,7 +91,7 @@ module.exports = (webServer) => {
             requireAuth: true,
             controller: async(req, res, next) => {
                 try {
-                    const contextTypes = await webServer.app.mongo.getContextTypes()
+                    const contextTypes = await contextModel.getContextTypes()
                     res.json(contextTypes)
                 } catch (error) {
                     console.error(error.toString())

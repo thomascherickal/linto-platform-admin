@@ -1,5 +1,6 @@
 const MongoDriver = require(`${process.cwd()}/model/mongodb/driver.js`)
 
+
 // This class is a child of 'modelMongoDb' class. It contains all methods and requests to database used on API routes.
 class MongoModel {
 
@@ -15,7 +16,7 @@ class MongoModel {
     async mongoRequest(collection, query) {
         return new Promise((resolve, reject) => {
             try {
-                MongoDriver.db.collection(collection).find(query).toArray((error, result) => {
+                MongoDriver.constructor.db.collection(collection).find(query).toArray((error, result) => {
                     if (error) {
                         reject(error)
                     }
@@ -38,7 +39,7 @@ class MongoModel {
     async mongoInsert(collection, payload) {
         return new Promise((resolve, reject) => {
             try {
-                MongoDriver.db.collection(collection).insertOne(payload, function(error, result) {
+                MongoDriver.constructor.db.collection(collection).insertOne(payload, function(error, result) {
                     if (error) {
                         reject(error)
                     }
@@ -64,7 +65,7 @@ class MongoModel {
         }
         return new Promise((resolve, reject) => {
             try {
-                MongoDriver.db.collection(collection).updateOne(query, {
+                MongoDriver.constructor.db.collection(collection).updateOne(query, {
                     $set: values
                 }, function(error, result) {
                     if (error) {
@@ -88,7 +89,7 @@ class MongoModel {
     async mongoDelete(collection, query) {
         return new Promise((resolve, reject) => {
             try {
-                MongoDriver.db.collection(collection).deleteOne(query, function(error, result) {
+                MongoDriver.constructor.db.collection(collection).deleteOne(query, function(error, result) {
                     if (error) {
                         reject(error)
                     }

@@ -1,11 +1,12 @@
 const debug = require('debug')('linto-admin:routes/api/healthcheck')
-const redisTest = require(`${process.cwd()}/lib/redis`)
+const MongoDriver = require(`${process.cwd()}/model/mongodb/driver.js`)
 module.exports = (webServer) => {
     return [{
             path: '/overview',
             method: 'get',
             requireAuth: false,
             controller: async(req, res, next) => {
+
                 res.setHeader("Content-Type", "text/html")
                 res.sendFile(process.cwd() + '/dist/healthcheck.html')
             }
@@ -14,7 +15,7 @@ module.exports = (webServer) => {
             method: 'get',
             controller: async(req, res, next) => {
                 try {
-                    const mongoUp = await webServer.app.mongo.checkConnection()
+                    const mongoUp = MongoDriver.constructor.checkConnection()
                     res.json({
                         service: 'mongo',
                         connected: mongoUp

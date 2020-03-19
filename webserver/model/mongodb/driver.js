@@ -31,15 +31,17 @@ class MongoDriver {
 
     constructor() {
         this.poolOptions = {
-            numberOfRetries: 5,
-            auto_reconnect: true,
-            poolSize: 40,
-            connectTimeoutMS: 5000,
-            useNewUrlParser: true,
-            useUnifiedTopology: false
+                numberOfRetries: 5,
+                auto_reconnect: true,
+                poolSize: 40,
+                connectTimeoutMS: 5000,
+                useNewUrlParser: true,
+                useUnifiedTopology: false
+            }
+            // if connexion exists
+        if (MongoDriver.checkConnection()) {
+            return this
         }
-        // if connexion exists
-        if (MongoDriver.checkConnection()) return this
 
         // Otherwise, inits connexions and binds event handling
         MongoDriver.client.connect(MongoDriver.urlMongo, MongoDriver.poolOptions, (err, client) => {

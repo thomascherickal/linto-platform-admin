@@ -1,5 +1,6 @@
 const debug = require('debug')('linto-admin:login')
 const sha1 = require('sha1')
+const userModel = require(`${process.cwd()}/model/mongodb/collections/users.js`)
 
 module.exports = (webServer) => {
     return [{
@@ -29,7 +30,7 @@ module.exports = (webServer) => {
                     const password = req.body.password
                     try {
                         let user
-                        let getUser = await webServer.app.mongo.getUserByName(userName)
+                        let getUser = await userModel.getUserByName(userName)
                         if (getUser.length > 0) {
                             user = getUser[0]
                         }
