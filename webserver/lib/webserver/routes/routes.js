@@ -20,7 +20,6 @@ const debug = require('debug')('linto-admin:routes')
 
 module.exports = (webServer) => {
     return {
-
         "/login": require('./login')(webServer),
         "/logout": require('./logout')(webServer),
         "/admin": require('./admin')(webServer),
@@ -31,6 +30,6 @@ module.exports = (webServer) => {
         "/api/lintos": require('./api/lintos')(webServer),
         "/api/context": require('./api/context')(webServer),
         "/api/stt": require('./api/stt')(webServer),
-        "/": require('./_root')(webServer),
+        "/": require('./_root')(webServer)
     }
 }

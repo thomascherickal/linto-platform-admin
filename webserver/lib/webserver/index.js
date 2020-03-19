@@ -8,8 +8,6 @@ const path = require('path')
 const IoHandler = require('./iohandler')
 const CORS = require('cors')
 const redisClient = require(`${process.cwd()}/lib/redis`)
-
-const MogngoModel = require(`${process.cwd()}/model/mongodb/model.js`)
 let corsOptions = {}
 let whitelistDomains = []
 
@@ -69,8 +67,8 @@ class WebServer extends EventEmitter {
         this.ioHandler = new IoHandler(this)
 
         // Mongo DB
-        this.app.mongo = new MogngoModel()
-        await this.app.mongo.connect()
+
+        this.app.mongo = await require(`${process.cwd()}/model/mongodb/model.js`)
 
         // Router
         require('./routes')(this)

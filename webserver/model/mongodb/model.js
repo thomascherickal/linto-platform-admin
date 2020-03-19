@@ -12,7 +12,7 @@ class MongoModel extends MongoClient {
     async getUser(id) {
         try {
             const query = {
-                _id: this.mongoDb.ObjectID(id)
+                _id: MongoClient.mongoDb.ObjectID(id)
             }
             return await this.mongoRequest('users', query)
         } catch (err) {
@@ -46,7 +46,7 @@ class MongoModel extends MongoClient {
     async updateUser(payload) {
             try {
                 const query = {
-                    _id: this.mongoDb.ObjectID(payload._id)
+                    _id: MongoClient.mongoDb.ObjectID(payload._id)
                 }
                 let mutableElements = payload
                 delete mutableElements._id
@@ -82,7 +82,7 @@ class MongoModel extends MongoClient {
             let mutableElements = payload
             delete mutableElements._id
 
-            return await this.mongoUpdate('lintos', { _id: this.mongoDb.ObjectID(payload._id) }, mutableElements)
+            return await this.mongoUpdate('lintos', { _id: MongoClient.mongoDb.ObjectID(payload._id) }, mutableElements)
 
         } catch (err) {
             return err
@@ -132,7 +132,7 @@ class MongoModel extends MongoClient {
     async getContextById(id) {
         try {
             const query = {
-                _id: this.mongoDb.ObjectID(id)
+                _id: MongoClient.mongoDb.ObjectID(id)
             }
             return await this.mongoRequest('context', query)
         } catch (err) {
@@ -173,7 +173,7 @@ class MongoModel extends MongoClient {
     async updateContext(payload) {
         try {
             const query = {
-                _id: this.mongoDb.ObjectID(payload._id)
+                _id: MongoClient.mongoDb.ObjectID(payload._id)
             }
             let mutableElements = payload
             delete mutableElements._id
@@ -208,7 +208,7 @@ class MongoModel extends MongoClient {
 
     async getWorkflowPatternById(id) {
         try {
-            const query = { _id: this.mongoDb.ObjectID(id) }
+            const query = { _id: MongoClient.mongoDb.ObjectID(id) }
             const tmpFlow = await this.mongoRequest('flow_pattern', query)
             return tmpFlow[0]
         } catch (err) {
@@ -270,4 +270,4 @@ class MongoModel extends MongoClient {
     }
 }
 
-module.exports = MongoModel
+module.exports = new MongoModel()

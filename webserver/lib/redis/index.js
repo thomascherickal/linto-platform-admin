@@ -21,7 +21,7 @@ class redisClient {
             retry_strategy: function(options) {
                 try {
                     if (options.error && options.error.code === "ECONNREFUSED" && options.attempt < this.maxAttempt) {
-                        console.log('REDIs > try to RECONNECT')
+                        console.log('> Redis : try to reconnect')
                     }
                     if (options.total_retry_time > 1000 * 60 * 60) {
                         // End reconnecting after a specific timeout and flush all commands
@@ -30,12 +30,13 @@ class redisClient {
                     }
                     if (options.attempt > 5) {
                         // End reconnecting with built in error
-                        throw "Redis disconnected > To many attempts"
+                        throw "Disconnected, to many attempts"
                     }
                     // reconnect after
                     return Math.min(options.attempt * 100, 3000);
                 } catch (error) {
-                    console.error('Redis error :', error)
+                    console.error('> Redis error :', error)
+                    return error
                 }
             }
         })

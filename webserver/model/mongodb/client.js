@@ -10,10 +10,11 @@ if (process.env.LINTO_STACK_MONGODB_USE_LOGIN) {
 
 // Connect to the db
 class MongoClient {
+    static mongoDb = mongoDb
+    static urlMongo = urlMongo
+    static client = mongoDb.MongoClient
+    static db = null
     constructor() {
-        this.mongoDb = mongoDb
-        this.urlMongo = urlMongo
-        this.client = mongoDb.MongoClient
         this.poolOptions = {
             numberOfRetries: 5,
             auto_reconnect: true,
@@ -22,86 +23,89 @@ class MongoClient {
             useNewUrlParser: true,
             useUnifiedTopology: false
         }
+        return this.init()
+
     }
+
 
     /* ====================== */
     /* ===== MONGO INIT ===== */
     /* ====================== */
 
     // Try to connect to mongo database
-    async connect() {
-        try {
-            await this.client.connect(this.urlMongo, this.poolOptions,
-                (err, client) => {
-                    if (err) {
-                        console.error('> MongoDB ERROR :', err.toString())
-                        return (err.toString())
-                    } else {
-                        // Connection success
-                        console.log('> MongoDB : Connected')
-                        this.db = client.db(process.env.LINTO_STACK_MONGODB_DBNAME)
+    async init() {
+        return new Promise((resolve, reject) => {
+            MongoClient.client.connect(MongoClient.urlMongo, MongoClient.poolOptions, (err, client) => {
+                if (err) {
+                    console.error('> MongoDB ERROR :', err.toString())
+                    return (err.toString())
+                } else {
+                    console.log('> MongoDB : Connected')
+                    MongoClient.db = client.db(process.env.LINTO_STACK_MONGODB_DBNAME)
 
-                        client.topology.on('close', () => {
-                            console.error('> MongoDb : Connection lost ')
-                        })
-                        client.topology.on('error', (e) => {
-                            console.error('> MongoDb ERROR: ', e)
-                        })
-                        client.topology.on('reconnect', () => {
-                            console.error('> MongoDb : reconnect')
-                        })
 
-                        /* ALL EVENTS */
-                        /*
-                        commandStarted: [Function (anonymous)],
-                        commandSucceeded: [Function (anonymous)],
-                        commandFailed: [Function (anonymous)],
-                        serverOpening: [Function (anonymous)],
-                        serverClosed: [Function (anonymous)],
-                        serverDescriptionChanged: [Function (anonymous)],
-                        serverHeartbeatStarted: [Function (anonymous)],
-                        serverHeartbeatSucceeded: [Function (anonymous)],
-                        serverHeartbeatFailed: [Function (anonymous)],
-                        topologyOpening: [Function (anonymous)],
-                        topologyClosed: [Function (anonymous)],
-                        topologyDescriptionChanged: [Function (anonymous)],
-                        joined: [Function (anonymous)],
-                        left: [Function (anonymous)],
-                        ping: [Function (anonymous)],
-                        ha: [Function (anonymous)],
-                        connectionPoolCreated: [Function (anonymous)],
-                        connectionPoolClosed: [Function (anonymous)],
-                        connectionCreated: [Function (anonymous)],
-                        connectionReady: [Function (anonymous)],
-                        connectionClosed: [Function (anonymous)],
-                        connectionCheckOutStarted: [Function (anonymous)],
-                        connectionCheckOutFailed: [Function (anonymous)],
-                        connectionCheckedOut: [Function (anonymous)],
-                        connectionCheckedIn: [Function (anonymous)],
-                        connectionPoolCleared: [Function (anonymous)],
-                        authenticated: [Function (anonymous)],
-                        error: [ [Function (anonymous)], [Function: listener] ],
-                        timeout: [ [Function (anonymous)], [Function: listener] ],
-                        close: [ [Function (anonymous)], [Function: listener] ],
-                        parseError: [ [Function (anonymous)], [Function: listener] ],
-                        open: [ [Function], [Function] ],
-                        fullsetup: [ [Function], [Function] ],
-                        all: [ [Function], [Function] ],
-                        reconnect: [ [Function (anonymous)], [Function: listener] ]
-                        */
-                    }
-                })
-        } catch (error) {
-            console.error('mongo:connect:error')
-            console.error(error)
-        }
+                    const mongoEvent = client.topology
+
+                    mongoEvent.on('close', () => {
+                        console.error('> MongoDb : Connection lost ')
+                    })
+                    mongoEvent.on('error', (e) => {
+                        console.error('> MongoDb ERROR: ', e)
+                    })
+                    mongoEvent.on('reconnect', () => {
+                        console.error('> MongoDb : reconnect')
+                    })
+
+                    /* ALL EVENTS */
+                    /*
+                    commandStarted: [Function (anonymous)],
+                    commandSucceeded: [Function (anonymous)],
+                    commandFailed: [Function (anonymous)],
+                    serverOpening: [Function (anonymous)],
+                    serverClosed: [Function (anonymous)],
+                    serverDescriptionChanged: [Function (anonymous)],
+                    serverHeartbeatStarted: [Function (anonymous)],
+                    serverHeartbeatSucceeded: [Function (anonymous)],
+                    serverHeartbeatFailed: [Function (anonymous)],
+                    topologyOpening: [Function (anonymous)],
+                    topologyClosed: [Function (anonymous)],
+                    topologyDescriptionChanged: [Function (anonymous)],
+                    joined: [Function (anonymous)],
+                    left: [Function (anonymous)],
+                    ping: [Function (anonymous)],
+                    ha: [Function (anonymous)],
+                    connectionPoolCreated: [Function (anonymous)],
+                    connectionPoolClosed: [Function (anonymous)],
+                    connectionCreated: [Function (anonymous)],
+                    connectionReady: [Function (anonymous)],
+                    connectionClosed: [Function (anonymous)],
+                    connectionCheckOutStarted: [Function (anonymous)],
+                    connectionCheckOutFailed: [Function (anonymous)],
+                    connectionCheckedOut: [Function (anonymous)],
+                    connectionCheckedIn: [Function (anonymous)],
+                    connectionPoolCleared: [Function (anonymous)],
+                    authenticated: [Function (anonymous)],
+                    error: [ [Function (anonymous)], [Function: listener] ],
+                    timeout: [ [Function (anonymous)], [Function: listener] ],
+                    close: [ [Function (anonymous)], [Function: listener] ],
+                    parseError: [ [Function (anonymous)], [Function: listener] ],
+                    open: [ [Function], [Function] ],
+                    fullsetup: [ [Function], [Function] ],
+                    all: [ [Function], [Function] ],
+                    reconnect: [ [Function (anonymous)], [Function: listener] ]
+                    */
+                    resolve(this)
+                }
+            })
+        })
     }
+
 
     // Check mongo database connection status
     async checkConnection() {
         try {
-            if (!!this.db && this.db.serverConfig) {
-                return this.db.serverConfig.isConnected()
+            if (!!MongoClient.db && MongoClient.db.serverConfig) {
+                return MongoClient.db.serverConfig.isConnected()
             } else {
                 return false
             }
@@ -124,7 +128,7 @@ class MongoClient {
     async mongoRequest(collection, query) {
         return new Promise((resolve, reject) => {
             try {
-                this.db.collection(collection).find(query).toArray((error, result) => {
+                MongoClient.db.collection(collection).find(query).toArray((error, result) => {
                     if (error) {
                         reject(error)
                     }
@@ -147,7 +151,7 @@ class MongoClient {
     async mongoInsert(collection, payload) {
         return new Promise((resolve, reject) => {
             try {
-                this.db.collection(collection).insertOne(payload, function(error, result) {
+                MongoClient.db.collection(collection).insertOne(payload, function(error, result) {
                     if (error) {
                         reject(error)
                     }
@@ -173,7 +177,7 @@ class MongoClient {
         }
         return new Promise((resolve, reject) => {
             try {
-                this.db.collection(collection).updateOne(query, {
+                MongoClient.db.collection(collection).updateOne(query, {
                     $set: values
                 }, function(error, result) {
                     if (error) {
@@ -197,7 +201,7 @@ class MongoClient {
     async mongoDelete(collection, query) {
         return new Promise((resolve, reject) => {
             try {
-                this.db.collection(collection).deleteOne(query, function(error, result) {
+                MongoClient.db.collection(collection).deleteOne(query, function(error, result) {
                     if (error) {
                         reject(error)
                     }
