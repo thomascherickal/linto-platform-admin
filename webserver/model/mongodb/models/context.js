@@ -9,7 +9,6 @@ class ContextModel extends MongoModel {
     async getContexts() {
         try {
             const query = {}
-            7777
             return await this.mongoRequest(query)
         } catch (err) {
             console.error(err)
