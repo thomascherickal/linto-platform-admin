@@ -1,6 +1,9 @@
 const MongoDriver = require(`${process.cwd()}/model/mongodb/driver.js`)
 
 class MongoModel {
+    constructor(collection) {
+        this.collection = collection
+    }
 
     /* ========================= */
     /* ===== MONGO METHODS ===== */
@@ -11,10 +14,10 @@ class MongoModel {
      * @param {Object} query
      * @returns {Pomise}
      */
-    async mongoRequest(collection, query) {
+    async mongoRequest(query) {
         return new Promise((resolve, reject) => {
             try {
-                MongoDriver.constructor.db.collection(collection).find(query).toArray((error, result) => {
+                MongoDriver.constructor.db.collection(this.collection).find(query).toArray((error, result) => {
                     if (error) {
                         reject(error)
                     }
@@ -29,15 +32,14 @@ class MongoModel {
 
     /**
      * Insert/Create function for mongoDB. This function will create an entry based on the "collection", the "query" and the "values" passed in parmaters.
-     * @param {string} collection
      * @param {Object} query
      * @param {Object} values
      * @returns {Pomise}
      */
-    async mongoInsert(collection, payload) {
+    async mongoInsert(payload) {
         return new Promise((resolve, reject) => {
             try {
-                MongoDriver.constructor.db.collection(collection).insertOne(payload, function(error, result) {
+                MongoDriver.constructor.db.collection(this.collection).insertOne(payload, function(error, result) {
                     if (error) {
                         reject(error)
                     }
@@ -52,18 +54,17 @@ class MongoModel {
 
     /**
      * Update function for mongoDB. This function will update an entry based on the "collection", the "query" and the "values" passed in parmaters.
-     * @param {string} collection
      * @param {Object} query
      * @param {Object} values
      * @returns {Pomise}
      */
-    async mongoUpdate(collection, query, values) {
+    async mongoUpdate(query, values) {
         if (values._id) {
             delete values._id
         }
         return new Promise((resolve, reject) => {
             try {
-                MongoDriver.constructor.db.collection(collection).updateOne(query, {
+                MongoDriver.constructor.db.collection(this.collection).updateOne(query, {
                     $set: values
                 }, function(error, result) {
                     if (error) {
@@ -80,14 +81,13 @@ class MongoModel {
 
     /**
      * Delete function for mongoDB. This function will create an entry based on the "collection", the "query" passed in parmaters.
-     * @param {string} collection
      * @param {Object} query
      * @returns {Pomise}
      */
-    async mongoDelete(collection, query) {
+    async mongoDelete(query) {
         return new Promise((resolve, reject) => {
             try {
-                MongoDriver.constructor.db.collection(collection).deleteOne(query, function(error, result) {
+                MongoDriver.constructor.db.collection(this.collection).deleteOne(query, function(error, result) {
                     if (error) {
                         reject(error)
                     }

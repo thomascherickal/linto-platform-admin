@@ -1,6 +1,7 @@
 const axios = require('axios')
 const moment = require('moment')
 const lintoModel = require(`${process.cwd()}/model/mongodb/models/lintos.js`)
+const contexTypestModel = require(`${process.cwd()}/model/mongodb/models/contexttypes.js`)
 const contextModel = require(`${process.cwd()}/model/mongodb/models/context.js`)
 const nodered = require(`${process.cwd()}/lib/webserver/middlewares/nodered.js`)
 
@@ -91,7 +92,7 @@ module.exports = (webServer) => {
             requireAuth: true,
             controller: async(req, res, next) => {
                 try {
-                    const contextTypes = await contextModel.getContextTypes()
+                    const contextTypes = await contexTypestModel.getContextTypes()
                     res.json(contextTypes)
                 } catch (error) {
                     console.error(error.toString())

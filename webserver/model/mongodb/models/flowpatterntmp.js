@@ -3,11 +3,15 @@ const MongoModel = require(`${process.cwd()}/model/mongodb/model.js`)
 // This class is a child of 'modelMongoDb' class. It contains all methods and requests to database used on API routes.
 class FLowPatternTmpModel extends MongoModel {
 
+    constructor() {
+        super('flow_pattern_tmp')
+    }
+
     // Get formatted object of the workflow that you are working on
     async getFullTmpFlow() {
         try {
             const query = {}
-            const tmpFlow = await this.mongoRequest('flow_pattern_tmp', query)
+            const tmpFlow = await this.mongoRequest(query)
             let tmpFlowUnformatted = tmpFlow[0].flow
             let formattedFlow = []
             tmpFlowUnformatted.map(tmp => {
@@ -25,7 +29,7 @@ class FLowPatternTmpModel extends MongoModel {
     async getTmpFlow() {
         try {
             const query = {}
-            const tmpFlow = await this.mongoRequest('flow_pattern_tmp', query)
+            const tmpFlow = await this.mongoRequest(query)
             return tmpFlow[0].flow
         } catch (err) {
             return err
@@ -38,7 +42,7 @@ class FLowPatternTmpModel extends MongoModel {
             const query = {
                 id: "tmp"
             }
-            return await this.mongoUpdate('flow_pattern_tmp', query, {
+            return await this.mongoUpdate(query, {
                 flow: payload.flow,
                 workspaceId: payload.workspaceId
             })

@@ -1,12 +1,16 @@
 const MongoModel = require(`${process.cwd()}/model/mongodb/model.js`)
 
 class ContextModel extends MongoModel {
+    constructor() {
+        super('context')
+    }
 
     // Get all contexts
     async getContexts() {
         try {
             const query = {}
-            return await this.mongoRequest('context', query)
+            7777
+            return await this.mongoRequest(query)
         } catch (err) {
             console.error(err)
             return err
@@ -19,7 +23,7 @@ class ContextModel extends MongoModel {
             const query = {
                 _id: MongoClient.mongoDb.ObjectID(id)
             }
-            return await this.mongoRequest('context', query)
+            return await this.mongoRequest(query)
         } catch (err) {
             console.error(err)
             return err
@@ -30,18 +34,7 @@ class ContextModel extends MongoModel {
     async getFleetContexts() {
         try {
             const query = { type: 'Fleet' }
-            return await this.mongoRequest('context', query)
-        } catch (err) {
-            console.error(err)
-            return err
-        }
-    }
-
-    // Get all existing context types
-    async getContextTypes() {
-        try {
-            const query = {}
-            return await this.mongoRequest('context_types', query)
+            return await this.mongoRequest(query)
         } catch (err) {
             console.error(err)
             return err
@@ -51,7 +44,7 @@ class ContextModel extends MongoModel {
     // Create a new context
     async createContext(payload) {
         try {
-            return await this.mongoInsert('context', payload)
+            return await this.mongoInsert(payload)
         } catch (err) {
             console.error(err)
             return err
@@ -66,7 +59,7 @@ class ContextModel extends MongoModel {
             }
             let mutableElements = payload
             delete mutableElements._id
-            return await this.mongoUpdate('context', query, mutableElements)
+            return await this.mongoUpdate(query, mutableElements)
         } catch (err) {
             return err
         }

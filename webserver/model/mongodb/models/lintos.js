@@ -1,11 +1,14 @@
 const MongoModel = require(`${process.cwd()}/model/mongodb/model.js`)
 
 class LintosModel extends MongoModel {
+    constructor() {
+        super('lintos')
+    }
 
     // Get all lintos that have "fleet" type 
     async getLintoFleet() {
         try {
-            return await this.mongoRequest('lintos', { type: 'fleet' })
+            return await this.mongoRequest({ type: 'fleet' })
         } catch (err) {
             console.error(err)
             return err
@@ -15,7 +18,7 @@ class LintosModel extends MongoModel {
     // Get a linto by its "sn" (serial number)
     async getLintoBySn(sn) {
         try {
-            return await this.mongoRequest('lintos', { sn })
+            return await this.mongoRequest({ sn })
         } catch (err) {
             console.error(err)
             return err
@@ -27,7 +30,7 @@ class LintosModel extends MongoModel {
         try {
             let mutableElements = payload
             delete mutableElements._id
-            return await this.mongoUpdate('lintos', { _id: MongoClient.mongoDb.ObjectID(payload._id) }, mutableElements)
+            return await this.mongoUpdate({ _id: MongoClient.mongoDb.ObjectID(payload._id) }, mutableElements)
         } catch (err) {
             return err
         }
@@ -54,7 +57,7 @@ class LintosModel extends MongoModel {
                 },
                 meeting: []
             }
-            return await this.mongoInsert('lintos', payload)
+            return await this.mongoInsert(payload)
         } catch (err) {
             console.error(err)
             return err
