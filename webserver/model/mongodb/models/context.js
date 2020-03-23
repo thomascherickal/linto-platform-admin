@@ -20,7 +20,7 @@ class ContextModel extends MongoModel {
     async getContextById(id) {
         try {
             const query = {
-                _id: MongoClient.mongoDb.ObjectID(id)
+                _id: this.getObjectId(id)
             }
             return await this.mongoRequest(query)
         } catch (err) {
@@ -54,7 +54,7 @@ class ContextModel extends MongoModel {
     async updateContext(payload) {
         try {
             const query = {
-                _id: MongoClient.mongoDb.ObjectID(payload._id)
+                _id: this.getObjectId(payload._id)
             }
             let mutableElements = payload
             delete mutableElements._id

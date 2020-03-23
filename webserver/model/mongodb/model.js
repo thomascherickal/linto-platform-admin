@@ -3,6 +3,11 @@ const MongoDriver = require(`${process.cwd()}/model/mongodb/driver.js`)
 class MongoModel {
     constructor(collection) {
         this.collection = collection
+
+    }
+
+    getObjectId(id) {
+        return MongoDriver.constructor.mongoDb.ObjectID(id)
     }
 
     /* ========================= */
@@ -24,7 +29,7 @@ class MongoModel {
                     resolve(result)
                 })
             } catch (error) {
-                console.error(error.toString())
+                console.error(error)
                 reject(error)
             }
         })
@@ -46,7 +51,7 @@ class MongoModel {
                     resolve('success')
                 })
             } catch (error) {
-                console.error(error.toString())
+                console.error(error)
                 reject(error)
             }
         })
@@ -73,7 +78,7 @@ class MongoModel {
                     resolve('success')
                 })
             } catch (error) {
-                console.error(error.toString())
+                console.error(error)
                 reject(error)
             }
         })
@@ -94,7 +99,7 @@ class MongoModel {
                     resolve("success")
                 })
             } catch (error) {
-                console.error(error.toString())
+                console.error(error)
                 reject(error)
             }
         })

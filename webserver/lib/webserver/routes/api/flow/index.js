@@ -126,7 +126,7 @@ module.exports = (webServer) => {
                         }
                     }
                 } catch (error) {
-                    console.error(error.toString())
+                    console.error(error)
                     res.json({
                         status: 'error',
                         msg: error.toString()
@@ -187,7 +187,7 @@ module.exports = (webServer) => {
                     }
 
                 } catch (error) {
-                    console.error(error.toString())
+                    console.error(error)
                     res.json({
                         status: 'error',
                         msg: error.toString()
@@ -262,7 +262,7 @@ module.exports = (webServer) => {
                         throw 'Error on updating workflow'
                     }
                 } catch (error) {
-                    console.error(error.toString())
+                    console.error(error)
                     res.json({
                         status: 'error',
                         msg: error.toString()
@@ -280,7 +280,7 @@ module.exports = (webServer) => {
                     const tmpPattern = await flowPatternTmpModel.getFullTmpFlow()
                     res.json([tmpPattern])
                 } catch (error) {
-                    console.error(error.toString())
+                    console.error(error)
                     res.json({
                         status: 'error',
                         msg: error.toString()
@@ -303,7 +303,7 @@ module.exports = (webServer) => {
                     })
                     res.json({ status: updateTmpFlow })
                 } catch (error) {
-                    console.error(error.toString())
+                    console.error(error)
                     res.json({
                         status: 'error',
                         msg: error.toString()
@@ -369,7 +369,7 @@ module.exports = (webServer) => {
                         }
                     }
                 } catch (error) {
-                    console.error(error.toString())
+                    console.error(error)
                     res.json({
                         status: 'error',
                         msg: error.toString()

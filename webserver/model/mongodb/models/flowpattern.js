@@ -31,7 +31,7 @@ class FLowPatternModel extends MongoModel {
     // Get a workflow pattern by its "id"
     async getWorkflowPatternById(id) {
         try {
-            const query = { _id: MongoClient.mongoDb.ObjectID(id) }
+            const query = { _id: this.getObjectId(id) }
             const tmpFlow = await this.mongoRequest(query)
             return tmpFlow[0]
         } catch (err) {

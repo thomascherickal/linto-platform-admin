@@ -11,7 +11,7 @@ module.exports = (webServer) => {
                     const getLintos = await lintosModel.getLintoFleet()
                     res.json(getLintos)
                 } catch (error) {
-                    console.error(error.toString())
+                    console.error(error)
                     res.json({ error: error.toString() })
                 }
             }
@@ -36,7 +36,7 @@ module.exports = (webServer) => {
                         throw 'Error on adding a new LinTO'
                     }
                 } catch (error) {
-                    console.error(error.toString())
+                    console.error(error)
                     res.json({
                         status: 'error',
                         msg: error.toString()
@@ -54,7 +54,6 @@ module.exports = (webServer) => {
                     const sn = req.params.sn
                     const payload = req.body.payload
                     if (payload.type === 'Fleet') {
-
                         // Get Linto data
                         const getLinto = await lintosModel.getLintoBySn(sn)
                         let lintoPayload = getLinto[0]
@@ -70,8 +69,7 @@ module.exports = (webServer) => {
                         // Update LINTO
                         lintoPayload.associated_context = payload.context_name
                         const updateLinto = await lintosModel.updateLinto(lintoPayload)
-
-                        // Validation
+                            // Validation
                         if (updateLinto === 'success') {
                             res.json({
                                 status: 'success',
@@ -85,7 +83,7 @@ module.exports = (webServer) => {
                         }
                     }
                 } catch (error) {
-                    console.error(error.toString())
+                    console.error(error)
                     res.json({
                         status: 'error',
                         msg: error.toString()

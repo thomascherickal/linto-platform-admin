@@ -414,6 +414,7 @@ export default {
     async dispatchStore (topic) {
       try {
         const resp = await this.$options.filters.dispatchStore(topic)
+        console.log(topic, resp)
         if (resp.status === 'success') {
           switch (topic) {
             case 'getFleetContexts':

@@ -30,7 +30,7 @@ class LintosModel extends MongoModel {
         try {
             let mutableElements = payload
             delete mutableElements._id
-            return await this.mongoUpdate({ _id: MongoClient.mongoDb.ObjectID(payload._id) }, mutableElements)
+            return await this.mongoUpdate({ _id: this.getObjectId(payload._id) }, mutableElements)
         } catch (err) {
             return err
         }

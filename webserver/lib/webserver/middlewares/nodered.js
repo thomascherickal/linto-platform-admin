@@ -159,7 +159,7 @@ async function getBLSAccessToken() {
     }
     const login = process.env.LINTO_STACK_BLS_USER
     const pswd = process.env.LINTO_STACK_BLS_PASSWORD
-    const request = await axios(`${process.env.LINTO_STACK_BLS_SERVICE}/redui}/auth/token`, {
+    const request = await axios(`${process.env.LINTO_STACK_BLS_SERVICE}/redui/auth/token`, {
         method: 'post',
         data: {
             "client_id": "node-red-admin",
@@ -175,7 +175,7 @@ async function getBLSAccessToken() {
 async function putBLSFlow(flowId, workflow) {
     try {
         const accessToken = await getBLSAccessToken()
-        let blsUpdate = await axios(`${process.env.LINTO_STACK_BLS_SERVICE}/redui}/flow/${flowId}`, {
+        let blsUpdate = await axios(`${process.env.LINTO_STACK_BLS_SERVICE}/redui/flow/${flowId}`, {
             method: 'put',
             headers: {
                 'charset': 'utf-8',

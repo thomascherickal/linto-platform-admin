@@ -1,6 +1,5 @@
 const axios = require('axios')
 const moment = require('moment')
-const lintoModel = require(`${process.cwd()}/model/mongodb/models/lintos.js`)
 const contexTypestModel = require(`${process.cwd()}/model/mongodb/models/contexttypes.js`)
 const contextModel = require(`${process.cwd()}/model/mongodb/models/context.js`)
 const nodered = require(`${process.cwd()}/lib/webserver/middlewares/nodered.js`)
@@ -13,7 +12,7 @@ module.exports = (webServer) => {
             requireAuth: true,
             controller: async(req, res, next) => {
                 try {
-                    const fleetContexts = await lintoModel.getFleetContexts()
+                    const fleetContexts = await contextModel.getFleetContexts()
                     res.json(fleetContexts)
                 } catch (error) {
                     res.json({ error })
@@ -32,7 +31,7 @@ module.exports = (webServer) => {
 
                     // Get workflow
                     const accessToken = await nodered.getBLSAccessToken()
-                    const getFinalFlow = await axios(`${process.env.LINTO_STACK_BLS_SERVICE}/redui}/flow/${flowId}`, {
+                    const getFinalFlow = await axios(`${process.env.LINTO_STACK_BLS_SERVICE}/redui/flow/${flowId}`, {
                         method: 'get',
                         headers: {
                             'charset': 'utf-8',
@@ -77,7 +76,7 @@ module.exports = (webServer) => {
                         throw 'Error on creating context'
                     }
                 } catch (error) {
-                    console.error(error.toString())
+                    console.error(error)
                     res.json({
                         status: 'error',
                         msg: error.toString()
@@ -95,7 +94,7 @@ module.exports = (webServer) => {
                     const contextTypes = await contexTypestModel.getContextTypes()
                     res.json(contextTypes)
                 } catch (error) {
-                    console.error(error.toString())
+                    console.error(error)
                     res.json({ error: error.toString() })
                 }
             }
@@ -112,7 +111,7 @@ module.exports = (webServer) => {
                         "host": `${process.env.LINTO_STACK_TOCK_SERVICE}/tock`
                     }])
                 } catch (error) {
-                    console.error(error.toString())
+                    console.error(error)
                     res.json({ error: error.toString() })
                 }
             }
@@ -130,7 +129,7 @@ module.exports = (webServer) => {
                         "scope": process.env.LINTO_STACK_MQTT_DEFAULT_HW_SCOPE
                     })
                 } catch (error) {
-                    console.error(error.toString())
+                    console.error(error)
                     res.json({ error: error.toString() })
                 }
             }

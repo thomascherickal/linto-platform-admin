@@ -105,7 +105,7 @@ module.exports = (webServer) => {
                     })
                     res.json({ services: getServices.data })
                 } catch (error) {
-                    console.error(error.toString())
+                    console.error(error)
                     res.json({ error: error.toString() })
                 }
             }
@@ -251,7 +251,7 @@ module.exports = (webServer) => {
                     AMupload(req, res, async(error) => {
                         if (error ||  error instanceof multer.MulterError) {
                             // A Multer error occurred when uploading.
-                            console.error(error.toString())
+                            console.error(error)
                             throw error
                         }
                         const infos = JSON.parse(req.body.infos)
@@ -287,7 +287,7 @@ module.exports = (webServer) => {
                         })
                     })
                 } catch (error) {
-                    console.error(error.toString())
+                    console.error(error)
                     res.json({
                         status: 'error',
                         msg: error
@@ -409,7 +409,7 @@ module.exports = (webServer) => {
                                 }
                             })
                         } catch (error) {
-                            console.error(error.toString())
+                            console.error(error)
                         }
                     }
                     // Result
@@ -440,7 +440,7 @@ module.exports = (webServer) => {
                         throw 'Error on updating langage model'
                     }
                 } catch (error) {
-                    console.error(error.toString())
+                    console.error(error)
                     res.json({
                         status: 'error',
                         msg: 'Error on updating language model',
@@ -467,7 +467,7 @@ module.exports = (webServer) => {
                         msg: generateGraph.data.data
                     })
                 } catch (error) {
-                    console.error(error.toString())
+                    console.error(error)
                     res.json({
                         status: 'error',
                         msg: 'error on generating graph'
