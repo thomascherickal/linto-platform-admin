@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Healthcheck from './views/Healthcheck.vue'
-import router from './router-healthcheck.js'
+import router from './router/router-healthcheck.js'
 
 new Vue({
     router,

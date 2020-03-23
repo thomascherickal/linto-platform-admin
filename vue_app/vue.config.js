@@ -10,24 +10,31 @@ module.exports = {
     outputDir: path.resolve(__dirname, '../webserver/dist'),
     publicPath: path.resolve(__dirname, '/assets'),
     pages: {
+        setup: {
+            entry: 'src/setup.js',
+            template: 'public/default.html',
+            filename: 'setup.html',
+            title: 'setup'
+
+        },
         login: {
             entry: 'src/login.js',
             template: 'public/default.html',
             filename: 'login.html',
-            title: 'LOGIN'
+            title: 'login'
 
         },
         admin: {
             entry: 'src/main.js',
             template: 'public/index.html',
             filename: 'index.html',
-            title: 'ADMIN'
+            title: 'admin'
         },
         healthcheck: {
             entry: 'src/healthcheck.js',
             template: 'public/default.html',
             filename: 'healthcheck.html',
-            title: '404'
+            title: 'healthcheck'
         },
         page404: {
             entry: 'src/page404.js',

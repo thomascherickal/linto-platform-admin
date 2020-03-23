@@ -1,15 +1,15 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 // Views
-import Healthcheck from './views/Healthcheck.vue'
+import page404 from '../views/404.vue'
 
 Vue.use(Router)
 const router = new Router({
     mode: 'history',
     routes: [{
-        path: '/healthcheck/overview',
-        name: 'Healthcheck',
-        component: Healthcheck
+        path: '/',
+        name: 'page404',
+        component: page404
     }]
 })
 

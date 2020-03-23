@@ -23,6 +23,15 @@ export default {
     },
   },
   methods: {
+    testEmail (obj) {
+      // todo
+    },
+    testPassword (obj) {
+      // todo
+    },
+    testConfirmPassword (obj) {
+      
+    },
     testName (obj) {
       this.$options.filters.testName(obj)
     },
@@ -31,29 +40,6 @@ export default {
       if (this.contexts.filter(l => l.name === obj.value).length > 0) {
         obj.error = 'This context name is already used'
         obj.valid = false
-      }
-    },
-    testSerialNumber (obj) {
-      if (!!this.lintos) {
-        obj.error = null
-        obj.valid = false
-        let snExist = false
-        if (obj.value.length === 0) {
-          obj.error = 'This field is required'
-          obj.valid = false
-        } else {
-          this.lintos.map(l => {
-            if (l.sn === obj.value) {
-              snExist = true
-            }
-          })
-          if (snExist) {
-            obj.error = 'This serial number is already used'
-            obj.valid = false
-          } else {
-            obj.valid = true
-          }
-        }
       }
     },
     testPatternName (obj) {
@@ -79,6 +65,29 @@ export default {
         }
       }
     },
+    testSerialNumber (obj) {
+      if (!!this.lintos) {
+        obj.error = null
+        obj.valid = false
+        let snExist = false
+        if (obj.value.length === 0) {
+          obj.error = 'This field is required'
+          obj.valid = false
+        } else {
+          this.lintos.map(l => {
+            if (l.sn === obj.value) {
+              snExist = true
+            }
+          })
+          if (snExist) {
+            obj.error = 'This serial number is already used'
+            obj.valid = false
+          } else {
+            obj.valid = true
+          }
+        }
+      }
+    },
     exec (functionName) {
       switch(functionName) {
         case 'testName':
@@ -86,6 +95,15 @@ export default {
           break
         case 'testSn':
           this.testSerialNumber(this.obj)
+          break
+        case 'testEmail':
+          this.testEmail(this.obj)
+          break
+        case 'testPassword':
+          this.testPassword(this.obj)
+          break
+        case 'testConfirmPassword':
+          this.testConfirmPassword(this.obj)
           break
         case 'testPatternName':
           this.testPatternName(this.obj)

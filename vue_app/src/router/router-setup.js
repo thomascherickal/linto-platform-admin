@@ -1,15 +1,17 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 // Views
-import page404 from './views/404.vue'
+import Setup from '../views/Setup.vue'
+
+import '../filters/index.js'
 
 Vue.use(Router)
 const router = new Router({
     mode: 'history',
     routes: [{
-        path: '/',
-        name: 'page404',
-        component: page404
+        path: '/setup',
+        name: 'setup',
+        component: Setup
     }]
 })
 

@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import page404 from './views/404.vue'
-import router from './router-404.js'
+import router from './router/router-404.js'
 
 new Vue({
     router,

@@ -161,7 +161,6 @@ export default {
     async createContext () {
       // updateLinto
       const updateLinto = await this.execRequest(this.linto, `${process.env.VUE_APP_URL}/api/lintos/fleet/${this.contextPayload.linto}`, 'put', {payload: this.contextPayload})
-      console.log('updateLinto', updateLinto)
       if (updateLinto) {
         // post BLS
         setTimeout(async () => {

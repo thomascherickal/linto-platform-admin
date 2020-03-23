@@ -1,6 +1,6 @@
 const debug = require('debug')('linto-admin:login')
 const sha1 = require('sha1')
-const userModel = require(`${process.cwd()}/model/mongodb/models/users.js`)
+const UsersModel = require(`${process.cwd()}/model/mongodb/models/users.js`)
 
 module.exports = (webServer) => {
     return [{
@@ -12,8 +12,13 @@ module.exports = (webServer) => {
                     if (!!req.session && req.session.logged === 'on') {
                         res.redirect('/admin/fleet')
                     } else {
-                        res.setHeader("Content-Type", "text/html")
-                        res.sendFile(process.cwd() + '/dist/login.html')
+                        const users = await UsersModel.getUsers()
+                        if (users.length === 0) {
+                            res.redirect('/setup')
+                        } else {
+                            res.setHeader("Content-Type", "text/html")
+                            res.sendFile(process.cwd() + '/dist/login.html')
+                        }
                     }
                 } catch (err) {
                     console.error(err)
@@ -30,7 +35,7 @@ module.exports = (webServer) => {
                     const password = req.body.password
                     try {
                         let user
-                        let getUser = await userModel.getUserByName(userName)
+                        let getUser = await UsersModel.getUserByName(userName)
                         if (getUser.length > 0) {
                             user = getUser[0]
                         }
