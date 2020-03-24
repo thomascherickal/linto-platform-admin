@@ -1,4 +1,6 @@
 const MongoModel = require(`${process.cwd()}/model/mongodb/model.js`)
+const sha1 = require('sha1')
+const randomstring = require('randomstring')
 
 // This class is a child of 'modelMongoDb' class. It contains all methods and requests to database used on API routes.
 class UsersModel extends MongoModel {
@@ -56,6 +58,25 @@ class UsersModel extends MongoModel {
             console.error(err)
             return err
 
+        }
+    }
+
+    //Create a user
+    async createUser(payload)  {
+        try {
+            const salt = randomstring.generate(12)
+            const passwordHash = sha1(payload.password + salt)
+            const userPayload = {
+                userName: payload.name,
+                email: payload.email,
+                pswdHash: passwordHash,
+                salt,
+                role: "administrator"
+            }
+            return await this.mongoInsert(userPayload)
+        } catch (error) {
+            console.error(error)
+            return error
         }
     }
 }

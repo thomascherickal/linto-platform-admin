@@ -24,69 +24,28 @@ export default {
   },
   methods: {
     testEmail (obj) {
-      // todo
+      this.$options.filters.testEmail(obj)
     },
     testPassword (obj) {
-      // todo
-    },
-    testConfirmPassword (obj) {
-      
+      this.$options.filters.testPassword(obj)
     },
     testName (obj) {
       this.$options.filters.testName(obj)
     },
     testContextName (obj) {
-      this.testName(obj)
-      if (this.contexts.filter(l => l.name === obj.value).length > 0) {
-        obj.error = 'This context name is already used'
-        obj.valid = false
-      }
+      this.$options.filters.dispatchStore('getFleetContexts')
+      this.$options.filters.testName(obj)
+      this.$options.filters.testContextName(obj)
     },
     testPatternName (obj) {
-      if (!!this.patterns) {
-        obj.error = null
-        obj.valid = false
-        if (obj.value.length === 0) {
-          obj.error = 'This field is required'
-          obj.valid = false
-        } else {
-          let patternNameExist = false
-          this.patterns.map(l => {
-            if (l.name === obj.value) {
-              patternNameExist = true
-            }
-          })
-          if (patternNameExist) {
-            obj.error = 'This workflow pattern name is already used'
-            obj.valid = false
-          } else {
-            obj.valid = true
-          }
-        }
-      }
+      this.$options.filters.dispatchStore('getFlowPatterns')
+      this.$options.filters.testName(obj)
+      this.$options.filters.testContextName(obj)
     },
     testSerialNumber (obj) {
-      if (!!this.lintos) {
-        obj.error = null
-        obj.valid = false
-        let snExist = false
-        if (obj.value.length === 0) {
-          obj.error = 'This field is required'
-          obj.valid = false
-        } else {
-          this.lintos.map(l => {
-            if (l.sn === obj.value) {
-              snExist = true
-            }
-          })
-          if (snExist) {
-            obj.error = 'This serial number is already used'
-            obj.valid = false
-          } else {
-            obj.valid = true
-          }
-        }
-      }
+      this.$options.filters.dispatchStore('getLintoFleet')
+      this.$options.filters.testName(obj)
+      this.$options.filters.testSerialNumber(obj)
     },
     exec (functionName) {
       switch(functionName) {

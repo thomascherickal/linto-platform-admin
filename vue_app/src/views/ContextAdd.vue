@@ -359,7 +359,8 @@ export default {
     },
     // Test every required field in the form
     handleForm () {
-      this.testContextName()
+      //this.testContextName()
+      this.$options.filters.testContextName(this.contextName)
       this.testSelectField(this.flowPattern)
       this.testSelectField(this.contextType)
       this.testSelectField(this.nluService)
@@ -406,7 +407,9 @@ export default {
       }
     },
     testContextName () {
+      this.$options.filters.dispatchStore('getFleetContexts')
       this.$options.filters.testName(this.contextName)
+      this.$options.filters.testContextName(this.contextName)
     },
     testSelectField (obj) {
       this.$options.filters.testSelectField(obj)

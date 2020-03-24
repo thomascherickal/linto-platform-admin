@@ -74,27 +74,9 @@ export default {
       }
     },
     testSerialNumber () {
-      this.serialNumber.error = null
-      this.serialNumber.valid = false
-      let snExist = false
-      if (this.serialNumber.value.length === 0) {
-        this.serialNumber.error = 'This field is required'
-        this.serialNumber.valid = false
-      } else {
-        if(this.lintos.length > 0) {
-          this.lintos.map(l => {
-            if (l.sn === this.serialNumber.value) {
-              snExist = true
-            }
-          })
-          if (snExist) {
-            this.serialNumber.error = 'This serial number is already used'
-            this.serialNumber.valid = false
-        } 
-      } else {
-          this.serialNumber.valid = true
-        }
-      }
+      this.$options.filters.dispatchStore('getLintoFleet')
+      this.$options.filters.testName(this.serialNumber)
+      this.$options.filters.testSerialNumber(this.serialNumber)
     },
     async sendForm () {
       try {
