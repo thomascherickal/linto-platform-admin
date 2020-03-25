@@ -6,12 +6,12 @@ class MqttMonitor extends EventEmitter {
     constructor() {
         super()
         this.subscribtionTopics = new Array()
-        this.subscribtionTopics['status'] = `${process.env.LOGIC_CLIENT_CODE}/fromlinto/+/status`
-        this.subscribtionTopics['pong'] = `${process.env.LOGIC_CLIENT_CODE}/fromlinto/+/pong`
-        this.subscribtionTopics['muteack'] = `${process.env.LOGIC_CLIENT_CODE}/fromlinto/+/muteack`
-        this.subscribtionTopics['unmuteack'] = `${process.env.LOGIC_CLIENT_CODE}/fromlinto/+/unmuteack`
-        this.subscribtionTopics['tts_lang'] = `${process.env.LOGIC_CLIENT_CODE}/fromlinto/+/tts_lang`
-        this.subscribtionTopics['say'] = `${process.env.LOGIC_CLIENT_CODE}/fromlinto/+/say`
+        this.subscribtionTopics['status'] = `${process.env.LINTO_STACK_MQTT_DEFAULT_HW_SCOPE}/fromlinto/+/status`
+        this.subscribtionTopics['pong'] = `${process.env.LINTO_STACK_MQTT_DEFAULT_HW_SCOPE}/fromlinto/+/pong`
+        this.subscribtionTopics['muteack'] = `${process.env.LINTO_STACK_MQTT_DEFAULT_HW_SCOPE}/fromlinto/+/muteack`
+        this.subscribtionTopics['unmuteack'] = `${process.env.LINTO_STACK_MQTT_DEFAULT_HW_SCOPE}/fromlinto/+/unmuteack`
+        this.subscribtionTopics['tts_lang'] = `${process.env.LINTO_STACK_MQTT_DEFAULT_HW_SCOPE}/fromlinto/+/tts_lang`
+        this.subscribtionTopics['say'] = `${process.env.LINTO_STACK_MQTT_DEFAULT_HW_SCOPE}/fromlinto/+/say`
 
         this.cnxParam = {
             clean: true,
@@ -37,6 +37,7 @@ class MqttMonitor extends EventEmitter {
                 console.error('Logic MQTT Broker error : ' + e)
             })
             this.client.on('connect', () => {
+                console.log('> Logic MQTT Broker: Connected')
                 for (let index in this.subscribtionTopics) {
                     const topic = this.subscribtionTopics[index]
                     this.client.unsubscribe(topic, (err) => {
@@ -79,7 +80,7 @@ class MqttMonitor extends EventEmitter {
     }
     ping(payload) {
         try {
-            this.client.publish(`${process.env.LOGIC_CLIENT_CODE}/tolinto/${payload.sn}/ping`, '{}', (err) => {
+            this.client.publish(`${process.env.LINTO_STACK_MQTT_DEFAULT_HW_SCOPE}/tolinto/${payload.sn}/ping`, '{}', (err) => {
                 if (err) {
                     this.emit('tolinto_debug', {
                         status: 'error',
@@ -94,7 +95,7 @@ class MqttMonitor extends EventEmitter {
     }
     mute(payload) {
         try {
-            this.client.publish(`${process.env.LOGIC_CLIENT_CODE}/tolinto/${payload.sn}/mute`, '{}', (err) => {
+            this.client.publish(`${process.env.LINTO_STACK_MQTT_DEFAULT_HW_SCOPE}/tolinto/${payload.sn}/mute`, '{}', (err) => {
                 let msg = `Mute - ${payload.sn}`
                 if (!err) {
 
@@ -117,7 +118,7 @@ class MqttMonitor extends EventEmitter {
     }
     unmute(payload) {
         try {
-            this.client.publish(`${process.env.LOGIC_CLIENT_CODE}/tolinto/${payload.sn}/unmute`, '{}', (err) => {
+            this.client.publish(`${process.env.LINTO_STACK_MQTT_DEFAULT_HW_SCOPE}/tolinto/${payload.sn}/unmute`, '{}', (err) => {
                 let msg = `Unmute - ${payload.sn}`
                 if (!err) {
                     this.emit('tolinto_debug', {
@@ -139,7 +140,7 @@ class MqttMonitor extends EventEmitter {
     }
     setVolume(payload) {
         try {
-            this.client.publish(`${process.env.LOGIC_CLIENT_CODE}/tolinto/${payload.sn}/volume`, `{"value":"${payload.value}"}`, (err) => {
+            this.client.publish(`${process.env.LINTO_STACK_MQTT_DEFAULT_HW_SCOPE}/tolinto/${payload.sn}/volume`, `{"value":"${payload.value}"}`, (err) => {
                 if (!err) {
                     return
                 } else {
@@ -156,7 +157,7 @@ class MqttMonitor extends EventEmitter {
     }
     setVolumeEnd(payload) {
         try {
-            this.client.publish(`${process.env.LOGIC_CLIENT_CODE}/tolinto/${payload.sn}/endvolume`, `{"value":"${payload.value}"}`, (err) => {
+            this.client.publish(`${process.env.LINTO_STACK_MQTT_DEFAULT_HW_SCOPE}/tolinto/${payload.sn}/endvolume`, `{"value":"${payload.value}"}`, (err) => {
                 if (!err) {
                     const message = `Volume - ${payload.sn} - Set to "${payload.value}"`
                     this.emit('tolinto_debug', {
@@ -180,7 +181,7 @@ class MqttMonitor extends EventEmitter {
         try {
             const lang = payload.lang;
             const sn = payload.sn;
-            this.client.publish(`${process.env.LOGIC_CLIENT_CODE}/tolinto/${sn}/tts_lang`, `{"value":"${lang.code}"}`, (err) => {
+            this.client.publish(`${process.env.LINTO_STACK_MQTT_DEFAULT_HW_SCOPE}/tolinto/${sn}/tts_lang`, `{"value":"${lang.code}"}`, (err) => {
                 const message = `Set LinTO language to ${lang.code} - ${sn}`
                 if (!err) {
                     this.emit('tolinto_debug', {
@@ -203,7 +204,7 @@ class MqttMonitor extends EventEmitter {
     }
     startDemo(payload) {
         try {
-            this.client.publish(`${process.env.LOGIC_CLIENT_CODE}/tolinto/${payload.sn}/demo_mode`, `{"value":"start"}`, (err) => {
+            this.client.publish(`${process.env.LINTO_STACK_MQTT_DEFAULT_HW_SCOPE}/tolinto/${payload.sn}/demo_mode`, `{"value":"start"}`, (err) => {
                 const message = `Demo start - ${payload.sn}`
                 if (!err) {
                     this.emit('tolinto_debug', {
@@ -225,7 +226,7 @@ class MqttMonitor extends EventEmitter {
     }
     stopDemo(payload) {
         try {
-            this.client.publish(`${process.env.LOGIC_CLIENT_CODE}/tolinto/${payload.sn}/demo_mode`, `{"value":"stop"}`, (err) => {
+            this.client.publish(`${process.env.LINTO_STACK_MQTT_DEFAULT_HW_SCOPE}/tolinto/${payload.sn}/demo_mode`, `{"value":"stop"}`, (err) => {
                 const message = `Demo stop - ${payload.sn}`
                 if (!err) {
                     this.emit('tolinto_debug', {
@@ -247,7 +248,7 @@ class MqttMonitor extends EventEmitter {
     }
     lintoSay(payload) {
         try {
-            this.client.publish(`${process.env.LOGIC_CLIENT_CODE}/tolinto/${payload.sn}/say`, `{"value":"${payload.content}"}`, (err) => {
+            this.client.publish(`${process.env.LINTO_STACK_MQTT_DEFAULT_HW_SCOPE}/tolinto/${payload.sn}/say`, `{"value":"${payload.content}"}`, (err) => {
                 const message = `LinTO Say : "${payload.content}" - ${payload.sn}`
                 if (!err) {
                     this.emit('tolinto_debug', {
@@ -269,7 +270,7 @@ class MqttMonitor extends EventEmitter {
     }
     managemeeting(payload) {
         try {
-            this.client.publish(`${process.env.LOGIC_CLIENT_CODE}/tolinto/${payload.sn}/managemeeting`, `{"sessionname":"${payload.sessionname}", "command": "${payload.command}"}`, (err) => {
+            this.client.publish(`${process.env.LINTO_STACK_MQTT_DEFAULT_HW_SCOPE}/tolinto/${payload.sn}/managemeeting`, `{"sessionname":"${payload.sessionname}", "command": "${payload.command}"}`, (err) => {
                 const message = `LinTO recording : "${payload.command}" - ${payload.sessionname}`
                 if (!err) {
                     this.emit('tolinto_debug', {

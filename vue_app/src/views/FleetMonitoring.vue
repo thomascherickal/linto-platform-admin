@@ -22,7 +22,6 @@
                 <th>Context</th>
                 <th>Last seen up</th>
                 <th>Last seen down</th>
-                <th>IP</th>
               </tr>
             </thead>
             <tbody>
@@ -36,16 +35,46 @@
                 <td>{{ linto.associated_context }}</td>
                 <td>{{ linto.last_up }}</td>
                 <td>{{ linto.last_down }}</td>
-                <td>0.0.0.1</td>
               </tr>
             </tbody>
           </table>
         </div>
       </div>
       <div class="block block--transparent">
-        <h2>Network informations</h2>
         <div class="flex row">
-          TODO
+
+          <div v-if="linto.config.network.length > 0" class="flex1 linto-config-table">
+            <h2>Network informations</h2>
+            <div v-for="(network, index) in linto.config.network" :key="index">
+              <table class="table table--full table--config">
+                <tr v-for="(val, ind) in network" :key="ind">
+                  <td class="td--label">{{ ind }}</td>
+                  <td class="td--value">{{ val.length > 0 ? val : '-' }}</td>
+                </tr>
+              </table>
+            </div>
+          </div>
+
+          <div v-if="!!linto.config.ftp" class="flex1 linto-config-table">
+            <h2>FTP</h2>
+            <table class="table table--full table--config">
+              <tr v-for="(ftp, index) in linto.config.ftp" :key="index">
+                <td class="td--label">{{index}}</td>
+                <td class="td--value">{{ ftp.length > 0 ? ftp : '-' }}</td>
+              </tr>
+            </table>
+          </div>
+
+          <div v-if="!!linto.config.sound" class="flex1 linto-config-table">
+            <h2>Sound</h2>
+            <table class="table table--full table--config">
+              <tr v-for="(sound, index) in linto.config.sound" :key="index">
+                <td class="td--label">{{index}}</td>
+                <td class="td--value">{{ sound.length > 0 ? sound : '-' }}</td>
+              </tr>
+            </table>
+          </div>
+
         </div>
       </div>
     </div>

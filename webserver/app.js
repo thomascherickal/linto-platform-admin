@@ -27,8 +27,8 @@ class Ctl {
     async init() {
         try {
             this.webServer = await require('./lib/webserver')
-                // this.mqttMonitor = await require('./lib/mqtt-monitor')
-                //require('./controller/mqtt-http').call(this)
+            this.mqttMonitor = await require('./lib/mqtt-monitor')
+            require('./controller/mqtt-http').call(this)
             debug(`Application is started - Listening on ${process.env.LINTO_STACK_ADMIN_HTTP_PORT}`)
         } catch (error) {
             console.error(error)

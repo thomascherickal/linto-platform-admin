@@ -1,0 +1,19 @@
+.linto-config-table {
+    padding: 20px;
+    background-color: #fcfcfc;
+    margin: 0 20px 20px 20px;
+    border: 1px solid $blueMid;
+}
+
+.table--config {
+    border-collapse: collapse;
+    tr {
+        td {
+            padding: 5px 10px;
+            border: 1px solid #ccc;
+            text-align: left;
+            width: 50%;
+            background-color: #fafafa;
+        }
+    }
+}

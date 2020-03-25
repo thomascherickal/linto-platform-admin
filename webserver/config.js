@@ -36,6 +36,7 @@ const APP_ROOT_DIR = path.resolve(__dirname)
 
 function configureDefaults() {
     try {
+
         dotenv.config()
         const envdefault = dotenv.parse(fs.readFileSync('.envdefault'))
 
@@ -47,6 +48,7 @@ function configureDefaults() {
         process.env.LINTO_STACK_ADMIN_HTTP_PORT = ifHas(process.env.LINTO_STACK_ADMIN_HTTP_PORT, envdefault.LINTO_STACK_ADMIN_HTTP_PORT)
         process.env.LINTO_STACK_DOMAIN = ifHas(process.env.LINTO_STACK_DOMAIN, envdefault.LINTO_STACK_DOMAIN)
         process.env.LINTO_STACK_ADMIN_API_WHITELIST_DOMAINS = ifHas(process.env.LINTO_STACK_ADMIN_API_WHITELIST_DOMAINS, envdefault.LINTO_STACK_ADMIN_API_WHITELIST_DOMAINS)
+        process.env.LINTO_STACK_ADMIN_COOKIE_SECRET = ifHas(process.env.LINTO_STACK_ADMIN_COOKIE_SECRET, envdefault.LINTO_STACK_ADMIN_COOKIE_SECRET)
 
         // BLS
         process.env.LINTO_STACK_BLS_SERVICE = ifHas(process.env.LINTO_STACK_BLS_SERVICE, envdefault.LINTO_STACK_BLS_SERVICE)

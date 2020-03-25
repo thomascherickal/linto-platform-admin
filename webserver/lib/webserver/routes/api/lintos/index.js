@@ -53,6 +53,7 @@ module.exports = (webServer) => {
                 try {
                     const sn = req.params.sn
                     const payload = req.body.payload
+
                     if (payload.type === 'Fleet') {
                         // Get Linto data
                         const getLinto = await lintosModel.getLintoBySn(sn)
@@ -69,7 +70,8 @@ module.exports = (webServer) => {
                         // Update LINTO
                         lintoPayload.associated_context = payload.context_name
                         const updateLinto = await lintosModel.updateLinto(lintoPayload)
-                            // Validation
+
+                        // Validation
                         if (updateLinto === 'success') {
                             res.json({
                                 status: 'success',

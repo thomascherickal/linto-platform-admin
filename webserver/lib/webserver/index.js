@@ -41,7 +41,7 @@ class WebServer extends EventEmitter {
         let sessionConfig = {
             resave: false,
             saveUninitialized: true,
-            secret: 'hippopoceros',
+            secret: process.env.LINTO_STACK_ADMIN_COOKIE_SECRET,
             cookie: {
                 secure: false,
                 maxAge: 604800 // 7 days
@@ -65,8 +65,8 @@ class WebServer extends EventEmitter {
     async init() {
         // Set ioHandler
         this.ioHandler = new IoHandler(this)
-
-        // Router
+        console.log(this.ioHandler)
+            // Router
         require('./routes')(this)
 
         this.app.use((req, res, next) => {

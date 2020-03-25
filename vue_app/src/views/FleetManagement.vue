@@ -128,12 +128,18 @@ export default {
     },
     dataLoaded () {
       return (this.lintoLoaded.status === 'success')
-    }
+    },
+  },
+  mounted () {
+    const socket = io(process.env.VUE_APP_URL)
+    // TODO : on 'status' > connexion up/down
+
   },
   methods: {
     addLintoModal () {
       bus.$emit('add_linto_modal', {})
     },
+    
     async dispatchLintos () {
       this.lintoLoaded = await this.$options.filters.dispatchStore('getLintoFleet')
 
