@@ -5,28 +5,23 @@
       <div class="flex1 flex col login-form-container">
         <!-- Logo -->
         <img src="/assets/img/admin-logo-light@2x.png" alt="administration interface" class="login-logo">
-        <div class="setup-form-container">
+        <div class="setup-form-container flex col">
+          <h1>Welcome to Linto Admin</h1>
+          <span class="info">You firstly need to create an account to be abel to connect to the application. <br/>Please fill in the following form:</span>
+          <!-- Name -->
           <AppInput :label="'Username'" :obj="user.name" :test="'testName'"></AppInput>
+          <!-- Email -->
           <AppInput :label="'Email'" :obj="user.email" :test="'testEmail'"></AppInput>
-
-          <div>
-            password can contain: 
-            <ul>
-              <li>At least 6 characters</li>
-              <li>Alpha-numeric characters</li>
-              <li>Special characters : "!","@","#","$","%","-","_"</li>
-            </ul>
-          </div>
-
-          <AppInput :label="'Password'" :obj="user.password" :test="'testPassword'"></AppInput>
-          <AppInput :label="'Password confirmation'" :obj="user.password_confirm" :test="'null'"></AppInput>
+          <!-- Password -->
+          <AppInput :label="'Password'" :obj="user.password" :test="'testPassword'" :type="'password'"></AppInput>
+          <!-- Password Confirmation -->
+          <AppInput :label="'Password confirmation'" :obj="user.password_confirm" :test="'null'" :type="'password'"></AppInput>
 
             <!-- Submit -->
           <button
-            class="button button--full button--login-submit"
-            :class="formValid ? 'button--login-enabled' : 'button--login-disabled'"
+            class="button button--setup--submit"
             @click="handleForm()"
-          >Setup</button>
+          >Create user</button>
         </div>
       </div>
     </div>
@@ -64,7 +59,7 @@ export default {
   },
   computed: {
     formValid () {
-      return (this.user.name.valid && this.user.password.valid && this.user.password_confirm.valid)
+      return (this.user.name.valid && this.user.email.valid && this.user.password.valid && this.user.password_confirm.valid)
     }
   },
   methods: {
@@ -73,7 +68,6 @@ export default {
       this.testEmail(this.user.email)
       this.testPassword(this.user.password)
       this.testConfirmPassword()
-
       if (this.formValid) {
         this.sendForm()
       }
@@ -90,7 +84,10 @@ export default {
     testConfirmPassword () {
       this.user.password_confirm.valid = false
       this.user.password_confirm.error = null
-      if(this.user.password.value !== this.user.password_confirm.value) {
+      if(this.user.password_confirm.value.length === 0) {
+        this.user.password_confirm.error = 'This field is required'
+      }
+      else if(this.user.password.value !== this.user.password_confirm.value) {
         this.user.password_confirm.error = 'Confirmation password different from password'
       } else {
         this.user.password_confirm.valid = true
@@ -106,7 +103,9 @@ export default {
         method: 'post',
         data: payload
       })
-      console.log('createuser', createUser)
+      if(createUser.data.status === 'success') {
+        window.location.href = process.env.VUE_APP_URL + '/login'
+      }
     }
   },
   components: {

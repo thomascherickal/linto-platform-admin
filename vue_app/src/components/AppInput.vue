@@ -2,7 +2,7 @@
   <div class="flex col">
     <span class="form__label">{{ label }} :</span>
     <input
-      type="text"
+      :type="type || 'text'"
       class="form__input"
       v-model="obj.value"
       :class="[obj.error !== null ? 'form__input--error' : '', obj.valid ? 'form__input--valid' : '']"
@@ -13,7 +13,7 @@
 </template>
 <script>
 export default {
-  props: ['label', 'obj', 'test', 'lintos', 'patterns'],
+  props: ['label', 'obj', 'test', 'lintos', 'patterns', 'type'],
   data () {
     return {}
   },
