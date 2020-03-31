@@ -18,6 +18,7 @@
  */
 
 const debug = require('debug')('linto-admin:ctl')
+
 require('./config')
 
 class Ctl {
@@ -27,7 +28,7 @@ class Ctl {
     async init() {
         try {
             this.webServer = await require('./lib/webserver')
-            this.mqttMonitor = await require('./lib/mqtt-monitor')
+            this.mqttMonitor = require('./lib/mqtt-monitor')(process.env.LINTO_STACK_MQTT_DEFAULT_HW_SCOPE)
             require('./controller/mqtt-http').call(this)
             debug(`Application is started - Listening on ${process.env.LINTO_STACK_ADMIN_HTTP_PORT}`)
         } catch (error) {

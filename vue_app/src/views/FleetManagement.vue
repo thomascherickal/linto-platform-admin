@@ -104,6 +104,7 @@ export default {
     return {
       loading: true,
       lintoLoaded: false
+
     }
   },
   async created () {
@@ -132,7 +133,12 @@ export default {
   },
   mounted () {
     const socket = io(process.env.VUE_APP_URL)
-    // TODO : on 'status' > connexion up/down
+    
+    // On "linto_status" update
+    // Only "fleet" types are handled for now
+    socket.on('linto_status', (data) => {
+      this.$store.commit('UPDATE_LINTO_FLEET', data)
+    })
 
   },
   methods: {

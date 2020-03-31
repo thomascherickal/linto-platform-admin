@@ -70,30 +70,77 @@
             <table class="table table--full table--config">
               <tr v-for="(sound, index) in linto.config.sound" :key="index">
                 <td class="td--label">{{index}}</td>
-                <td class="td--value">{{ sound.length > 0 ? sound : '-' }}</td>
+                <td class="td--value">{{ sound }}</td>
               </tr>
             </table>
           </div>
 
         </div>
       </div>
+      <div class="block block--transparent">
+        <h2>Settings</h2>
+        <div class="flex row">
+          <div class="flex1">
+            <button @click="ping()">Ping</button> {{ pingStatus }}
+          </div>
+          <div class="flex1">
+            volume value : {{ linto.config.sound.volume }} <br/>
+
+             <input
+              type="range"
+              min="0"
+              max="100"
+              :value="volume"
+              id="range-volume"
+              @input="setVolume($event)"
+              @change="setVolumeEnd($event)"
+            >
+
+            <button @click="mute()">Mute</button>
+            <button @click="unmute()">Unmute</button> <br/>
+            (isMuted : {{isMuted}} // volume : {{ volume }})
+            
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 <script>
+import moment from 'moment'
+
 export default {
   data () {
     return {
       sn: '',
       lintoLoaded: false,
-      loading: true
+      loading: true,
+      socket: null,
+      pingStart: null,
+      pingEnd: null,
+      pingStatus: '',
+      isMuted: false,
+      volume: 0,
+      tmpVolume: 0
     }
   },
   created () {
     this.sn = this.$router.currentRoute.params.sn
     this.dispatchLintos()
   },
-  computed: {
+  mounted () {
+    this.socket = io(process.env.VUE_APP_URL)
+
+    // On "linto_status" update
+    // Only "fleet" types are handled for now
+    this.socket.on('linto_status', (data) => {
+      if (data.sn === this.sn) {
+        this.$store.commit('UPDATE_LINTO_FLEET', data)
+      }
+    })
+  },
+
+computed: {
     linto () {
       if (this.$store.getters.LINTO_FLEET_BY_SN(this.sn) !== null) {
         return this.$store.getters.LINTO_FLEET_BY_SN(this.sn)
@@ -110,9 +157,87 @@ export default {
       if (data) {
         this.loading = false
       }
+    },
+    'linto.config.sound.volume' (data) {
+      this.volume = data
+      if (data === 0) {
+        this.isMuted = true
+      } else {
+        this.isMuted = false
+      }
     }
   },
   methods: {
+    ping() {
+      this.pingStart = moment()
+      this.socket.emit('linto_ping', {sn: this.sn})
+      this.pingStatus = 'Waiting for pong'
+
+      this.socket.on('linto_pong', (data) => {
+        this.pingEnd = moment()
+        const diff = (this.pingEnd.diff(this.pingStart)) / 1000
+        this.pingStatus = `Pong received in ${diff} sec`
+      })
+
+      setTimeout(()=>{
+        if (this.pingEnd === null) {
+          this.pingStatus = 'Error: no response received'
+        }
+      }, 5000)
+    },
+    mute () {
+      if (!this.isMuted) {
+        
+        this.tmpVolume = this.volume // save current volume
+        this.socket.emit('linto_mute', {sn: this.sn}) // Emit socket MUTE
+        let currentLinto = this.linto 
+        currentLinto.config.sound.volume = 0
+        this.$store.commit('UPDATE_LINTO_FLEET', currentLinto) // Update store variable
+        this.socket.on('linto_muteack', (data) => {
+          // Confirm MUTE
+          console.log('Mute success') 
+          // TODO
+        })
+      }
+    },
+    
+    unmute () {
+      if (this.isMuted) {
+        this.socket.emit('linto_unmute', { sn: this.sn }) // Emit socket UNMUTE
+      }
+
+      let currentLinto = this.linto
+      currentLinto.config.sound.volume = this.tmpVolume !== 0 ? this.tmpVolume : 70
+      this.$store.commit('UPDATE_LINTO_FLEET', currentLinto) // Update store variable
+      this.socket.on('linto_unmuteack', (data) => {
+          // Confirm UNMUTE
+          console.log('Unmute success')
+          // TODO
+        })
+    },
+    
+    async setVolume (e) {
+      const volumeValue = e.target.value
+      this.volume = volumeValue
+      this.socket.emit('linto_volume', {
+        value: this.volume,
+        sn: this.sn
+      })
+    },
+
+    async setVolumeEnd (e) {
+      const volumeValue = e.target.value
+      this.volume = volumeValue
+      let currentLinto = this.linto
+      currentLinto.config.sound.volume = this.volume
+      this.$store.commit('UPDATE_LINTO_FLEET', currentLinto) // Update store variable
+
+      this.socket.emit('linto_volume_end', {
+        value: this.volume,
+        sn: this.sn
+      })
+    },
+
     async dispatchLintos () {
       this.lintoLoaded = await this.$options.filters.dispatchStore('getLintoFleet')
     }

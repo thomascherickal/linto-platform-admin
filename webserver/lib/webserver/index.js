@@ -65,8 +65,8 @@ class WebServer extends EventEmitter {
     async init() {
         // Set ioHandler
         this.ioHandler = new IoHandler(this)
-        console.log(this.ioHandler)
-            // Router
+
+        // Router
         require('./routes')(this)
 
         this.app.use((req, res, next) => {

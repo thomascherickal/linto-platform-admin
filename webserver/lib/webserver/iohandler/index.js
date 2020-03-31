@@ -3,31 +3,52 @@ const EventEmitter = require('eventemitter3')
 
 class IoHandler extends EventEmitter {
     constructor(webServer) {
-            super()
-            this.webServer = webServer
-                //Adds socket.io
-            webServer.io = require('socket.io').listen(webServer.httpServer)
+        super()
+        this.webServer = webServer
 
-            //http AND io uses same session middleware
-            webServer.io.use((socket, next) => {
-                if (socket) {
-                    webServer.session(socket.request, socket.request.res, next)
-                }
-            })
-            webServer.io.on('connection', (socket) => {
-                console.log('Socket io: Connected')
-                debug(webServer.io)
-                    //Secures websocket usage with session
-                if (process.env.NODE_ENV !== 'production') {
-                    socket.request.session.logged = 'on'
-                    socket.request.session.save()
-                }
-                if (!socket.request.session || socket.request.session.logged != 'on') return socket.disconnect()
-                debug('new Socket connected')
+        //Adds socket.io
+        webServer.io = require('socket.io').listen(webServer.httpServer)
 
+        //http AND io uses same session middleware
+        webServer.io.use((socket, next) => {
+            if (socket) {
+                webServer.session(socket.request, socket.request.res, next)
+            }
+        })
+        webServer.io.on('connection', (socket) => {
+            debug(webServer.io)
+
+            //Secures websocket usage with session
+            if (process.env.NODE_ENV !== 'production') {
+                socket.request.session.logged = 'on'
+                socket.request.session.save()
+            }
+            if (!socket.request.session || socket.request.session.logged != 'on') return socket.disconnect()
+            debug('new Socket connected')
+
+            socket.on('linto_ping', (data) => {
+                this.emit('linto_ping', data)
             })
-        }
-        //broadcasts to connected sockets
+            socket.on('linto_mute', (data) => {
+                this.emit('linto_mute', data)
+            })
+            socket.on('linto_unmute', (data) => {
+                this.emit('linto_unmute', data)
+            })
+            socket.on('linto_volume', (data) => {
+                this.emit('linto_volume', data)
+            })
+            socket.on('linto_volume_end', (data) => {
+                this.emit('linto_volume_end', data)
+            })
+            socket.on('linto_say', async(data) => {
+                this.emit('linto_say', data)
+            })
+
+        })
+    }
+
+    //broadcasts to connected sockets
     notify(msgType, payload) {
         this.webServer.io.emit('linto_' + msgType, payload)
     }

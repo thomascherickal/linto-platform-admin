@@ -23,6 +23,15 @@ export default new Vuex.Store({
         SET_LINTO_FLEET: (state, data) => {
             state.lintoFleet = data
         },
+        UPDATE_LINTO_FLEET: (state, data) => {
+            state.lintoFleet.map(l => {
+                if (l.sn === data.sn) {
+                    for (let index in data) {
+                        l[index] = data[index]
+                    }
+                }
+            })
+        },
         SET_CONTEXT_FLEET: (state, data) => {
             state.contextFleet = data
         },
@@ -61,7 +70,6 @@ export default new Vuex.Store({
                 commit('SET_LINTO_FLEET', getLintos.data)
                 return state.lintoFleet
             } catch (error) {
-
                 return ({
                     error: 'Error on getting Linto(s)'
                 })
