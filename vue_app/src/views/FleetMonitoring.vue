@@ -45,7 +45,7 @@
 
           <div v-if="linto.config.network.length > 0" class="flex1 linto-config-table">
             <h2>Network informations</h2>
-            <div v-for="(network, index) in linto.config.network" :key="index">
+            <div v-for="(network, index) in linto.config.network" :key="index" class="network-item">
               <table class="table table--full table--config">
                 <tr v-for="(val, ind) in network" :key="ind">
                   <td class="td--label">{{ ind }}</td>
@@ -79,27 +79,56 @@
       </div>
       <div class="block block--transparent">
         <h2>Settings</h2>
-        <div class="flex row">
-          <div class="flex1">
-            <button @click="ping()">Ping</button> {{ pingStatus }}
+        
+          <div class="flex row">
+            <div class="linto-settings-item">
+              <div class="flex col">
+                
+                <button 
+                  @click="ping()"
+                  class="button button--ping"
+                  :class="pingStatus.status"
+                > 
+                  <span class="icon"></span>
+                  <span class="label">Ping</span>
+                </button>
+                <span class="ping-status" :class="pingStatus.status">{{ pingStatus.msg }}</span>
+            </div>
           </div>
-          <div class="flex1">
-            volume value : {{ linto.config.sound.volume }} <br/>
-
-             <input
-              type="range"
-              min="0"
-              max="100"
-              :value="volume"
-              id="range-volume"
-              @input="setVolume($event)"
-              @change="setVolumeEnd($event)"
-            >
-
-            <button @click="mute()">Mute</button>
-            <button @click="unmute()">Unmute</button> <br/>
-            (isMuted : {{isMuted}} // volume : {{ volume }})
-            
+          
+          <div class="linto-settings-item">
+            <div class="flex row">
+              <span>Volume : </span>
+              <button 
+                class="button button--img" 
+                :class="isMuted ? 'button--img__unmute ' :  'button--img__mute'"
+                @click="isMuted ? unmute() : mute() "
+              >
+                <span class="button__icon" :class="isMuted ? 'button__icon--unmute' : 'button__icon--mute'"
+                ></span>
+              </button>
+              <input
+                type="range"
+                min="0"
+                max="100"
+                :value="volume"
+                id="range-volume"
+                @input="setVolume($event)"
+                @change="setVolumeEnd($event)"
+              > 
+              <span class="volume-status">{{ volume }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="flex row">
+          <div class="linto-settings-item">
+            <div class="flex row">
+              <AppInput :label="'Make me talk...'" :obj="say" :test="'testSentence'"></AppInput>
+              <button @click="lintoSay()" class="button button--say"> 
+                <span class="icon"></span>
+                <span class="label">Make me talk</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -108,7 +137,7 @@
 </template>
 <script>
 import moment from 'moment'
-
+import AppInput from '@/components/AppInput.vue'
 export default {
   data () {
     return {
@@ -118,10 +147,18 @@ export default {
       socket: null,
       pingStart: null,
       pingEnd: null,
-      pingStatus: '',
+      pingStatus: {
+        status: '',
+        msg: ''
+      },
       isMuted: false,
       volume: 0,
-      tmpVolume: 0
+      tmpVolume: 0,
+      say: {
+        value: '',
+        valid: false,
+        error: null
+      }
     }
   },
   created () {
@@ -171,33 +208,36 @@ computed: {
     ping() {
       this.pingStart = moment()
       this.socket.emit('linto_ping', {sn: this.sn})
-      this.pingStatus = 'Waiting for pong'
+      this.pingStatus = {
+        status: 'loading', 
+        msg: 'Waiting for pong'
+      }
 
       this.socket.on('linto_pong', (data) => {
         this.pingEnd = moment()
         const diff = (this.pingEnd.diff(this.pingStart)) / 1000
-        this.pingStatus = `Pong received in ${diff} sec`
+        this.pingStatus = {
+          status: 'success',
+          msg: `Pong received in ${diff} sec`
+        }
       })
 
       setTimeout(()=>{
         if (this.pingEnd === null) {
-          this.pingStatus = 'Error: no response received'
+          this.pingStatus = {
+            status: 'error', 
+            msg: 'No response received after 5sec'
+          }
         }
       }, 5000)
     },
     mute () {
       if (!this.isMuted) {
-        
         this.tmpVolume = this.volume // save current volume
         this.socket.emit('linto_mute', {sn: this.sn}) // Emit socket MUTE
         let currentLinto = this.linto 
         currentLinto.config.sound.volume = 0
         this.$store.commit('UPDATE_LINTO_FLEET', currentLinto) // Update store variable
-        this.socket.on('linto_muteack', (data) => {
-          // Confirm MUTE
-          console.log('Mute success') 
-          // TODO
-        })
       }
     },
     
@@ -209,13 +249,14 @@ computed: {
       let currentLinto = this.linto
       currentLinto.config.sound.volume = this.tmpVolume !== 0 ? this.tmpVolume : 70
       this.$store.commit('UPDATE_LINTO_FLEET', currentLinto) // Update store variable
-      this.socket.on('linto_unmuteack', (data) => {
-          // Confirm UNMUTE
-          console.log('Unmute success')
-          // TODO
-        })
     },
     
+    lintoSay () {
+      this.$options.filters.testSentence(this.say)
+      if (this.say.valid) {
+        this.socket.emit('linto_say', {sn: this.sn, content: this.say.value})
+      }
+    },
     async setVolume (e) {
       const volumeValue = e.target.value
       this.volume = volumeValue
@@ -241,6 +282,9 @@ computed: {
     async dispatchLintos () {
       this.lintoLoaded = await this.$options.filters.dispatchStore('getLintoFleet')
     }
+  },
+  components: {
+    AppInput
   }
 }
 </script>

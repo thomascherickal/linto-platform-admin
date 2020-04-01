@@ -106,3 +106,14 @@ Vue.filter('testEmail', function(obj) {
     }
 
 })
+
+Vue.filter('testSentence', function(obj) {
+    obj.valid = false
+    obj.error = null
+    if (obj.value.length === 0) {
+        obj.error = 'This field is required'
+    } else {
+        obj.valid = true
+    }
+
+})

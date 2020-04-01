@@ -47,6 +47,10 @@ export default {
       this.$options.filters.testName(obj)
       this.$options.filters.testSerialNumber(obj)
     },
+    testSentence (obj) {
+      this.$options.filters.testSentence(obj)
+    },
+
     exec (functionName) {
       switch(functionName) {
         case 'testName':
@@ -70,6 +74,8 @@ export default {
         case 'testContextName':
           this.testContextName(this.obj)
           break
+          case 'testSentence':
+            this.testSentence(this.obj)
         default:
           return
       }

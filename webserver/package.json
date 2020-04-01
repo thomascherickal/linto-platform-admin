@@ -7,7 +7,7 @@
         "test": "echo \"Error: no test specified\" && exit 1",
         "start": "NODE_ENV=production node app.js",
         "start-dev": "NODE_ENV=development nodemon app.js",
-        "start-debug": "DEBUG=* NODE_ENV=development node --inspect app.js "
+        "start-debug": "DEBUG=* NODE_ENV=development nodemon --inspect app.js "
     },
     "nodemonConfig": {
         "ignore": [
