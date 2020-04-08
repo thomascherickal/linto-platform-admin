@@ -1,7 +1,7 @@
 const moment = require('moment')
 const axios = require('axios')
 const nodered = require(`${process.cwd()}/lib/webserver/middlewares/nodered.js`)
-
+const lexSeed = require(`${process.cwd()}/lib/webserver/middlewares/lexicalseeding.js`)
 const contextModel = require(`${process.cwd()}/model/mongodb/models/context.js`)
 const flowPatternModel = require(`${process.cwd()}/model/mongodb/models/flowpattern.js`)
 const flowPatternTmpModel = require(`${process.cwd()}/model/mongodb/models/flowpatterntmp.js`)
@@ -228,28 +228,18 @@ module.exports = (webServer) => {
                     }
 
                     if (contextUpdated && flowUpdated) {
+
                         // STT lexical seeding
                         const sttconfig = context.flow.nodes.filter(c => c.type === 'linto-config-transcribe')[0]
                         const splitHost = sttconfig.host.split('/')
                         const service_name = splitHost[splitHost.length - 1]
-                        const sttLexicalSeeding = await axios(`${process.env.LINTO_STACK_DOMAIN}/api/stt/lexicalseeding`, {
-                            method: 'post',
-                            data: {
-                                flowId,
-                                service_name
-                            }
-                        })
+                        const sttLexicalSeeding = await lexSeed.sttLexicalSeeding(flowId, service_name)
 
                         // Tock lexical seeding
-                        const nluLexicalSeeding = await axios(`${process.env.LINTO_STACK_DOMAIN}/api/tock/lexicalseeding`, {
-                            method: 'post',
-                            data: {
-                                flowId
-                            }
-                        })
+                        const nluLexicalSeeding = await lexSeed.nluLexicalSeeding(flowId)
 
                         // Validation
-                        if (sttLexicalSeeding.data.status === 'success' && nluLexicalSeeding.data.status === 'success') {
+                        if (sttLexicalSeeding.status === 'success' && nluLexicalSeeding.status === 'success') {
                             res.json({
                                 status: 'success',
                                 msg: 'The workflow has been updated'

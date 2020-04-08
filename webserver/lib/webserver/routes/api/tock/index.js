@@ -1,8 +1,6 @@
 const debug = require('debug')(`linto-admin:/api/tock`)
 const middlewares = require(`${process.cwd()}/lib/webserver/middlewares`)
-const fs = require('fs')
-const request = require('request')
-const nodered = require(`${process.cwd()}/lib/webserver/middlewares/nodered.js`)
+const lexSeed = require(`${process.cwd()}/lib/webserver/middlewares/lexicalseeding.js`)
 const axios = require('axios')
 module.exports = (webServer) => {
     return [{
@@ -57,63 +55,8 @@ module.exports = (webServer) => {
             controller: async(req, res, next) => {
                 try {
                     const flowId = req.body.flowId
-                    const accessToken = await nodered.getBLSAccessToken()
-
-                    // Get lexical seeding object to send to TOCK
-                    const getNluLexicalSeeding = await axios(`${process.env.LINTO_STACK_BLS_SERVICE}/red-nodes/${flowId}/dataset/tock`, {
-                        method: 'get',
-                        headers: {
-                            'charset': 'utf-8',
-                            'Accept': 'application/json',
-                            'Content-Type': 'application/json',
-                            'Node-RED-Deployment-Type': 'flows',
-                            'Authorization': accessToken
-                        }
-                    })
-                    const jsonContent = JSON.stringify(getNluLexicalSeeding.data.application)
-
-                    // get Tock auth token
-                    const token = middlewares.basicAuthToken(process.env.LINTO_STACK_TOCK_USER, process.env.LINTO_STACK_TOCK_PASSWORD)
-
-                    // Tmp json file path
-                    const filePath = process.cwd() + '/public/tockapp.json'
-
-                    // Create json file
-                    fs.writeFile(filePath, jsonContent, (err) => {
-                        if (err) throw err
-                        else {
-                            // Tock service post request
-                            request.post({
-                                url: process.env.LINTO_STACK_TOCK_SERVICE + '/rest/admin/dump/sentences',
-                                headers: {
-                                    'Authorization': token
-                                },
-                                formData: {
-                                    file: fs.createReadStream(filePath),
-                                    filetype: 'json'
-                                },
-                            }, function(error, response, body) {
-                                let resp
-                                if (typeof(body) !== 'object') {
-                                    resp = JSON.parse(body)
-                                } else {
-                                    resp = body
-                                }
-                                if (error) {
-                                    throw error
-                                }
-                                if (resp.success) {
-                                    fs.unlinkSync(filePath)
-                                    res.json({
-                                        status: 'success',
-                                        msg: 'Tock application has been deployed'
-                                    })
-                                } else {
-                                    throw 'Error on creating tock application'
-                                }
-                            })
-                        }
-                    })
+                    const lexicalSeeding = await lexSeed.nluLexicalSeeding(flowId)
+                    res.json(lexicalSeeding)
                 } catch (error) {
                     console.error(error)
                     res.json({

@@ -2,6 +2,7 @@ const debug = require('debug')('linto-admin:middlewares')
 const btoa = require('btoa')
 const UsersModel = require(`${process.cwd()}/model/mongodb/models/users.js`)
 
+
 function isProduction() {
     return process.env.NODE_ENV === 'production'
 }
@@ -54,6 +55,8 @@ function basicAuthToken(user, password) {
     var hash = btoa(token);
     return "Basic " + hash;
 }
+
+
 
 module.exports = {
     basicAuthToken,

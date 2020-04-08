@@ -257,6 +257,7 @@ export default {
           flowId: this.flowId
         }
       })
+
       this.nlu.msg = nluSeeding.data.msg
       if(nluSeeding.data.status === 'success') {
        this.nlu.updating = false
@@ -291,28 +292,6 @@ export default {
         this.stt.updated = false
         this.stt.done = false
         this.stt.error = true
-        return false
-      }
-    },
-    async sttGeneratingGraph () {
-      this.sttGenerateGraph.updating = true
-      const sttSeeding = await axios(`${process.env.VUE_APP_URL}/api/stt/generateGraph`, {
-        method: 'post',
-        data: {
-          service_name: this.contextPayload.stt.service_name
-        }
-      })
-      this.sttGenerateGraph.msg = sttSeeding.data.msg
-      if(sttSeeding.data.status === 'success') {
-        this.sttGenerateGraph.updating = false
-        this.sttGenerateGraph.updated = true
-        this.sttGenerateGraph.done = true
-        return true
-      } else {
-        this.sttGenerateGraph.updating = false
-        this.sttGenerateGraph.updated = false
-        this.sttGenerateGraph.done = false
-        this.sttGenerateGraph.error = true
         return false
       }
     },

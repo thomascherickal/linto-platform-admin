@@ -1,7 +1,7 @@
 const axios = require('axios')
 const multer = require('multer')
 const moment = require('moment')
-const nodered = require(`${process.cwd()}/lib/webserver/middlewares/nodered.js`)
+const lexSeed = require(`${process.cwd()}/lib/webserver/middlewares/lexicalseeding.js`)
 const AMPath = `${process.cwd()}/acousticModels/`
 const AMstorage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -16,81 +16,6 @@ const AMstorage = multer.diskStorage({
 const AMupload = multer({ storage: AMstorage }).any()
 const request = require('request')
 const fs = require('fs')
-
-// Compare an intents/entities object to current services data
-async function filterLMData(type, modelId, newData) {
-    let getDataroutePath = ''
-    if (type === 'intent') {
-        getDataroutePath = 'intents'
-    } else if (type === 'entity') {
-        getDataroutePath = 'entities'
-    }
-    // Current Values of the langage model
-    const getData = await axios.get(`${process.env.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE}/langmodel/${modelId}/${getDataroutePath}`)
-    const currentData = getData.data.data
-    let dataToSend = []
-
-    newData.map(d => {
-        let toAdd = []
-        let toSendMethod = ''
-        let toCompare = currentData.filter(c => c.name === d.name)
-        if (toCompare.length === 0) {
-            toAdd.push(...d.items)
-            toSendMethod = 'post'
-        } else {
-            toSendMethod = 'patch'
-            d.items.map(val => {
-                if (toCompare[0]['items'].indexOf(val) < 0) {
-                    toAdd.push(val)
-                }
-            })
-        }
-        if (toAdd.length > 0) {
-            dataToSend.push({
-                name: d.name,
-                items: toAdd,
-                method: toSendMethod
-            })
-        }
-    })
-    return {
-        type,
-        data: dataToSend
-    }
-}
-
-// Update a langage model with intents/entities object to add/update
-async function updateLangModel(payload, modelId) {
-    try {
-        let success = []
-        let errors = []
-        const type = payload.type
-        for (let i in payload.data) {
-            const name = payload.data[i].name
-            const items = payload.data[i].items
-            const method = payload.data[i].method
-            const url = `${process.env.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE}/langmodel/${modelId}/${type}/${name}`
-            const req = await axios(url, {
-                method,
-                data: items
-            })
-            if (req.status === 200 || req.status === '200') {
-                success.push(payload.data[i])
-            } else {
-                errors.push(payload.data[i])
-            }
-            if (success.length + errors.length === payload.data.length) {
-                return ({
-                    errors,
-                    success
-                })
-            }
-        }
-    } catch (error) {
-        console.error('ERR:', error.toString())
-        return ('an error has occured')
-    }
-}
 
 module.exports = (webServer) => {
     return [{
@@ -335,110 +260,8 @@ module.exports = (webServer) => {
                 try {
                     const flowId = req.body.flowId
                     const service_name = req.body.service_name
-
-                    // Get stt service data
-                    const accessToken = await nodered.getBLSAccessToken()
-                    const getSttService = await axios(`${process.env.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE}/service/${service_name}`, {
-                        method: 'get',
-                        headers: {
-                            'charset': 'utf-8',
-                            'Accept': 'application/json',
-                            'Content-Type': 'application/json'
-                        }
-                    })
-                    const sttService = getSttService.data.data
-
-                    // Get lexical seeding data
-                    const getSttLexicalSeeding = await axios(`${process.env.LINTO_STACK_BLS_SERVICE}/red-nodes/${flowId}/dataset/linstt`, {
-                        method: 'get',
-                        headers: {
-                            'charset': 'utf-8',
-                            'Accept': 'application/json',
-                            'Content-Type': 'application/json',
-                            'Node-RED-Deployment-Type': 'flows',
-                            'Authorization': accessToken
-                        }
-                    })
-                    const sttLexicalSeedingData = getSttLexicalSeeding.data.data
-                    const intents = sttLexicalSeedingData.intents
-                    const entities = sttLexicalSeedingData.entities
-                    let intentsUpdated = false
-                    let entitiesUpdated = false
-                    let updateInt = { success: '', errors: '' }
-                    let updateEnt = { success: '', errors: '' }
-
-                    // Update model intents
-                    const intentsToSend = await filterLMData('intent', sttService.LModelId, intents)
-                    if (intentsToSend.data.length > 0) {
-                        updateInt = await updateLangModel(intentsToSend, sttService.LModelId)
-                        if (!!updateInt.success && !!updateInt.errors) {
-                            intentsUpdated = true
-
-                        }
-                    } else {
-                        intentsUpdated = true
-                    }
-
-                    // Update model entities
-                    const entitiesToSend = await filterLMData('entity', sttService.LModelId, entities)
-                    if (entitiesToSend.data.length > 0) {
-                        updateEnt = await updateLangModel(entitiesToSend, sttService.LModelId)
-                        if (!!updateEnt.success && !!updateEnt.errors) {
-                            entitiesUpdated = true
-                        }
-                    } else  {
-                        entitiesUpdated = true
-                    }
-
-                    const getUpdatedSttLangModel = await axios(`${process.env.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE}/langmodel/${sttService.LModelId}`, {
-                        method: 'get',
-                        headers: {
-                            'charset': 'utf-8',
-                            'Accept': 'application/json',
-                            'Content-Type': 'application/json'
-                        }
-                    })
-
-                    // Generate Graph if model updated
-                    if (getUpdatedSttLangModel.data.data.isDirty === 1 && getUpdatedSttLangModel.data.data.updateState === 0) {
-                        try {
-                            const req = await axios(`${process.env.LINTO_STACK_DOMAIN}/api/stt/generategraph`, {
-                                method: 'post',
-                                data: {
-                                    service_name
-                                }
-                            })
-                        } catch (error) {
-                            console.error(error)
-                        }
-                    }
-                    // Result
-                    if (intentsUpdated && entitiesUpdated) {
-                        if (updateInt.errors.length === 0 && updateEnt.errors.length === 0) {
-                            res.json({
-                                status: 'success',
-                                msg: 'Model language has been updated'
-                            })
-                        } else {
-                            errorMsg = 'Model updated BUT : '
-                            if (updateInt.errors.length > 0) {
-                                updateInt.errors.map(e => {
-                                    errorMsg += `Warning: error on updating intent ${e.name}.`
-                                })
-                            }
-                            if (updateEnt.errors.length > 0) {
-                                updateEnt.errors.map(e => {
-                                    errorMsg += `Warning: error on updating entity ${e.name}.`
-                                })
-                            }
-                            res.json({
-                                status: 'success',
-                                msg: errorMsg
-                            })
-                        }
-                    } else {
-                        throw 'Error on updating langage model'
-                    }
+                    const lexicalseeding = await lexSeed.sttLexicalSeeding(flowId, service_name)
+                    res.json(lexicalseeding)
                 } catch (error) {
                     console.error(error)
                     res.json({
@@ -454,18 +277,7 @@ module.exports = (webServer) => {
             requireAuth: true,
             controller: async(req, res, next) => {
                 try {
-                    const service_name = req.body.service_name
-                    const getSttService = await axios(`${process.env.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE}/service/${service_name}`, {
-                        method: 'get'
-                    })
-                    const sttService = getSttService.data.data
-                    const generateGraph = await axios(`${process.env.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE}/langmodel/${sttService.LModelId}/generate/graph`, {
-                        method: 'get'
-                    })
-                    res.json({
-                        status: 'success',
-                        msg: generateGraph.data.data
-                    })
+                    await lexSeed.generateGraph()
                 } catch (error) {
                     console.error(error)
                     res.json({
