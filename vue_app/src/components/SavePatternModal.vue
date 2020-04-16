@@ -107,7 +107,7 @@ export default {
         if (patternNameExist) {
           this.patternName.error = 'This workflow pattern name is already used'
           this.patternName.valid = false
-        } else {
+        } else {
           this.patternName.valid = true
         }
       }

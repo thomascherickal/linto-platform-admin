@@ -17,7 +17,7 @@ module.exports = (webServer) => {
                 } catch (error) {
                     res.json({ error })
                 }
-            } 
+            } 
         },
         {
             // Create a context in database

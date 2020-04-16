@@ -5,7 +5,7 @@
       :class="status"
     >
       <span id="notif-icon" class="icon"></span>
-      <span id="notif-msg" class="notif-msg" :class="status">{{ msg }}</span>
+      <span id="notif-msg" class="notif-msg" :class="status">{{ msg }}</span>
     </div>
   </div>
 </template>

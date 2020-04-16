@@ -52,7 +52,7 @@ function formatFlowGroupedNodes(flow) {
             formattedFlow.label = f.label
             formattedFlow.configs = []
             formattedFlow.nodes = []
-        } else  {
+        } else  {
             nodes.push(f)
         }
     })

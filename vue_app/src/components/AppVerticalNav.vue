@@ -44,12 +44,14 @@
       >Workflow editor</a>
     </div>
     <!-- STT interface -->
+    <!--
     <div class="vertical-nav-item flex col" :class="routePath.indexOf(sttUrl) >= 0 ? 'active' : ''">
       <a
         class="vertical-nav-item__link vertical-nav-item__link"
         :href="sttUrl"
       >STT</a>
     </div>
+    -->
     <!-- NLU interface -->
     <div class="vertical-nav-item flex col" :class="routePath.indexOf(nluUrl) >= 0 ? 'active' : ''">
       <a

@@ -56,7 +56,7 @@ async function sttLexicalSeeding(flowId, service_name) {
             if (!!updateEnt.success && !!updateEnt.errors) {
                 entitiesUpdated = true
             }
-        } else  {
+        } else  {
             entitiesUpdated = true
         }
 

@@ -7,7 +7,7 @@
       No LinTO found for this serial number : {{ sn }}
     </div>
     <div v-if="dataLoaded && linto !== null" class="flex col">
-      <h1>Monitoring : LinTO - {{ sn }}</h1>
+      <h1>Monitoring : LinTO - {{ sn }}</h1>
 
       <div class="block block--transparent">
         <h2>Global informations</h2>
@@ -116,7 +116,7 @@
                 @input="setVolume($event)"
                 @change="setVolumeEnd($event)"
               > 
-              <span class="volume-status">{{ volume }}</span>
+              <span class="volume-status">{{ volume }}</span>
             </div>
           </div>
         </div>

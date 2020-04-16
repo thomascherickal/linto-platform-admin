@@ -35,7 +35,7 @@ services:
       # - --reinstall-webserver
       # - --rebuild-vue-app-dev
       # - --run-cmd=DEBUG=* npm run start-dev
-      # - --rebuild-vue-app
+      # - --rebuild-vue-app
       - --run-cmd=npm run start
     ports:
       - 80:80

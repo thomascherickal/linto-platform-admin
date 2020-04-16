@@ -13,7 +13,7 @@
         :key="l[params.key]"
         :value="l[params.value]"
       >{{ l[params.optLabel] }}</option>
-      <option v-if="!!options" :value="options.value">{{ options.label }}</option>
+      <option v-if="!!options" :value="options.value">{{ options.label }}</option>
     </select>
     <span class="form__error-field" v-if="disabled">{{ disabledTxt }}</span>
     <span class="form__error-field">{{ obj.error }}</span>

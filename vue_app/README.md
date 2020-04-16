@@ -9,13 +9,13 @@ Open the `.env.production` or `.env.development` file and set your application U
 VUE_APP_URL=http://localhost:9000
 ```
 ### Compiles and minifies for development
-This will build static files into `../webserver/dist` folder
+This will build static files into `../webserver/dist` folder
 ```
 npm run build-dev
 ```
 
 ### Compiles and minifies for production
-This will build static files into `../webserver/dist` folder
+This will build static files into `../webserver/dist` folder
 ```
 npm run build-app
 ```

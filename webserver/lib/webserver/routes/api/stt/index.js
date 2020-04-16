@@ -174,7 +174,7 @@ module.exports = (webServer) => {
             controller: async(req, res, next) => {
                 try {
                     AMupload(req, res, async(error) => {
-                        if (error ||  error instanceof multer.MulterError) {
+                        if (error ||  error instanceof multer.MulterError) {
                             // A Multer error occurred when uploading.
                             console.error(error)
                             throw error

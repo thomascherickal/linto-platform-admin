@@ -15,7 +15,7 @@ if (process.env.LINTO_STACK_ADMIN_API_WHITELIST_DOMAINS.length > 0) {
     whitelistDomains = process.env.LINTO_STACK_ADMIN_API_WHITELIST_DOMAINS.split(',')
     corsOptions = {
         origin: function(origin, callback) {
-            if (!origin ||  whitelistDomains.indexOf(origin) !== -1 ||  origin === 'undefined') {
+            if (!origin ||  whitelistDomains.indexOf(origin) !== -1 ||  origin === 'undefined') {
                 callback(null, true)
             } else {
                 callback(new Error('Not allowed by CORS'))

@@ -284,22 +284,22 @@ export default {
     },
     contextPayload () {
       return {
-        context_name: this.contextName.value || null,
-        type: this.contextType.value || null,
-        workflowPattern: this.flowPattern.value || null,
-        mqtt: this.mqttDefaultSettings || null,
+        context_name: this.contextName.value || null,
+        type: this.contextType.value || null,
+        workflowPattern: this.flowPattern.value || null,
+        mqtt: this.mqttDefaultSettings || null,
         stt: {
-          service_name: this.sttService.value || null
+          service_name: this.sttService.value || null
         },
         nlu: {
-          service_name: this.nluService.value || null,
+          service_name: this.nluService.value || null,
           configs: {
-            host: this.nluService.configs.host || null,
+            host: this.nluService.configs.host || null,
             namespace: 'app'
           }
         },
         linto: this.contextType.value === 'Fleet' ? this.linto.value : [],
-        language: this.sttServiceLanguage.value || null
+        language: this.sttServiceLanguage.value || null
       }
     }
   },

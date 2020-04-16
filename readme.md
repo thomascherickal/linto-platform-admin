@@ -6,7 +6,7 @@ Once you're connected to the interface, you have an access to the following serv
 - Create a "meeting room" on wich you can associate a LinTO device
 - Create, edit or delete a LinTO device workflow (with node-red interface)
 - Install or uninstall LinTO skills
-- Monitring of LinTO devices (set a LinTO language, send messages or instructions... )
+- Monitoring of LinTO devices or applications (get infos, set volume, ping... )
 - Edit/train a NLU model (natural language understanding) via "Tock" interface
 
 ## Prerequisites
@@ -66,10 +66,37 @@ cp .env_default .env
 ```
 
 #### Server settings
-*Edit **/webserver/.env***
 
+- If you want to start linto-platform-admin as a stand-alone service: *Edit **/webserver/.env***
+- If you want to start linto-platform-admin with docker swarm mode: *Edit **/.docker_env***
 
 | Env variable| Description | example |
 |:---|:---|:---|
 | TZ | Time-zone value | Europe/Paris |
-| LINTO_STACK_REDIS_SESSION_SERVICE | Address of the STT service manager | localhost, http://my-stt-service.com|
+| LINTO_STACK_DOMAIN | Linto admin host/url | localhost:9000, http://my-linto_admin.com |
+| LINTO_STACK_ADMIN_HTTP_PORT | linto admin port | 9000 |
+|LINTO_STACK_ADMIN_COOKIE_SECRET | linto admin cookie secret phrase | mysecretcookie | 
+| LINTO_STACK_ADMIN_API_WHITELIST_DOMAINS | CORS auhtorized domains list (separator ',') | http://localhost:10000,http://my-domain.com |
+| LINTO_STACK_REDIS_SESSION_SERVICE | Redis store service host/url | localhost, linto-platform-stack-redis |
+| LINTO_STACK_REDIS_SESSION_SERVICE_PORT | Redis store service port | 6379 |
+| LINTO_STACK_TOCK_SERVICE | Tock (nlu service) host/url | localhost, http://my-tock-service.com |
+| LINTO_STACK_TOCK_USER | Tock (nlu service) user | admin@app.com |
+| LINTO_STACK_TOCK_PASSWORD | Tock (nlu service) user | password |
+| LINTO_STACK_STT_SERVICE_MANAGER_SERVICE | STT service host/url | localhost, http://my-s
+tt-service.com |
+| LINTO_STACK_MONGODB_SERVICE | MongoDb service host/url | localhost, linto-platform-stack-service |
+| LINTO_STACK_MONGODB_PORT | MongoDb service port | 27017 |
+| LINTO_STACK_MONGODB_DBNAME | MongoDb service database name | lintoAdmin |
+| LINTO_STACK_MONGODB_USE_LOGIN | Enable/Disable MongoDb service authentication | true,false |
+| LINTO_STACK_MONGODB_USER | MongoDb service username | user | 
+| LINTO_STACK_MONGODB_PASSWORD |  MongoDb service username | password |
+| LINTO_STACK_MQTT_HOST | MQTT broker host | localhost |
+| LINTO_STACK_MQTT_PORT | MQTT broker port | 1883 |
+| LINTO_STACK_MQTT_USE_LOGIN | Enable/Disable MQTT broker authentication | true,false |
+| LINTO_STACK_MQTT_DEFAULT_HW_SCOPE | MQTT broker "hardware" scope | blk |
+| LINTO_STACK_MQTT_USER | MQTT broker user | user |
+| LINTO_STACK_MQTT_PASSWORD | MQTT broker user | password |
+| LINTO_STACK_BLS_SERVICE | Business logic server (nodered instance) | localhost,  http://my-bls.com |
+| LINTO_STACK_BLS_USE_LOGIN | Enable/Disable Business logic server authentication | true,false |
+| LINTO_STACK_BLS_USER | Business logic server user | user |
+| LINTO_STACK_BLS_PASSWORD | Business logic server | password |
