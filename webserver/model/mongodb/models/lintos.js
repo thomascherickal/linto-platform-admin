@@ -43,8 +43,8 @@ class LintosModel extends MongoModel {
             const payload = {
                 enrolled: true,
                 connexion: 'offline',
-                last_up: '-',
-                last_down: '-',
+                last_up: null,
+                last_down: null,
                 associated_context: null,
                 type: 'fleet',
                 sn,
