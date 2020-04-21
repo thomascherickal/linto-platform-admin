@@ -1,7 +1,8 @@
 const request = require('request')
 
-request(`http://localhost`, error => {
-  if (error) {
-    throw error
-  }
+//La route de healthcheck peut faire des logs pour le service
+request(`http://localhost/healthcheck`, error => {
+    if (error) {
+        throw error
+    }
 })
