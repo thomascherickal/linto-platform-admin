@@ -1,6 +1,5 @@
 const mongoDb = require('mongodb')
 let urlMongo = 'mongodb://'
-let urlMongo = 'mongodb://'
 if (process.env.LINTO_STACK_MONGO_USE_LOGIN === 'true')
     urlMongo += process.env.LINTO_STACK_MONGODB_USER + ':' + process.env.LINTO_STACK_MONGODB_PASSWORD + '@'
 urlMongo += process.env.LINTO_STACK_MONGODB_SERVICE + ':' + process.env.LINTO_STACK_MONGODB_PORT + '/' + process.env.LINTO_STACK_MONGODB_DBNAME
