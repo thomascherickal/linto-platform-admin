@@ -21,12 +21,20 @@ while [ "$1" != "" ]; do
         echo "REBUILDING VUE APP"
         if [[ "$LINTO_STACK_USE_SSL" == true ]]; then
             echo "VUE_APP_URL=
-            VUE_APP_NLU_URL=https://$LINTO_STACK_DOMAIN/tock
-            VUE_APP_NODERED=https://$LINTO_STACK_DOMAIN/redui" >.env.production
+            VUE_APP_TOCK_URL=https://$LINTO_STACK_DOMAIN/tock
+            VUE_APP_TOCK_USER=$LINTO_STACK_TOCK_USER
+            VUE_APP_TOCK_PASSWORD=$LINTO_STACK_TOCK_PASSWORD
+            VUE_APP_NODERED=https://$LINTO_STACK_DOMAIN/redui
+            VUE_APP_NODERED_USER=$LINTO_STACK_BLS_USER
+            VUE_APP_NODERED_PASSWORD=$LINTO_STACK_BLS_PASSWORD" >.env.production
         else
             echo "VUE_APP_URL=
-            VUE_APP_NLU_URL=http://$LINTO_STACK_DOMAIN/tock
-            VUE_APP_NODERED=http://$LINTO_STACK_DOMAIN/redui" >.env.production
+            VUE_APP_TOCK_URL=https://$LINTO_STACK_DOMAIN/tock
+            VUE_APP_TOCK_USER=$LINTO_STACK_TOCK_USER
+            VUE_APP_TOCK_PASSWORD=$LINTO_STACK_TOCK_PASSWORD
+            VUE_APP_NODERED=https://$LINTO_STACK_DOMAIN/redui
+            VUE_APP_NODERED_USER=$LINTO_STACK_BLS_USER
+            VUE_APP_NODERED_PASSWORD=$LINTO_STACK_BLS_PASSWORD" >.env.production
         fi
         npm install &&
             npm install --save node-sass &&
@@ -37,12 +45,20 @@ while [ "$1" != "" ]; do
         echo "REBUILDING VUE APP IN DEVELOPMENT MODE"
         if [[ "$LINTO_STACK_USE_SSL" == true ]]; then
             echo "VUE_APP_URL=
-            VUE_APP_NLU_URL=https://$LINTO_STACK_DOMAIN/tock
-            VUE_APP_NODERED=https://$LINTO_STACK_DOMAIN/redui" >.env.development
+            VUE_APP_TOCK_URL=https://$LINTO_STACK_DOMAIN/tock
+            VUE_APP_TOCK_USER=$LINTO_STACK_TOCK_USER
+            VUE_APP_TOCK_PASSWORD=$LINTO_STACK_TOCK_PASSWORD
+            VUE_APP_NODERED=https://$LINTO_STACK_DOMAIN/redui
+            VUE_APP_NODERED_USER=$LINTO_STACK_BLS_USER
+            VUE_APP_NODERED_PASSWORD=$LINTO_STACK_BLS_PASSWORD" >.env.development
         else
             echo "VUE_APP_URL=
-            VUE_APP_NLU_URL=https://$LINTO_STACK_DOMAIN/tock
-            VUE_APP_NODERED=https://$LINTO_STACK_DOMAIN/redui" >.env.development
+            VUE_APP_TOCK_URL=https://$LINTO_STACK_DOMAIN/tock
+            VUE_APP_TOCK_USER=$LINTO_STACK_TOCK_USER
+            VUE_APP_TOCK_PASSWORD=$LINTO_STACK_TOCK_PASSWORD
+            VUE_APP_NODERED=https://$LINTO_STACK_DOMAIN/redui
+            VUE_APP_NODERED_USER=$LINTO_STACK_BLS_USER
+            VUE_APP_NODERED_PASSWORD=$LINTO_STACK_BLS_PASSWORD" >.env.development
         fi
         npm install &&
             npm install --save node-sass &&
