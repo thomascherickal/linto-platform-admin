@@ -4,10 +4,21 @@
       Loading
     </div>
     <div class="flex col" v-if="dataLoaded">
-      <h1>Fleet management</h1>
+      <h1>LinTO fleet management</h1>
+      <details open class="description">
+        <summary>Infos</summary>
+        <span>LinTO admin enables you to manage LinTO devices that are registered in the information system. You can add new LinTOs to your system by registering a serial number, or access the monitoring interface for enrolled LinTO devices. <br/>
+        For more informations please read the <a href="https://doc.linto.ai/" target="_blank">documentation</a>.</span>
+      </details>
+      
       <!-- IN USE -->
       <div class="block block--transparent">
-        <h2>In use</h2>
+        <h2>Enrolled devices</h2>
+        <details class="description">
+        <summary>Infos</summary>
+        <span>A list of LinTO devices that are enrolled towards an application context</span>
+      </details>
+        
         <div class="flex row" v-if="associated_lintos.length > 0">
           <table class="table table--full">
             <thead>
@@ -50,12 +61,17 @@
           </table>
         </div>
         <div v-else>
-          No LinTO in use for now
+          There is no LinTO enrolled...
         </div>
       </div>
       <!-- Provisionning -->
       <div class="block block--transparent">
         <h2>Provisionning</h2>
+        <details class="description">
+        <summary>Infos</summary>
+        <span>A list of registered LinTO devices that are not enrolled towards an application context</span>
+      </details>
+        
         <div class="flex row" v-if="not_associated_lintos.length > 0">
           <table class="table table--shadow">
             <thead>
@@ -86,7 +102,7 @@
           </table>
         </div>
         <div v-else>
-          No LinTO available
+          There is no LinTO registered...
         </div>
       </div>
       <div class="block block--transparent">

@@ -3,13 +3,13 @@
     <div v-if="loading">Loading</div>
     <div class="modal flex col" v-if="dataLoaded">
       <div class="modal-header flex row">
-        <span class="modal-header__tilte flex1 flex row">Add a LinTO</span>
+        <span class="modal-header__tilte flex1 flex row">Add a LinTO device</span>
         <button @click="closeModal()" class="button button--img button--img__close"></button>
 
       </div>
       <div class="modal-body flex1 flex col">
         <span class="modal-body__content">
-          Add a LinTO device by entering its serial number:
+          Add a new LinTO device by registering its serial number:
         </span>
         <div class="modal-body__form">
           <AppInput :label="'Serial number'" :obj="serialNumber" :test="'testSn'" :lintos="lintos"></AppInput>

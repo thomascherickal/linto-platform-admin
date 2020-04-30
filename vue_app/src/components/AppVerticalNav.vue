@@ -5,7 +5,7 @@
       <a
         class="vertical-nav-item__link vertical-nav-item__link"
         :href="fleetManagementUrl"
-      >Fleet management</a>
+      >LinTO fleet management</a>
     </div>
     <!-- Context -->
     <div class="vertical-nav-item flex col">
@@ -57,7 +57,7 @@
       <a
         class="vertical-nav-item__link vertical-nav-item__link"
         :href="nluUrl"
-      >NLU</a>
+      >Tock interface</a>
     </div>
   </div>
 </template>

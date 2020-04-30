@@ -1,6 +1,17 @@
 <template>
   <div>
-    <h1>Node Red Editor</h1>
+    <h1>Workflow editor</h1>
+    <details open class="description">
+      <summary>Infos</summary>
+      <span>The workflow editor uses an embedded application called node-red. You will have to log in to the node-red application to be able to edit workflows.<br/>
+      <strong>Please log in with the following credentials :</strong>
+      <ul>
+        <li>Login : <strong>{{ noderedUser }}</strong> </li>
+        <li>Password : <strong>{{ noderedPassword }}</strong></li>
+      </ul>
+      For more informations about node-red workflows, please read the <a href="https://doc.linto.ai/" target="_blank">documentation</a>.
+      </span>
+    </details>
     <div class="block block--transparent block--no-margin block--no-padding flex1 flex">
       <NodeRedIframe :contextFrame="'manager'" v-if="sandBoxFound" :blsurl="sandBoxUrl"></NodeRedIframe>
     </div>
@@ -16,7 +27,9 @@ export default {
       sandBoxId: null,
       sandBoxUrl: null,
       sandBoxFound: false,
-      blsUp: false
+      blsUp: false,
+      noderedUser: process.env.VUE_APP_NODERED_USER,
+      noderedPassword: process.env.VUE_APP_NODERED_PASSWORD
     }
   },
   components: {

@@ -7,7 +7,7 @@
         <img src="/assets/img/admin-logo-light@2x.png" alt="administration interface" class="login-logo">
         <div class="setup-form-container flex col">
           <h1>Welcome to Linto Admin</h1>
-          <span class="info">You firstly need to create an account to be abel to connect to the application. <br/>Please fill in the following form:</span>
+          <span class="info">LinTO Admin is a web interface that enables you to manage your LinTO stack deployment. You firstly need to create an “administrator” account to complete the setup and log in to your  LinTO Admin interface.</span>
           <!-- Name -->
           <AppInput :label="'Username'" :obj="user.name" :test="'testName'"></AppInput>
           <!-- Email -->
@@ -16,8 +16,7 @@
           <AppInput :label="'Password'" :obj="user.password" :test="'testPassword'" :type="'password'"></AppInput>
           <!-- Password Confirmation -->
           <AppInput :label="'Password confirmation'" :obj="user.password_confirm" :test="'null'" :type="'password'"></AppInput>
-
-            <!-- Submit -->
+          <!-- Submit -->
           <button
             class="button button--setup--submit"
             @click="handleForm()"

@@ -5,8 +5,14 @@
     </div>
     <div v-if="dataLoaded">
       <h1>Contexts overview</h1>
+      <details open class="description">
+        <summary>Infos</summary>
+        <span class="description">LinTO admin enables you to manage application contexts created and registered in your information system. You can create a new context or manage existing context workflows.<br/>
+        For more informations please read the <a href="https://doc.linto.ai/" target="_blank">documentation</a>.</span>
+      </details>
+      
       <div class="block block--transparent" v-if="fleetContexts.length > 0">
-        <h2>Fleet</h2>
+        <h2>Fleet contexts</h2>
         <div class="flex row">
           <table class="table table--full">
             <thead>
@@ -44,7 +50,7 @@
         </div>
       </div>
       <div v-else>
-        No context found
+        There is no context created...
       </div>
     </div>
   </div>

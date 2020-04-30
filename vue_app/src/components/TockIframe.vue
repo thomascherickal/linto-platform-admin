@@ -44,7 +44,7 @@ export default {
         const connectTock = await axios(`${process.env.VUE_APP_URL}/api/tock/healthcheck`)
         if (connectTock.data.status === 'success') {
           this.tockUp = true
-          this.iframeUrl = process.env.VUE_APP_NLU_URL
+          this.iframeUrl = process.env.VUE_APP_TOCK_URL
         } else {
           throw 'Cannont connect Tock interface'
         }
