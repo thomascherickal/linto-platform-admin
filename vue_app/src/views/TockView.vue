@@ -19,6 +19,7 @@
   </div>
 </template>
 <script>
+import { bus } from '../main.js'
 import axios from 'axios'
 import TockIframe from '@/components/TockIframe.vue'
 export default {
