@@ -43,10 +43,12 @@ export default {
   methods: {
     async isBlsUp () {
       try {
-        const connectBls = await axios.get(process.env.VUE_APP_NODERED)
-        if (connectBls.status === 200) {
+        const connectBls = await axios.get(`${process.env.VUE_APP_URL}/api/flow/healthcheck`)
+        if (connectBls.data.status === 'success') {
           this.blsUp = true
           this.getSandBoxId()
+        } else {
+          throw 'Cannot connect to Business logic server'
         }
       } catch (error) {
         bus.$emit('app_notif', {

@@ -17,7 +17,7 @@ module.exports = (webServer) => {
                 } catch (error) {
                     res.json({ error })
                 }
-            } 
+            }
         },
         {
             // Create a context in database
@@ -108,7 +108,7 @@ module.exports = (webServer) => {
                 try {
                     res.json([{
                         "service_name": "tock",
-                        "host": `${process.env.LINTO_STACK_TOCK_SERVICE}/tock`
+                        "host": `${process.env.LINTO_STACK_TOCK_SERVICE}:${process.env.LINTO_STACK_TOCK_SERVICE_PORT}/tock`
                     }])
                 } catch (error) {
                     console.error(error)

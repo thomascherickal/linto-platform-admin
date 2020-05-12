@@ -1,5 +1,5 @@
 <template>
-  <div v-if="tockUp"
+  <div 
     id="iframe-container"
     :class="fullScreen ? 'iframe--fullscreen' : 'iframe--default'"
     class="flex1 flex col"
@@ -15,47 +15,23 @@
       </div>
     </div>
     <iframe
-      :src="iframeUrl"
+      :src="tockUrl"
       id="nodered-iframe"
       class="iframe flex1"
     ></iframe>
-  </div>
-  <div v-else>
-    Loading
   </div>
 </template>
 <script>
 import { bus } from '../main.js'
 import axios from 'axios'
 export default {
+  props: ['tockUrl'],
   data () {
     return {
-      iframeUrl: '',
       fullScreen: false,
-      tockUp: false,
     }
   },
-  async mounted () {
-    await this.isTockUp()
-  },
   methods: {
-    async isTockUp () {
-      try {
-        const connectTock = await axios(`${process.env.VUE_APP_URL}/api/tock/healthcheck`)
-        if (connectTock.data.status === 'success') {
-          this.tockUp = true
-          this.iframeUrl = process.env.VUE_APP_TOCK_URL
-        } else {
-          throw 'Cannont connect Tock interface'
-        }
-      } catch (error) {
-        bus.$emit('app_notif', {
-          status: 'error',
-          msg: 'Cannot connect Tock interace',
-          timeout: false
-        })
-      }
-    },
     toggleFullScreen () {
       this.fullScreen = !this.fullScreen
       if (this.fullScreen) {

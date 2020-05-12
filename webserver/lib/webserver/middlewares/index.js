@@ -56,8 +56,6 @@ function basicAuthToken(user, password) {
     return "Basic " + hash;
 }
 
-
-
 module.exports = {
     basicAuthToken,
     checkAuth,

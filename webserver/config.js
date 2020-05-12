@@ -19,7 +19,6 @@
 
 const debug = require('debug')('linto-admin:config')
 const dotenv = require('dotenv')
-const path = require('path');
 const fs = require('fs')
 
 function ifHasNotThrow(element, error) {
@@ -31,8 +30,6 @@ function ifHas(element, defaultValue) {
     if (!element) return defaultValue
     return element
 }
-
-const APP_ROOT_DIR = path.resolve(__dirname)
 
 function configureDefaults() {
     try {
@@ -78,6 +75,7 @@ function configureDefaults() {
 
         // NLU - TOCK
         process.env.LINTO_STACK_TOCK_SERVICE = ifHas(process.env.LINTO_STACK_TOCK_SERVICE, envdefault.LINTO_STACK_TOCK_SERVICE)
+        process.env.LINTO_STACK_TOCK_SERVICE_PORT = ifHas(process.env.LINTO_STACK_TOCK_SERVICE_PORT, envdefault.LINTO_STACK_TOCK_SERVICE_PORT)
         process.env.LINTO_STACK_TOCK_LOGIN = ifHas(process.env.LINTO_STACK_TOCK_LOGIN, envdefault.LINTO_STACK_TOCK_LOGIN)
         process.env.LINTO_STACK_TOCK_PASSWORD = ifHas(process.env.LINTO_STACK_TOCK_PASSWORD, envdefault.LINTO_STACK_TOCK_PASSWORD)
 

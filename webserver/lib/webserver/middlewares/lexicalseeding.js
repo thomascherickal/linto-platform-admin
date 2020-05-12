@@ -19,7 +19,7 @@ async function sttLexicalSeeding(flowId, service_name) {
         const sttService = getSttService.data.data
 
         // Get lexical seeding data
-        const getSttLexicalSeeding = await axios(`${process.env.LINTO_STACK_BLS_SERVICE}/red-nodes/${flowId}/dataset/linstt`, {
+        const getSttLexicalSeeding = await axios(`${process.env.LINTO_STACK_TOCK_SERVICE}:${process.env.LINTO_STACK_TOCK_SERVICE_PORT}/red-nodes/${flowId}/dataset/linstt`, {
             method: 'get',
             headers: {
                 'charset': 'utf-8',
@@ -56,7 +56,7 @@ async function sttLexicalSeeding(flowId, service_name) {
             if (!!updateEnt.success && !!updateEnt.errors) {
                 entitiesUpdated = true
             }
-        } else  {
+        } else {
             entitiesUpdated = true
         }
 
@@ -242,7 +242,7 @@ async function nluLexicalSeeding(flowId) {
                 else {
                     // Tock service post request
                     request.post({
-                        url: process.env.LINTO_STACK_TOCK_SERVICE + '/rest/admin/dump/sentences',
+                        url: `${process.env.LINTO_STACK_TOCK_SERVICE}:${process.env.LINTO_STACK_TOCK_SERVICE_PORT}/rest/admin/dump/sentences`,
                         headers: {
                             'Authorization': token
                         },

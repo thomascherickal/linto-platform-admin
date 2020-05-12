@@ -11,7 +11,7 @@ module.exports = (webServer) => {
             controller: async(req, res, next) => {
                 try {
                     const tockToken = middlewares.basicAuthToken(process.env.LINTO_STACK_TOCK_USER, process.env.LINTO_STACK_TOCK_PASSWORD)
-                    const getTockApplications = await axios(`${process.env.LINTO_STACK_TOCK_SERVICE}/rest/admin/applications`, {
+                    const getTockApplications = await axios(`${process.env.LINTO_STACK_TOCK_SERVICE}:${process.env.LINTO_STACK_TOCK_SERVICE_PORT}/rest/admin/applications`, {
                         method: 'get',
                         headers: {
                             'Authorization': tockToken
@@ -19,6 +19,7 @@ module.exports = (webServer) => {
                     })
                     res.json(getTockApplications.data)
                 } catch (error) {
+                    console.error(error)
                     res.json({
                         status: 'error',
                         msg: 'Error on getting tock applications'
@@ -32,7 +33,13 @@ module.exports = (webServer) => {
             requireAuth: true,
             controller: async(req, res, next) => {
                 try {
-                    const getTock = await axios.get(`${process.env.LINTO_STACK_TOCK_SERVICE}/tock`)
+                    const tockToken = middlewares.basicAuthToken(process.env.LINTO_STACK_TOCK_USER, process.env.LINTO_STACK_TOCK_PASSWORD)
+                    const getTock = await axios(`${process.env.LINTO_STACK_TOCK_SERVICE}:${process.env.LINTO_STACK_TOCK_SERVICE_PORT}/rest/admin/applications`, {
+                        method: 'get',
+                        headers: {
+                            'Authorization': tockToken
+                        }
+                    })
                     if (getTock.status === 200) {
                         res.json({
                             status: 'success',
@@ -42,6 +49,7 @@ module.exports = (webServer) => {
                         throw 'error on connecting'
                     }
                 } catch (error) {
+                    console.error(error)
                     res.json({
                         status: 'error',
                         msg: 'unable to connect tock services'

@@ -13,7 +13,7 @@
       </span>
     </details>
     <div class="block block--transparent block--no-margin block--no-padding flex1 flex">
-      <TockIframe></TockIframe>
+      <TockIframe v-if="tockUp" :tockUrl="tockUrl"></TockIframe>
     </div>
 
   </div>
@@ -24,9 +24,32 @@ import TockIframe from '@/components/TockIframe.vue'
 export default {
   data () {
     return {
+      tockUp: false,
       tockUrl: process.env.VUE_APP_TOCK_URL,
       tockUser: process.env.VUE_APP_TOCK_USER,
       tockPassword: process.env.VUE_APP_TOCK_PASSWORD
+    }
+  },
+  async mounted () {
+    await this.isTockUp()
+  },
+  methods: {
+    async isTockUp () {
+      try {
+        const connectTock = await axios(`${process.env.VUE_APP_URL}/api/tock/healthcheck`)
+        if (connectTock.data.status === 'success') {
+          this.tockUp = true
+          this.tockUrl = process.env.VUE_APP_TOCK_URL
+        } else {
+          throw 'Cannont connect Tock interface'
+        }
+      } catch (error) {
+        bus.$emit('app_notif', {
+          status: 'error',
+          msg: 'Cannot connect Tock interace',
+          timeout: false
+        })
+      }
     }
   },
   components: {

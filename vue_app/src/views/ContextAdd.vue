@@ -200,16 +200,7 @@ export default {
       } else {
         this.languageSelected = true
       }
-    },
-    /*availableServices (data) {
-      if (data.filter(f => f.serviceId === this.sttService.value).length === 0) {
-        this.sttService = {
-          value: '',
-          error: null,
-          valid: false
-        }
-      }
-    }*/
+    }
   },
   computed: {
     availableLintos () {
@@ -261,12 +252,14 @@ export default {
     sttServicesLanguages () {
       let lang = []
       let resp = []
-      this.availableServices.map(s => {
-        if (lang.indexOf(s.lang) < 0) {
-          lang.push(s.lang)
-          resp.push({ value: s.lang })
-        }
-      })
+      if(!!this.availableServices && this.availableServices.length > 0) {
+        this.availableServices.map(s => {
+          if (lang.indexOf(s.lang) < 0) {
+            lang.push(s.lang)
+            resp.push({ value: s.lang })
+          }
+        })
+      }
       return resp
     },
     formValid () {
