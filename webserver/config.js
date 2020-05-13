@@ -46,6 +46,7 @@ function configureDefaults() {
         process.env.LINTO_STACK_DOMAIN = ifHas(process.env.LINTO_STACK_DOMAIN, envdefault.LINTO_STACK_DOMAIN)
         process.env.LINTO_STACK_ADMIN_API_WHITELIST_DOMAINS = ifHas(process.env.LINTO_STACK_ADMIN_API_WHITELIST_DOMAINS, envdefault.LINTO_STACK_ADMIN_API_WHITELIST_DOMAINS)
         process.env.LINTO_STACK_ADMIN_COOKIE_SECRET = ifHas(process.env.LINTO_STACK_ADMIN_COOKIE_SECRET, envdefault.LINTO_STACK_ADMIN_COOKIE_SECRET)
+        process.env.LINTO_STACK_USE_SSL = ifHas(process.env.LINTO_STACK_USE_SSL, envdefault.LINTO_STACK_USE_SSL)
 
         // BLS
         process.env.LINTO_STACK_BLS_SERVICE = ifHas(process.env.LINTO_STACK_BLS_SERVICE, envdefault.LINTO_STACK_BLS_SERVICE)

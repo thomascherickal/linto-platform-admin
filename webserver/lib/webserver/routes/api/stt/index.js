@@ -2,6 +2,7 @@ const axios = require('axios')
 const multer = require('multer')
 const moment = require('moment')
 const lexSeed = require(`${process.cwd()}/lib/webserver/middlewares/lexicalseeding.js`)
+const middlewares = require(`${process.cwd()}/lib/webserver/middlewares/index.js`)
 const AMPath = `${process.cwd()}/acousticModels/`
 const AMstorage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -25,7 +26,7 @@ module.exports = (webServer) => {
             requireAuth: true,
             controller: async(req, res, next) => {
                 try {
-                    const getServices = await axios(`${process.env.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE}/services`, {
+                    const getServices = await axios(`${middlewares.useSSL() + process.env.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE}/services`, {
                         method: 'get'
                     })
                     res.json({ services: getServices.data })
@@ -43,7 +44,7 @@ module.exports = (webServer) => {
             controller: async(req, res, next) => {
                 try {
                     const payload = req.body
-                    const createService = await axios(`${process.env.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE}/service/${payload.serviceId}`, {
+                    const createService = await axios(`${middlewares.useSSL() + process.env.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE}/service/${payload.serviceId}`, {
                         method: 'post',
                         data: payload
                     })
@@ -75,7 +76,7 @@ module.exports = (webServer) => {
             requireAuth: true,
             controller: async(req, res, next) => {
                 try {
-                    const getLanguageModels = await axios(`${process.env.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE}/langmodels`, {
+                    const getLanguageModels = await axios(`${middlewares.useSSL() + process.env.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE}/langmodels`, {
                         method: 'get'
                     })
                     res.json({ services: getLanguageModels.data })
@@ -92,7 +93,7 @@ module.exports = (webServer) => {
                 try {
                     const acmodel = req.body.acmodelname
                     const lmodel = req.body.lmodelname.replace(/\s/g, '_')
-                    const createLM = await axios(`${process.env.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE}/langmodel/${lmodel}`, {
+                    const createLM = await axios(`${middlewares.useSSL() + process.env.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE}/langmodel/${lmodel}`, {
                         method: 'post',
                         data: {
                             acousticModel: acmodel
@@ -127,7 +128,7 @@ module.exports = (webServer) => {
             controller: async(req, res, next) => {
                 try {
                     const modelId = req.body.modelId
-                    const deleteModel = await axios(`${process.env.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE}/langmodel/${modelId}`, {
+                    const deleteModel = await axios(`${middlewares.useSSL() + process.env.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE}/langmodel/${modelId}`, {
                         method: 'delete'
                     })
                     if (!!deleteModel.status && deleteModel.status === 200) {
@@ -158,7 +159,7 @@ module.exports = (webServer) => {
             requireAuth: true,
             controller: async(req, res, next) => {
                 try {
-                    const getACModels = await axios(`${process.env.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE}/acmodels`, {
+                    const getACModels = await axios(`${middlewares.useSSL() + process.env.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE}/acmodels`, {
                         method: 'get'
                     })
                     res.json({ services: getACModels.data })
@@ -174,7 +175,7 @@ module.exports = (webServer) => {
             controller: async(req, res, next) => {
                 try {
                     AMupload(req, res, async(error) => {
-                        if (error ||  error instanceof multer.MulterError) {
+                        if (error || error instanceof multer.MulterError) {
                             // A Multer error occurred when uploading.
                             console.error(error)
                             throw error
@@ -183,7 +184,7 @@ module.exports = (webServer) => {
                         const file = req.files[0]
                         const acModelName = infos.acmodel.replace(/\s/g, '_')
                         request.post({
-                            url: `${process.env.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE}/acmodel/${acModelName}`,
+                            url: `${middlewares.useSSL() + process.env.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE}/acmodel/${acModelName}`,
                             formData: {
                                 file: fs.createReadStream(AMPath + file.filename),
                                 filetype: file.mimetype,
@@ -227,7 +228,7 @@ module.exports = (webServer) => {
             controller: async(req, res, next) => {
                 try {
                     const modelId = req.body.modelId
-                    const deleteModel = await axios(`${process.env.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE}/acmodel/${modelId}`, {
+                    const deleteModel = await axios(`${middlewares.useSSL() + process.env.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE}/acmodel/${modelId}`, {
                         method: 'delete'
                     })
                     if (!!deleteModel.status && deleteModel.status === 200) {
@@ -292,7 +293,7 @@ module.exports = (webServer) => {
             requireAuth: true,
             controller: async(req, res, next) => {
                 try {
-                    const getSttManager = await axios(process.env.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE)
+                    const getSttManager = await axios(middlewares.useSSL() + process.env.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE)
                     if (getSttManager.status === 200) {
                         res.json({
                             status: 'success',

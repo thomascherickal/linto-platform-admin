@@ -1,5 +1,5 @@
 const debug = require('debug')(`linto-admin:/api/tock`)
-const middlewares = require(`${process.cwd()}/lib/webserver/middlewares`)
+const middlewares = require(`${process.cwd()}/lib/webserver/middlewares/index.js`)
 const lexSeed = require(`${process.cwd()}/lib/webserver/middlewares/lexicalseeding.js`)
 const axios = require('axios')
 module.exports = (webServer) => {
@@ -11,7 +11,7 @@ module.exports = (webServer) => {
             controller: async(req, res, next) => {
                 try {
                     const tockToken = middlewares.basicAuthToken(process.env.LINTO_STACK_TOCK_USER, process.env.LINTO_STACK_TOCK_PASSWORD)
-                    const getTockApplications = await axios(`${process.env.LINTO_STACK_TOCK_SERVICE}:${process.env.LINTO_STACK_TOCK_SERVICE_PORT}/rest/admin/applications`, {
+                    const getTockApplications = await axios(`${middlewares.useSSL() + process.env.LINTO_STACK_TOCK_SERVICE}:${process.env.LINTO_STACK_TOCK_SERVICE_PORT}/rest/admin/applications`, {
                         method: 'get',
                         headers: {
                             'Authorization': tockToken
@@ -34,7 +34,7 @@ module.exports = (webServer) => {
             controller: async(req, res, next) => {
                 try {
                     const tockToken = middlewares.basicAuthToken(process.env.LINTO_STACK_TOCK_USER, process.env.LINTO_STACK_TOCK_PASSWORD)
-                    const getTock = await axios(`${process.env.LINTO_STACK_TOCK_SERVICE}:${process.env.LINTO_STACK_TOCK_SERVICE_PORT}/rest/admin/applications`, {
+                    const getTock = await axios(`${middlewares.useSSL() + process.env.LINTO_STACK_TOCK_SERVICE}:${process.env.LINTO_STACK_TOCK_SERVICE_PORT}/rest/admin/applications`, {
                         method: 'get',
                         headers: {
                             'Authorization': tockToken

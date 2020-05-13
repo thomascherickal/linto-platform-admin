@@ -1,5 +1,6 @@
 const axios = require('axios')
 const uuid = require('uuid/v1')
+const middlewares = require('./index.js')
 
 /* Format a workflow pattern to be post in database */
 function createFlowPattern(flow, workspaceId, workspaceLabel) {
@@ -52,7 +53,7 @@ function formatFlowGroupedNodes(flow) {
             formattedFlow.label = f.label
             formattedFlow.configs = []
             formattedFlow.nodes = []
-        } else  {
+        } else {
             nodes.push(f)
         }
     })
@@ -159,7 +160,7 @@ async function getBLSAccessToken() {
     }
     const login = process.env.LINTO_STACK_BLS_USER
     const pswd = process.env.LINTO_STACK_BLS_PASSWORD
-    const request = await axios(`${process.env.LINTO_STACK_BLS_SERVICE}/redui/auth/token`, {
+    const request = await axios(`${middlewares.useSSL() + process.env.LINTO_STACK_BLS_SERVICE}/redui/auth/token`, {
         method: 'post',
         data: {
             "client_id": "node-red-admin",
@@ -175,7 +176,7 @@ async function getBLSAccessToken() {
 async function putBLSFlow(flowId, workflow) {
     try {
         const accessToken = await getBLSAccessToken()
-        let blsUpdate = await axios(`${process.env.LINTO_STACK_BLS_SERVICE}/redui/flow/${flowId}`, {
+        let blsUpdate = await axios(`${middlewares.useSSL() + process.env.LINTO_STACK_BLS_SERVICE}/redui/flow/${flowId}`, {
             method: 'put',
             headers: {
                 'charset': 'utf-8',

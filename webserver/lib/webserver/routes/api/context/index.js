@@ -3,7 +3,7 @@ const moment = require('moment')
 const contexTypestModel = require(`${process.cwd()}/model/mongodb/models/contexttypes.js`)
 const contextModel = require(`${process.cwd()}/model/mongodb/models/context.js`)
 const nodered = require(`${process.cwd()}/lib/webserver/middlewares/nodered.js`)
-
+const middlewares = require(`${process.cwd()}/lib/webserver/middlewares/index.js`)
 module.exports = (webServer) => {
     return [{
             // Get all existing contexts from database
@@ -31,7 +31,7 @@ module.exports = (webServer) => {
 
                     // Get workflow
                     const accessToken = await nodered.getBLSAccessToken()
-                    const getFinalFlow = await axios(`${process.env.LINTO_STACK_BLS_SERVICE}/redui/flow/${flowId}`, {
+                    const getFinalFlow = await axios(`${middlewares.useSSL() + process.env.LINTO_STACK_BLS_SERVICE}/redui/flow/${flowId}`, {
                         method: 'get',
                         headers: {
                             'charset': 'utf-8',
@@ -108,7 +108,7 @@ module.exports = (webServer) => {
                 try {
                     res.json([{
                         "service_name": "tock",
-                        "host": `${process.env.LINTO_STACK_TOCK_SERVICE}:${process.env.LINTO_STACK_TOCK_SERVICE_PORT}/tock`
+                        "host": `${middlewares.useSSL() + process.env.LINTO_STACK_TOCK_SERVICE}:${process.env.LINTO_STACK_TOCK_SERVICE_PORT}/tock`
                     }])
                 } catch (error) {
                     console.error(error)

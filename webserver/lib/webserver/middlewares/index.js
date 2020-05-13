@@ -56,9 +56,18 @@ function basicAuthToken(user, password) {
     return "Basic " + hash;
 }
 
+function useSSL() {
+    if (process.env.LINTO_STACK_USE_SSL === true) {
+        return 'https://'
+    } else {
+        return 'http://'
+    }
+}
+
 module.exports = {
     basicAuthToken,
     checkAuth,
     isProduction,
-    logger
+    logger,
+    useSSL
 }
