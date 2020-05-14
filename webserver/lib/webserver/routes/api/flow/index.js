@@ -13,8 +13,16 @@ module.exports = (webServer) => {
             requireAuth: false,
             controller: async(req, res, next) => {
                 try {
-                    console.log(`${middlewares.useSSL() + process.env.LINTO_STACK_BLS_SERVICE}/redui`)
-                    const getBls = await axios(`${middlewares.useSSL() + process.env.LINTO_STACK_BLS_SERVICE}/redui`)
+                    const accessToken = await nodered.getBLSAccessToken()
+                    const getBls = await axios(`${middlewares.useSSL() + process.env.LINTO_STACK_BLS_SERVICE}/redui`, {
+                        method: 'get',
+                        headers: {
+                            'charset': 'utf-8',
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json',
+                            'Authorization': accessToken
+                        }
+                    })
                     if (getBls.status === 200) {
                         res.json({
                             status: 'success',

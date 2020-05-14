@@ -21,7 +21,7 @@ while [ "$1" != "" ]; do
         echo "REBUILDING VUE APP"
         if [[ "$LINTO_STACK_USE_SSL" == true ]]; then
             echo "VUE_APP_URL=
-            VUE_APP_TOCK_URL=https://$LINTO_STACK_DOMAIN/tock
+            VUE_APP_TOCK_URL=https://$LINTO_STACK_DOMAIN/tock/
             VUE_APP_TOCK_USER=$LINTO_STACK_TOCK_USER
             VUE_APP_TOCK_PASSWORD=$LINTO_STACK_TOCK_PASSWORD
             VUE_APP_NODERED=https://$LINTO_STACK_DOMAIN/redui
@@ -29,7 +29,7 @@ while [ "$1" != "" ]; do
             VUE_APP_NODERED_PASSWORD=$LINTO_STACK_BLS_PASSWORD" >.env.production
         else
             echo "VUE_APP_URL=
-            VUE_APP_TOCK_URL=http://$LINTO_STACK_DOMAIN/tock
+            VUE_APP_TOCK_URL=http://$LINTO_STACK_DOMAIN/tock/
             VUE_APP_TOCK_USER=$LINTO_STACK_TOCK_USER
             VUE_APP_TOCK_PASSWORD=$LINTO_STACK_TOCK_PASSWORD
             VUE_APP_NODERED=http://$LINTO_STACK_DOMAIN/redui
@@ -45,7 +45,7 @@ while [ "$1" != "" ]; do
         echo "REBUILDING VUE APP IN DEVELOPMENT MODE"
         if [[ "$LINTO_STACK_USE_SSL" == true ]]; then
             echo "VUE_APP_URL=
-            VUE_APP_TOCK_URL=https://$LINTO_STACK_DOMAIN/tock
+            VUE_APP_TOCK_URL=https://$LINTO_STACK_DOMAIN/tock/
             VUE_APP_TOCK_USER=$LINTO_STACK_TOCK_USER
             VUE_APP_TOCK_PASSWORD=$LINTO_STACK_TOCK_PASSWORD
             VUE_APP_NODERED=https://$LINTO_STACK_DOMAIN/redui
@@ -53,7 +53,7 @@ while [ "$1" != "" ]; do
             VUE_APP_NODERED_PASSWORD=$LINTO_STACK_BLS_PASSWORD" >.env.development
         else
             echo "VUE_APP_URL=
-            VUE_APP_TOCK_URL=http://$LINTO_STACK_DOMAIN/tock
+            VUE_APP_TOCK_URL=http://$LINTO_STACK_DOMAIN/tock/
             VUE_APP_TOCK_USER=$LINTO_STACK_TOCK_USER
             VUE_APP_TOCK_PASSWORD=$LINTO_STACK_TOCK_PASSWORD
             VUE_APP_NODERED=http://$LINTO_STACK_DOMAIN/redui
