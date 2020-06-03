@@ -5,6 +5,15 @@
     </div>
     <div class="flex col" v-if="dataLoaded">
       <h1>Create a context</h1>
+      <div class="block notice--important" v-if="noSttService">
+          <div class="flex row">
+            <span class="icon danger"></span>
+            <span class="title flex1">No STT service were found</span>
+          </div>
+          <span class="content">If you want to create a new context, <strong>you firstly need to create a STT service</strong>. <br/>
+          You can create a STT service by following the instructions on our <a href="#" target="_blank">documentation</a>. <br/>
+          If you already know about the documentation, you can go to <a href="#" target="_blank">STT service API</a>.</span>
+      </div>
       <div class="block">
         <div class="flex row">
           <div class="flex col flex1">
@@ -14,9 +23,9 @@
             <!-- Context Type -->
             <AppSelect :label="'Context type'" :obj="contextType" :list="contextTypes" :params="{key:'_id', value:'name', optLabel: 'name'}"></AppSelect>
             <!-- LinTO select -->
-            <AppSelect :label="'Select a LinTO'" :obj="linto" :list="availableLintos" :params="{key:'_id', value:'sn', optLabel: 'sn'}" v-if="contextType.value === 'Fleet'"></AppSelect>
+            <AppSelect :label="'Select a LinTO'" :obj="linto" :list="availableLintos" :params="{key:'_id', value:'sn', optLabel: 'sn'}" v-if="contextType.value === 'Fleet'" :disabled="availableLintos.length === 0" :disabledTxt="'No LinTo available'"></AppSelect>
             <!-- Context Language -->
-            <AppSelect :label="'Select a language'" :obj="sttServiceLanguage" :list="sttServicesLanguages" :params="{key:'value', value:'value', optLabel: 'value'}"></AppSelect>
+            <AppSelect :label="'Select a language'" :obj="sttServiceLanguage" :list="sttServicesLanguages" :params="{key:'value', value:'value', optLabel: 'value'}" :disabled="noSttService" :disabledTxt="'Create a STT service'"></AppSelect>
             <!-- Flow pattern -->
             <AppSelect :label="'Workflow pattern'" :obj="flowPattern" :list="flowPatterns" :params="{key:'_id', value:'name' , optLabel: 'name'}" v-if="contextType.value !== ''"></AppSelect>
             <!-- NLU SERVICE -->
@@ -31,7 +40,7 @@
             </div>
             <!-- STT SERVICE -->
             <h3>STT service</h3>
-            <AppSelect :label="'STT service'" :obj="sttService" :list="availableServices" :params="{key:'_id', value:'serviceId', optLabel: 'serviceId'}" :disabled="!languageSelected" :disabledTxt="'Select a language'"></AppSelect>
+            <AppSelect :label="'STT service'" :obj="sttService" :list="availableServices" :params="{key:'_id', value:'serviceId', optLabel: 'serviceId'}" :disabled="!languageSelected || noSttService" :disabledTxt="'Select a language'"></AppSelect>
             <div class="flex row">
               <button class="button button--valid" @click="handleForm()">
                 <span class="label">Create a context</span>
@@ -114,8 +123,8 @@ export default {
       },
       blsUp: false,
       tockUp: false,
-      sttUp: false
-
+      sttUp: false,
+      noSttService: false,
     }
   },
   beforeRouteEnter (to, form, next) {
@@ -170,6 +179,11 @@ export default {
           port: '',
           scope: ''
         }
+      }
+    },
+    'sttServices': function (data) {
+      if (data.length === 0) {
+        this.noSttService = true
       }
     },
     'sttService.value': function (data) {

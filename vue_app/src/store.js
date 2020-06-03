@@ -81,7 +81,6 @@ export default new Vuex.Store({
                 commit('SET_CONTEXT_FLEET', getFleetContexts.data)
                 return state.contextFleet
             } catch (error) {
-
                 return ({
                     error: 'Error on getting contexts'
                 })
@@ -93,7 +92,6 @@ export default new Vuex.Store({
                 commit('SET_CONTEXT_TYPES', getTypes.data)
                 return state.contextTypes
             } catch (error) {
-
                 return ({
                     error: 'Error on getting contexts types'
                 })
@@ -105,7 +103,6 @@ export default new Vuex.Store({
                 commit('SET_PATTERNS', getPatterns.data)
                 return state.flowPatterns
             } catch (error) {
-
                 return ({
                     error: 'Error on getting workflow patterns'
                 })
@@ -117,7 +114,6 @@ export default new Vuex.Store({
                 commit('SET_TMP_PATTERN', getTmpPattern.data[0])
                 return state.flowPatternTmp
             } catch (error) {
-
                 return ({
                     error: 'Error on saving changes'
                 })
@@ -129,7 +125,6 @@ export default new Vuex.Store({
                 commit('SET_NLU_SERVICES', getSettings.data)
                 return state.nluServices
             } catch (error) {
-
                 return ({
                     error: 'Error on getting NLU services'
                 })
@@ -151,7 +146,6 @@ export default new Vuex.Store({
                 commit('SET_TOCK_APPS', applications)
                 return state.tockapps
             } catch (error) {
-
                 return ({
                     error: 'Error on getting tock applications'
                 })
@@ -163,7 +157,6 @@ export default new Vuex.Store({
                 commit('SET_MQTT_SETTINGS', getSettings.data)
                 return state.mqttDefaultSettings
             } catch (error) {
-
                 return ({
                     error: 'Error on getting MQTT default settings'
                 })
@@ -175,7 +168,6 @@ export default new Vuex.Store({
                 commit('SET_STT_SERVICES', getServices.data.services.data)
                 return state.sttServices
             } catch (error) {
-
                 return ({
                     error: 'Error on getting STT services'
                 })
@@ -187,7 +179,6 @@ export default new Vuex.Store({
                 commit('SET_STT_LANG_MODELS', getSttLanguageModels.data.services.data)
                 return state.sttLanguageModels
             } catch (error) {
-
                 return ({
                     error: 'Error on getting language models'
                 })
@@ -200,7 +191,6 @@ export default new Vuex.Store({
                 commit('SET_STT_AC_MODELS', getSttAcousticModels.data.services.data)
                 return state.sttAcousticModels
             } catch (error) {
-
                 return ({
                     error: 'Error on getting acoustic models'
                 })
@@ -212,7 +202,6 @@ export default new Vuex.Store({
             try {
                 return state.lintoFleet.filter(f => f.associated_context !== null)
             } catch (error) {
-
                 return error.toString()
             }
         },
@@ -220,7 +209,6 @@ export default new Vuex.Store({
             try {
                 return state.lintoFleet.filter(f => f.associated_context === null)
             } catch (error) {
-
                 return error.toString()
             }
         },
@@ -228,7 +216,6 @@ export default new Vuex.Store({
             try {
                 return state.lintoFleet.filter(f => f.sn === sn)[0]
             } catch (error) {
-
                 return error.toString()
             }
         },
@@ -236,7 +223,6 @@ export default new Vuex.Store({
             try {
                 return state.contextFleet.filter(context => context._id === id)[0]
             } catch (error) {
-
                 return error.toString()
             }
         },
@@ -253,7 +239,6 @@ export default new Vuex.Store({
                 })
                 return availableServices
             } catch (error) {
-
                 return error.toString()
             }
         },
@@ -271,7 +256,6 @@ export default new Vuex.Store({
                 })
                 return resp
             } catch (error) {
-
                 return error.toString()
             }
         },
@@ -288,7 +272,6 @@ export default new Vuex.Store({
                     return generating
                 }
             } catch (error) {
-
                 return error.toString
             }
         }

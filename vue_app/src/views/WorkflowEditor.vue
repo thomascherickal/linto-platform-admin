@@ -59,13 +59,41 @@ export default {
       }
     },
     async getSandBoxId () {
-      const getSandBoxId = await axios(`${process.env.VUE_APP_URL}/api/flow/sandbox`, {
-        method: 'get'
-      })
-      if (getSandBoxId.data.sandBoxId !== null) {
-        this.sandBoxId = getSandBoxId.data.sandBoxId
-        this.sandBoxUrl = process.env.VUE_APP_NODERED + '/#flow/' + this.sandBoxId
-        this.sandBoxFound = true
+      try {
+        const getSandBoxId = await axios(`${process.env.VUE_APP_URL}/api/flow/sandbox`, {
+          method: 'get'
+        })
+        if (getSandBoxId.data.sandBoxId !== null) {
+          console.log("Sandbox id: ", getSandBoxId)
+          this.sandBoxId = getSandBoxId.data.sandBoxId
+          this.sandBoxUrl = process.env.VUE_APP_NODERED + '/#flow/' + this.sandBoxId
+          this.sandBoxFound = true
+        } else {
+          bus.$emit('app_notif', {
+            status: 'success',
+            msg: 'Creation of a Sandbox flow',
+            timeout: 3000
+          })
+          const createSandbox = await axios(`${process.env.VUE_APP_URL}/api/flow/sandbox`, {
+            method: 'post'
+          })
+          if(createSandbox.data.status === 'success') {
+            bus.$emit('app_notif', {
+              status: 'success',
+              msg: 'Sandbox flow created. Reloading...',
+              timeout: 3000
+            })
+            setTimeout(() => {
+              document.location.reload()
+            }, 4000)
+          }
+        }  
+      } catch (error) {
+        bus.$emit('app_notif', {
+          status: 'success',
+          msg: 'Error on trying to access SandBox workflow',
+          timeout: 4000
+        })
       }
     }
   }

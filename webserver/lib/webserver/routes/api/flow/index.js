@@ -76,6 +76,44 @@ module.exports = (webServer) => {
             }
         },
         {
+            // Get sandbox workflow ID
+            path: '/sandbox',
+            method: 'post',
+            requireAuth: true,
+            controller: async(req, res, next) => {
+                try {
+                    const accessToken = await nodered.getBLSAccessToken()
+                    let sandBoxId = null
+                    const payload = {
+                        label: 'SandBox',
+                        nodes: [],
+                        configs: []
+                    }
+
+                    const createSandbox = await axios(`${middlewares.useSSL() + process.env.LINTO_STACK_BLS_SERVICE}/redui/flow`, {
+                        method: 'post',
+                        headers: {
+                            'charset': 'utf-8',
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json',
+                            'Authorization': accessToken
+                        },
+                        data: payload
+                    })
+                    if (createSandbox.status === 200) {
+                        res.json({
+                            status: 'success'
+                        })
+                    } else {
+                        throw 'Error on creating SandBox workflow'
+                    }
+                } catch (e) {
+                    console.error(e)
+                    res.json({ error: e })
+                }
+            }
+        },
+        {
             // Get all workflow patterns in database
             path: '/patterns',
             method: 'get',

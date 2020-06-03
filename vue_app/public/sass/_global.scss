@@ -88,6 +88,41 @@ img {
     &.block--no-margin {
         margin: 0 !important;
     }
+    &.notice--important {
+        border: 3px dashed $error;
+        .icon {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            margin-right: 10px;
+            background-image: url('../img/warning@2x.png');
+            background-position: center center;
+            background-size: 30px 30px;
+        }
+        .title {
+            display: inline-block;
+            padding: 0 0 20px 0;
+            font-size: 22px;
+            line-height: 30px;
+            font-weight: 600;
+            color: $error;
+        }
+        .content {
+            line-height: 26px;
+            font-weight: 600;
+            strong {
+                color: $error;
+            }
+            a {
+                color: $greenChart;
+                text-decoration: none;
+                font-weight: 600;
+                &:hover {
+                    text-decoration: underline;
+                }
+            }
+        }
+    }
 }
 
 .table {
