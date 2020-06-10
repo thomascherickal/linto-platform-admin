@@ -10,12 +10,32 @@ function createFlowPattern(flow, workspaceId, workspaceLabel) {
         configs: [],
         nodes: []
     }
+    let idCorrespond = []
     let nodesArray = []
+
+    // make a an array to store current ids and new ids
+    flow.filter(node => node.type !== 'tab').map(f => {
+        if (!idCorrespond[f.id]) {
+            idCorrespond[f.id] = uuid()
+        }
+    })
+
+    // update ids for each node
     flow.filter(node => node.type !== 'tab').map(f => {
         f.z = workspaceId
-        f.id = uuid()
+        f.id = idCorrespond[f.id]
+
+        // update wires ids
+        if (!!f.wires && f.wires.length > 0) {
+            for (let i = 0; i < f.wires.length; i++) {
+                if (!!idCorrespond[f.wires[i]]) {
+                    f.wires[i] = idCorrespond[f.wires[i]]
+                }
+            }
+        }
         nodesArray.push(f)
     })
+
     formattedFlow.nodes = nodesArray
     return formattedFlow
 }

@@ -51,16 +51,15 @@ module.exports = (webServer) => {
 
                     // Get all workflows deployed
                     const fullFlow = await axios(`${middlewares.useSSL() + process.env.LINTO_STACK_BLS_SERVICE}/redui/flows`, {
-                        method: 'get',
-                        headers: {
-                            'charset': 'utf-8',
-                            'Accept': 'application/json',
-                            'Content-Type': 'application/json',
-                            'Authorization': accessToken
-                        }
-                    })
-
-                    // Search for the "SandBox" workflow Id
+                            method: 'get',
+                            headers: {
+                                'charset': 'utf-8',
+                                'Accept': 'application/json',
+                                'Content-Type': 'application/json',
+                                'Authorization': accessToken
+                            }
+                        })
+                        // Search for the "SandBox" workflow Id
                     fullFlow.data.map(f => {
                         if (f.type === 'tab' && f.label === "SandBox") {
                             sandBoxId = f.id
@@ -139,39 +138,35 @@ module.exports = (webServer) => {
                     const contextType = req.body.contextType
                     const date = moment().format()
                     let getAllPatterns = await flowPatternModel.getAllWorkflowPatterns()
-                    let patternNameExist = false
 
                     // Test if pattern name already exist
                     getAllPatterns.map(p => {
                         if (p.name.indexOf(patternName) >= 0) {
-                            patternNameExist = true
+                            res.json({
+                                status: 'error_name',
+                                msg: 'This flow pattern name is already used'
+                            })
                         }
                     })
-                    if (patternNameExist) {
+
+                    // Get workflow object to create
+                    let tmpFlow = await flowPatternTmpModel.getTmpFlow()
+                    const payload = {
+                        name: patternName,
+                        type: contextType,
+                        flow: tmpFlow,
+                        created_date: date,
+                    }
+
+                    // Create new workflow pattern
+                    let addNewPattern = await flowPatternModel.addWorkflowPattern(payload)
+                    if (addNewPattern === 'success') {
                         res.json({
-                            status: 'error_name',
-                            msg: 'This flow pattern name is already used'
+                            status: 'success',
+                            msg: `The flow pattern "${patternName}" has been added.`
                         })
                     } else {
-                        // Get workflow object to create
-                        let tmpFlow = await flowPatternTmpModel.getTmpFlow()
-                        const payload = {
-                            name: patternName,
-                            type: contextType,
-                            flow: tmpFlow,
-                            created_date: date,
-                        }
-
-                        // Create new workflow pattern
-                        let addNewPattern = await flowPatternModel.addWorkflowPattern(payload)
-                        if (addNewPattern === 'success') {
-                            res.json({
-                                status: 'success',
-                                msg: `The flow pattern "${patternName}" has been added.`
-                            })
-                        } else {
-                            throw 'Error on creating new flow pattern'
-                        }
+                        throw 'Error on creating new flow pattern'
                     }
                 } catch (error) {
                     console.error(error)
@@ -203,7 +198,9 @@ module.exports = (webServer) => {
                             'Authorization': accessToken
                         }
                     })
-                    const currentFlow = getCurrentWorkspaceFlow.data // GroupedNodes
+
+                    // Get Current flow label
+                    const currentFlow = getCurrentWorkspaceFlow.data
                     const workspaceLabel = currentFlow.label
 
                     // Get selected flow pattern data
@@ -213,6 +210,8 @@ module.exports = (webServer) => {
 
                     // Format Patten: update id, format workflow for request
                     let formattedPattern = nodered.createFlowPattern(pattern, workspaceId, workspaceLabel)
+
+                    // Put Flow on BLS
                     const blsUpdate = await axios(`${middlewares.useSSL() + process.env.LINTO_STACK_BLS_SERVICE}/redui/flow/${workspaceId}`, {
                         method: 'put',
                         headers: {
@@ -233,7 +232,6 @@ module.exports = (webServer) => {
                     } else {
                         throw 'Error on updating flow on the Business Logic Server'
                     }
-
                 } catch (error) {
                     console.error(error)
                     res.json({
