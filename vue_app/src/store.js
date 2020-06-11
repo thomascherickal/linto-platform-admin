@@ -221,6 +221,7 @@ export default new Vuex.Store({
         },
         CONTEXT_BY_ID: (state) => (id) => {
             try {
+
                 return state.contextFleet.filter(context => context._id === id)[0]
             } catch (error) {
                 return error.toString()
