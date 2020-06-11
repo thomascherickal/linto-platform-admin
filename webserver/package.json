@@ -58,7 +58,8 @@
         "uuid": "^3.3.3",
         "when": "^3.7.8",
         "word-definition": "^2.1.6",
-        "xml2json": "^0.11.2"
+        "xml2json": "^0.11.2",
+        "z-schema": "^4.2.3"
     },
     "devDependencies": {
         "nodemon": "^2.0.2"

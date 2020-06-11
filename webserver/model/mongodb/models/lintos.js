@@ -1,4 +1,5 @@
 const MongoModel = require(`${process.cwd()}/model/mongodb/model.js`)
+const lintosSchemas = require(`${process.env.LINTO_STACK_MONGODB_SHARED_SCHEMAS}/${process.env.LINTO_STACK_MONGODB_TARGET_VERSION}/schemas/lintos.json`)
 
 class LintosModel extends MongoModel {
     constructor() {
@@ -8,7 +9,14 @@ class LintosModel extends MongoModel {
     // Get all lintos that have "fleet" type 
     async getLintoFleet() {
         try {
-            return await this.mongoRequest({ type: 'fleet' })
+            const lintoFleet = await this.mongoRequest({ type: 'fleet' })
+
+            // compare object with schema
+            if (this.testSchema(lintoFleet, lintosSchemas)) {
+                return lintoFleet
+            } else {
+                throw 'Invalid document format'
+            }
         } catch (err) {
             console.error(err)
             return err
@@ -18,7 +26,15 @@ class LintosModel extends MongoModel {
     // Get a linto by its "sn" (serial number)
     async getLintoBySn(sn) {
         try {
-            return await this.mongoRequest({ sn })
+            const lintoSn = await this.mongoRequest({ sn })
+
+            // compare object with schema
+            if (this.testSchema(lintoSn, lintosSchemas)) {
+                return lintoSn
+            } else {
+                // compare object with schema
+                throw 'Invalid document format'
+            }
         } catch (err) {
             console.error(err)
             return err
@@ -31,7 +47,13 @@ class LintosModel extends MongoModel {
             const query = { _id: this.getObjectId(payload._id) }
             let mutableElements = payload
             delete mutableElements._id
-            return await this.mongoUpdate(query, mutableElements)
+
+            // compare object with schema
+            if (this.testSchema(mutableElements, lintosSchemas)) {
+                return await this.mongoUpdate(query, mutableElements)
+            } else {
+                throw 'Invalid document format'
+            }
         } catch (err) {
             return err
         }
@@ -58,7 +80,13 @@ class LintosModel extends MongoModel {
                 },
                 meeting: []
             }
-            return await this.mongoInsert(payload)
+
+            // compare object with schema
+            if (this.testSchema(payload, lintosSchemas)) {
+                return await this.mongoInsert(payload)
+            } else {
+                throw 'Invalid document format'
+            }
         } catch (err) {
             console.error(err)
             return err

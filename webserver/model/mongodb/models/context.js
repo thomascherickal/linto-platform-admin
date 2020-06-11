@@ -1,4 +1,5 @@
 const MongoModel = require(`${process.cwd()}/model/mongodb/model.js`)
+const contextSchema = require(`${process.env.LINTO_STACK_MONGODB_SHARED_SCHEMAS}/${process.env.LINTO_STACK_MONGODB_TARGET_VERSION}/schemas/context.json`)
 
 class ContextModel extends MongoModel {
     constructor() {
@@ -9,7 +10,14 @@ class ContextModel extends MongoModel {
     async getContexts() {
         try {
             const query = {}
-            return await this.mongoRequest(query)
+            const contexts = await this.mongoRequest(query)
+
+            // compare object with schema
+            if (this.testSchema(contexts, contextSchema)) {
+                return contexts
+            } else {
+                throw 'Invalid document format'
+            }
         } catch (err) {
             console.error(err)
             return err
@@ -22,7 +30,14 @@ class ContextModel extends MongoModel {
             const query = {
                 _id: this.getObjectId(id)
             }
-            return await this.mongoRequest(query)
+            const context = await this.mongoRequest(query)
+
+            // compare object with schema
+            if (this.testSchema(context, contextSchema)) {
+                return context
+            } else {
+                throw 'Invalid document format'
+            }
         } catch (err) {
             console.error(err)
             return err
@@ -33,7 +48,14 @@ class ContextModel extends MongoModel {
     async getFleetContexts() {
         try {
             const query = { type: 'Fleet' }
-            return await this.mongoRequest(query)
+            const contexts = await this.mongoRequest(query)
+
+            // compare object with schema
+            if (this.testSchema(contexts, contextSchema)) {
+                return contexts
+            } else {
+                throw 'Invalid document format'
+            }
         } catch (err) {
             console.error(err)
             return err
@@ -43,7 +65,12 @@ class ContextModel extends MongoModel {
     // Create a new context
     async createContext(payload) {
         try {
-            return await this.mongoInsert(payload)
+            // compare object with schema
+            if (this.testSchema(payload, contextSchema)) {
+                return await this.mongoInsert(payload)
+            } else {
+                throw 'Invalid document format'
+            }
         } catch (err) {
             console.error(err)
             return err
@@ -58,7 +85,13 @@ class ContextModel extends MongoModel {
             }
             let mutableElements = payload
             delete mutableElements._id
-            return await this.mongoUpdate(query, mutableElements)
+
+            // compare object with schema
+            if (this.testSchema(mutableElements, contextSchema)) {
+                return await this.mongoUpdate(query, mutableElements)
+            } else {
+                throw 'Invalid document format'
+            }
         } catch (err) {
             return err
         }

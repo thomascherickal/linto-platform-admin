@@ -1,4 +1,5 @@
 const MongoModel = require(`${process.cwd()}/model/mongodb/model.js`)
+const flowPatternSchema = require(`${process.env.LINTO_STACK_MONGODB_SHARED_SCHEMAS}/${process.env.LINTO_STACK_MONGODB_TARGET_VERSION}/schemas/flow_pattern.json`)
 
 // This class is a child of 'modelMongoDb' class. It contains all methods and requests to database used on API routes.
 class FLowPatternModel extends MongoModel {
@@ -10,7 +11,14 @@ class FLowPatternModel extends MongoModel {
     async getAllWorkflowPatterns() {
         try {
             const query = {}
-            return await this.mongoRequest(query)
+            const patterns = await this.mongoRequest(query)
+
+            // compare object with schema
+            if (this.testSchema(patterns, flowPatternSchema)) {
+                return patterns
+            } else {
+                throw 'Invalid document format'
+            }
         } catch (err) {
             console.error(err)
             return err
@@ -21,7 +29,14 @@ class FLowPatternModel extends MongoModel {
     async getWorkflowPatternByName(name) {
         try {
             const query = { name }
-            return await this.mongoRequest(query)
+            const pattern = await this.mongoRequest(query)
+
+            // compare object with schema
+            if (this.testSchema(pattern, flowPatternSchema)) {
+                return pattern
+            } else {
+                throw 'Invalid document format'
+            }
         } catch (err) {
             console.error(err)
             return err
@@ -33,7 +48,13 @@ class FLowPatternModel extends MongoModel {
         try {
             const query = { _id: this.getObjectId(id) }
             const tmpFlow = await this.mongoRequest(query)
-            return tmpFlow[0]
+
+            // compare object with schema
+            if (this.testSchema(tmpFlow[0], flowPatternSchema)) {
+                return tmpFlow[0]
+            } else {
+                throw 'Invalid document format'
+            }
         } catch (err) {
             return err
         }
@@ -42,7 +63,12 @@ class FLowPatternModel extends MongoModel {
     // Create a new workflow pattern
     async addWorkflowPattern(payload) {
         try {
-            return await this.mongoInsert(payload)
+            // compare object with schema
+            if (this.testSchema(payload, flowPatternSchema)) {
+                return await this.mongoInsert(payload)
+            } else {
+                throw 'Invalid document format'
+            }
         } catch (err) {
             console.error(err)
             return err
