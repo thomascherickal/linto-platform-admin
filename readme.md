@@ -1,13 +1,26 @@
 # linto-platform-admin
 
 ## Description
-"LinTO platform Admin" is a web interface used for monitoring a fleet of LinTO's devices, deployed on a technical scope.
-Once you're connected to the interface, you have an access to the following services or fonctionalities :
-- Create a "meeting room" on wich you can associate a LinTO device
-- Create, edit or delete a LinTO device workflow (with node-red interface)
-- Install or uninstall LinTO skills
-- Monitoring of LinTO devices or applications (get infos, set volume, ping... )
-- Edit/train a NLU model (natural language understanding) via "Tock" interface
+This web interface is used as a central manager for a given fleet of LinTO clients (voice-enabled apps or devices)
+
+You might :
+- Create a "room context" (node-red workflow paired with a specific LinTO device)
+- Create, edit, mock and template workflows for later usage
+- Create an "application context" (node-red workflow paired with a dynamic number of connected LinTO clients)
+- Install or uninstall LinTO skills (node-red nodes)
+- Monitor LinTO clients (client devices or client applications)
+- Edit/train a NLU model (natural language understanding)
+- And many more
+
+## Usage
+
+See documentation : [https://doc.linto.ai](https://doc.linto.ai)
+
+# Deploy
+
+With our proposed stack [https://github.com/linto-ai/linto-platform-stack](https://github.com/linto-ai/linto-platform-stack)
+
+# Develop
 
 ## Prerequisites
 To lauch the application, you'll have to launch associated services :
