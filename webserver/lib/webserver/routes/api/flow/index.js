@@ -14,7 +14,7 @@ module.exports = (webServer) => {
             controller: async(req, res, next) => {
                 try {
                     const accessToken = await nodered.getBLSAccessToken()
-                    const getBls = await axios(`${middlewares.useSSL() + process.env.LINTO_STACK_BLS_SERVICE}/redui`, {
+                    const getBls = await axios(`${middlewares.useSSL() + process.env.LINTO_STACK_BLS_SERVICE + process.env.LINTO_STACK_BLS_SERVICE_UI_PATH}`, {
                         method: 'get',
                         headers: {
                             'charset': 'utf-8',
@@ -50,7 +50,7 @@ module.exports = (webServer) => {
                     let sandBoxId = null
 
                     // Get all workflows deployed
-                    const fullFlow = await axios(`${middlewares.useSSL() + process.env.LINTO_STACK_BLS_SERVICE}/redui/flows`, {
+                    const fullFlow = await axios(`${middlewares.useSSL() + process.env.LINTO_STACK_BLS_SERVICE + process.env.LINTO_STACK_BLS_SERVICE_UI_PATH}/flows`, {
                             method: 'get',
                             headers: {
                                 'charset': 'utf-8',
@@ -89,7 +89,7 @@ module.exports = (webServer) => {
                         configs: []
                     }
 
-                    const createSandbox = await axios(`${middlewares.useSSL() + process.env.LINTO_STACK_BLS_SERVICE}/redui/flow`, {
+                    const createSandbox = await axios(`${middlewares.useSSL() + process.env.LINTO_STACK_BLS_SERVICE + process.env.LINTO_STACK_BLS_SERVICE_UI_PATH}/flow`, {
                         method: 'post',
                         headers: {
                             'charset': 'utf-8',
@@ -188,7 +188,7 @@ module.exports = (webServer) => {
                     const workspaceId = req.body.workspaceId
 
                     // Get current BLS workspace
-                    const getCurrentWorkspaceFlow = await axios(`${middlewares.useSSL() + process.env.LINTO_STACK_BLS_SERVICE}/redui/flow/${workspaceId}`, {
+                    const getCurrentWorkspaceFlow = await axios(`${middlewares.useSSL() + process.env.LINTO_STACK_BLS_SERVICE + process.env.LINTO_STACK_BLS_SERVICE_UI_PATH}/flow/${workspaceId}`, {
                         method: 'get',
                         headers: {
                             'charset': 'utf-8',
@@ -212,7 +212,7 @@ module.exports = (webServer) => {
                     let formattedPattern = nodered.createFlowPattern(pattern, workspaceId, workspaceLabel)
 
                     // Put Flow on BLS
-                    const blsUpdate = await axios(`${middlewares.useSSL() + process.env.LINTO_STACK_BLS_SERVICE}/redui/flow/${workspaceId}`, {
+                    const blsUpdate = await axios(`${middlewares.useSSL() + process.env.LINTO_STACK_BLS_SERVICE + process.env.LINTO_STACK_BLS_SERVICE_UI_PATH}/flow/${workspaceId}`, {
                         method: 'put',
                         headers: {
                             'charset': 'utf-8',
@@ -379,7 +379,7 @@ module.exports = (webServer) => {
 
                     // POST WORKFLOW ON BLS
                     const accessToken = await nodered.getBLSAccessToken()
-                    let blsPost = await axios(`${middlewares.useSSL() + process.env.LINTO_STACK_BLS_SERVICE}/redui/flow`, {
+                    let blsPost = await axios(`${middlewares.useSSL() + process.env.LINTO_STACK_BLS_SERVICE + process.env.LINTO_STACK_BLS_SERVICE_UI_PATH}/flow`, {
                         method: 'post',
                         headers: {
                             'charset': 'utf-8',
