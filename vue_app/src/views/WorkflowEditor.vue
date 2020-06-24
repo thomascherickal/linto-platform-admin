@@ -64,7 +64,6 @@ export default {
           method: 'get'
         })
         if (getSandBoxId.data.sandBoxId !== null) {
-          console.log("Sandbox id: ", getSandBoxId)
           this.sandBoxId = getSandBoxId.data.sandBoxId
           this.sandBoxUrl = process.env.VUE_APP_NODERED + '/#flow/' + this.sandBoxId
           this.sandBoxFound = true

@@ -8,16 +8,19 @@ const path = require('path')
 const IoHandler = require('./iohandler')
 const CORS = require('cors')
 const redisClient = require(`${process.cwd()}/lib/redis`)
+const middlewares = require(`${process.cwd()}/lib/webserver/middlewares/index.js`)
 let corsOptions = {}
-let whitelistDomains = []
+let whitelistDomains = [`${middlewares.useSSL() + process.env.LINTO_STACK_DOMAIN}`]
 
 if (process.env.LINTO_STACK_ADMIN_API_WHITELIST_DOMAINS.length > 0) {
-    whitelistDomains = process.env.LINTO_STACK_ADMIN_API_WHITELIST_DOMAINS.split(',')
+    whitelistDomains.push(...process.env.LINTO_STACK_ADMIN_API_WHITELIST_DOMAINS.split(','))
+    console.log('whitelist: ', whitelistDomains)
     corsOptions = {
         origin: function(origin, callback) {
-            if (!origin ||  whitelistDomains.indexOf(origin) !== -1 ||  origin === 'undefined') {
+            if (!origin || whitelistDomains.indexOf(origin) !== -1 || origin === 'undefined') {
                 callback(null, true)
             } else {
+                console.log('whitelist: ', whitelistDomains)
                 callback(new Error('Not allowed by CORS'))
             }
         }

@@ -165,7 +165,7 @@ export default new Vuex.Store({
         getSttServices: async({ commit, state }) => {
             try {
                 const getServices = await axios.get(`${process.env.VUE_APP_URL}/api/stt/services`)
-                commit('SET_STT_SERVICES', getServices.data.services.data)
+                commit('SET_STT_SERVICES', getServices.data)
                 return state.sttServices
             } catch (error) {
                 return ({
@@ -176,7 +176,7 @@ export default new Vuex.Store({
         getSttLanguageModels: async({ commit, state }) => {
             try {
                 const getSttLanguageModels = await axios.get(`${process.env.VUE_APP_URL}/api/stt/langmodels`)
-                commit('SET_STT_LANG_MODELS', getSttLanguageModels.data.services.data)
+                commit('SET_STT_LANG_MODELS', getSttLanguageModels.data)
                 return state.sttLanguageModels
             } catch (error) {
                 return ({
@@ -188,7 +188,7 @@ export default new Vuex.Store({
             try {
                 const getSttAcousticModels = await axios.get(`${process.env.VUE_APP_URL}/api/stt/acmodels`)
 
-                commit('SET_STT_AC_MODELS', getSttAcousticModels.data.services.data)
+                commit('SET_STT_AC_MODELS', getSttAcousticModels.data)
                 return state.sttAcousticModels
             } catch (error) {
                 return ({
@@ -228,16 +228,22 @@ export default new Vuex.Store({
         },
         STT_SERVICES_AVAILABLE: (state) => {
             try {
-                const services = state.sttServices
-                let languageModels = state.sttLanguageModels
+                let services = state.sttServices || []
+                let languageModels = state.sttLanguageModels || []
                 let availableServices = []
-                services.map(s => {
-                    let lm = languageModels.filter(lm => lm.modelId === s.LModelId)[0]
-                    if (lm.isDirty === 0 && lm.isGenerated === 1 || lm.isDirty === 1 && lm.updateState === 0) {
-                        availableServices.push(s)
-                    }
-                })
-                return availableServices
+                if (services.length > 0) {
+                    services.map(s => {
+                        let lm = languageModels.filter(l => l.modelId === s.LModelId)
+                        if (lm.length > 0) {
+                            if (lm[0].isGenerated === 1 || lm[0].isDirty === 1 && lm[0].isGenerated === 0 && lm[0].updateState >= 0) {
+                                availableServices.push(s)
+                            }
+                        }
+                    })
+                    return availableServices
+                } else {
+                    throw 'No service found.'
+                }
             } catch (error) {
                 return error.toString()
             }
@@ -259,9 +265,25 @@ export default new Vuex.Store({
                 return error.toString()
             }
         },
+        STT_LM_ERRORS: (state) => {
+            try {
+                const langModels = state.sttLanguageModels
+                const brokenModel = []
+                if (!!langModels) {
+                    langModels.map(lm => {
+                        if (lm.updateState < 0 && lm.isDirty === 1) {
+                            brokenModel.push(lm)
+                        }
+                    })
+                    return brokenModel
+                }
+            } catch (error) {
+                return error.toString
+            }
+        },
         STT_GRAPH_GENERATION: (state) => {
             try {
-                let langModels = state.sttLanguageModels
+                const langModels = state.sttLanguageModels
                 let generating = []
                 if (!!langModels) {
                     langModels.map(lm => {

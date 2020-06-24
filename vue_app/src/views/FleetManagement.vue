@@ -120,7 +120,6 @@ export default {
     return {
       loading: true,
       lintoLoaded: false
-
     }
   },
   async created () {

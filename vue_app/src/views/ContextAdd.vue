@@ -214,6 +214,12 @@ export default {
       } else {
         this.languageSelected = true
       }
+    },
+    sttUp (data) {
+      if (data) {
+        this.dispatchStore('getSttServices')
+        this.dispatchStore('getSttLanguageModels')
+      }
     }
   },
   computed: {
@@ -351,7 +357,7 @@ export default {
         const connectSTT = await axios.get(`${process.env.VUE_APP_URL}/api/stt/healthcheck`)
         if (connectSTT.data.status === 'success') {
           this.sttUp = true
-          this.dispatchStore('getSttServices')
+          
         }
         else {
           throw 'error'
