@@ -6,8 +6,8 @@
     <div class="header__nav flex3">
       <a 
         href="/logout" 
-        class="button button--img button--img__logout">
-        <span class="icon logout"></span>
+        class="button button-icon button__red">
+        <span class="button--icon button--icon__logout"></span>
       </a>
     </div>
   </header>

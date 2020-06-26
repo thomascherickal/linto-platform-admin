@@ -34,10 +34,10 @@
         <div class="flex col">
           <!-- Submit -->
           <button
-            class="button button--full button--login-submit"
+            class="button button__full button__blue"
             :class="formValid ? 'button--login-enabled' : 'button--login-disabled'"
             @click="handleForm()"
-          >Login</button>
+          ><span class="button--label">Login</span></button>
           <span class="form__error-field">{{ loginError }}</span>
         </div>
       </div>

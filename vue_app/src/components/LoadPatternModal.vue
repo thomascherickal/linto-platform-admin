@@ -3,7 +3,7 @@
     <div class="modal flex col">
       <div class="modal-header flex row">
         <span class="modal-header__tilte flex1 flex row">Load a flow from existing pattern</span>
-        <button @click="closeModal()" class="button button--img button--img__close"></button>
+        <button @click="closeModal()" class="button button-icon button__red"><span class="button--icon button--icon__close"></span></button>
       </div>
       <div class="modal-body flex1 flex col" v-if="loading">
         lOADING
@@ -17,8 +17,8 @@
         </div>
       </div>
       <div class="modal-footer flex row">
-        <button class="button button--cancel" @click="closeModal()"><span class="label">Cancel</span></button>
-        <button class="button button--valid" @click="handleForm()"><span class="label">Submit</span></button>
+        <button class="button button-txt button__grey" @click="closeModal()"><span class="button--label">Cancel</span></button>
+        <button class="button button-txt button__green" @click="handleForm()"><span class="button--label">Submit</span></button>
       </div>
     </div>
   </div>

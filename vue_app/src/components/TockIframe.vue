@@ -7,11 +7,11 @@
     <div class="iframe__controls flex row">
       <div class="flex1 flex row iframe__controls-left">
         <button
-          class="button button--img button--with-desc button--img__fullscreen"
+          class="button button-icon button__with-desc button__blue"
           :class="fullScreen ? 'enabled' : 'disabled'"
           @click="toggleFullScreen()"
           :data-desc="fullScreen ? 'Leave full screen' : 'Full screen'"
-        ></button>
+        ><span class="button--icon" :class="fullScreen ? 'button--icon__leave-fullscreen' : 'button--icon__fullscreen'"></span></button>
       </div>
     </div>
     <iframe

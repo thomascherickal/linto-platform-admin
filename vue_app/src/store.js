@@ -214,7 +214,12 @@ export default new Vuex.Store({
         },
         LINTO_FLEET_BY_SN: (state) => (sn) => {
             try {
-                return state.lintoFleet.filter(f => f.sn === sn)[0]
+                if (state.lintoFleet.length > 0) {
+                    return state.lintoFleet.filter(f => f.sn === sn)[0]
+                } else {
+                    throw null
+                }
+
             } catch (error) {
                 return error.toString()
             }

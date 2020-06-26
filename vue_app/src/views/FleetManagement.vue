@@ -49,11 +49,11 @@
                 <td>0.0.0.1</td>
                 <td>
                   <a
-                    class="button button--bluemid"
+                    class="button button-icon-txt button__bluemid"
                     :href="'/admin/fleet/monitoring/'+linto.sn"
                   >
-                    <span class="button__icon button__icon--monitoring"></span>
-                    <span class="label">Monitoring</span>
+                    <span class="button--icon button--icon__monitoring"></span>
+                    <span class="button--label">Monitoring</span>
                   </a>
                 </td>
               </tr>
@@ -90,11 +90,11 @@
                 <td>{{ linto.config.firmware }}</td>
                 <td>
                   <a
-                    class="button button--bluemid"
+                    class="button button-icon-txt button__bluemid"
                     :href="'/admin/fleet/monitoring/'+linto.sn"
                   >
-                    <span class="button__icon button__icon--monitoring"></span>
-                    <span class="label">Monitoring</span>
+                    <span class="button--icon button--icon__monitoring"></span>
+                    <span class="button--label">Monitoring</span>
                   </a>
                 </td>
               </tr>
@@ -106,8 +106,8 @@
         </div>
       </div>
       <div class="block block--transparent">
-        <button class="button button--valid" @click="addLintoModal()">
-          <span class="label">Add a LinTO device</span>
+        <button class="button button__valid" @click="addLintoModal()">
+          <span class="button--label">Add a LinTO device</span>
         </button>
       </div>
     </div>

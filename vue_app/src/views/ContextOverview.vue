@@ -32,11 +32,11 @@
                 <td>{{ context.updated_date }}</td>
                 <td>
                   <a
-                    class="button button--bluemid"
+                    class="button button-icon-txt button__bluemid"
                     :href="'/admin/context/workflow/' + context._id"
                   >
-                    <span class="button__icon button__icon--workflow"></span>
-                    <span class="label">Workflow</span>
+                    <span class="button--icon button--icon__workflow"></span>
+                    <span class="button--label">Workflow</span>
                   </a>
                 </td>
               </tr>
@@ -44,8 +44,8 @@
           </table>
         </div>
         <div class="block block--transparent">
-          <a class="button button--valid" href="/admin/context/create">
-            <span class="label">Create a new context</span>
+          <a class="button button-txt button__green" href="/admin/context/create">
+            <span class="button--label">Create a new context</span>
           </a>
         </div>
       </div>
