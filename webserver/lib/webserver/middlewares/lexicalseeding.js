@@ -19,7 +19,7 @@ async function sttLexicalSeeding(flowId, service_name) {
         const sttService = getSttService.data.data
 
         // Get lexical seeding data
-        const getSttLexicalSeeding = await axios(`${middlewares.useSSL() + process.env.LINTO_STACK_BLS_SERVICE}/red-nodes/${flowId}/dataset/linstt`, {
+        const getSttLexicalSeeding = await axios(`${middlewares.useSSL() + process.env.LINTO_STACK_BLS_SERVICE + process.env.LINTO_STACK_BLS_SERVICE_API_PATH}/${flowId}/dataset/linstt`, {
             method: 'get',
             headers: {
                 'charset': 'utf-8',
@@ -217,7 +217,7 @@ async function nluLexicalSeeding(flowId) {
         const accessToken = await nodered.getBLSAccessToken()
 
         // Get lexical seeding object to send to TOCK
-        const getNluLexicalSeeding = await axios(`${middlewares.useSSL() + process.env.LINTO_STACK_BLS_SERVICE}/red-nodes/${flowId}/dataset/tock`, {
+        const getNluLexicalSeeding = await axios(`${middlewares.useSSL() + process.env.LINTO_STACK_BLS_SERVICE + process.env.LINTO_STACK_BLS_SERVICE_API_PATH}/${flowId}/dataset/tock`, {
             method: 'get',
             headers: {
                 'charset': 'utf-8',

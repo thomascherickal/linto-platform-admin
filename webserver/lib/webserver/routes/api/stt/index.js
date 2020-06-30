@@ -29,7 +29,7 @@ module.exports = (webServer) => {
                     const getServices = await axios(`${middlewares.useSSL() + process.env.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE}/services`, {
                         method: 'get'
                     })
-                    res.json({ services: getServices.data })
+                    res.json(getServices.data.data)
                 } catch (error) {
                     console.error(error)
                     res.json({ error: error.toString() })
@@ -79,7 +79,7 @@ module.exports = (webServer) => {
                     const getLanguageModels = await axios(`${middlewares.useSSL() + process.env.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE}/langmodels`, {
                         method: 'get'
                     })
-                    res.json({ services: getLanguageModels.data })
+                    res.json(getLanguageModels.data.data)
                 } catch (error) {
                     res.json({ error: error.toString() })
                 }
@@ -162,7 +162,7 @@ module.exports = (webServer) => {
                     const getACModels = await axios(`${middlewares.useSSL() + process.env.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE}/acmodels`, {
                         method: 'get'
                     })
-                    res.json({ services: getACModels.data })
+                    res.json(getACModels.data.data)
                 } catch (e) {
                     res.json({ error: e })
                 }

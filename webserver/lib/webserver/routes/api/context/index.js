@@ -31,7 +31,7 @@ module.exports = (webServer) => {
 
                     // Get workflow
                     const accessToken = await nodered.getBLSAccessToken()
-                    const getFinalFlow = await axios(`${middlewares.useSSL() + process.env.LINTO_STACK_BLS_SERVICE}/redui/flow/${flowId}`, {
+                    const getFinalFlow = await axios(`${middlewares.useSSL() + process.env.LINTO_STACK_BLS_SERVICE + process.env.LINTO_STACK_BLS_SERVICE_UI_PATH}/flow/${flowId}`, {
                         method: 'get',
                         headers: {
                             'charset': 'utf-8',

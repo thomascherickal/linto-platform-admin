@@ -49,11 +49,11 @@
                 <td>0.0.0.1</td>
                 <td>
                   <a
-                    class="button button--bluemid"
+                    class="button button-icon-txt button--bluemid"
                     :href="'/admin/fleet/monitoring/'+linto.sn"
                   >
                     <span class="button__icon button__icon--monitoring"></span>
-                    <span class="label">Monitoring</span>
+                    <span class="button__label">Monitoring</span>
                   </a>
                 </td>
               </tr>
@@ -68,10 +68,9 @@
       <div class="block block--transparent">
         <h2>Provisionning</h2>
         <details class="description">
-        <summary>Infos</summary>
-        <span>A list of registered LinTO devices that are not enrolled towards an application context</span>
-      </details>
-        
+          <summary>Infos</summary>
+          <span>A list of registered LinTO devices that are not enrolled towards an application context</span>
+        </details>
         <div class="flex row" v-if="not_associated_lintos.length > 0">
           <table class="table table--shadow">
             <thead>
@@ -90,11 +89,11 @@
                 <td>{{ linto.config.firmware }}</td>
                 <td>
                   <a
-                    class="button button--bluemid"
+                    class="button button-icon-txt button--bluemid"
                     :href="'/admin/fleet/monitoring/'+linto.sn"
                   >
                     <span class="button__icon button__icon--monitoring"></span>
-                    <span class="label">Monitoring</span>
+                    <span class="button__label">Monitoring</span>
                   </a>
                 </td>
               </tr>
@@ -107,7 +106,7 @@
       </div>
       <div class="block block--transparent">
         <button class="button button--valid" @click="addLintoModal()">
-          <span class="label">Add a LinTO device</span>
+          <span class="button__label">Add a LinTO device</span>
         </button>
       </div>
     </div>
@@ -120,11 +119,10 @@ export default {
     return {
       loading: true,
       lintoLoaded: false
-
     }
   },
   async created () {
-    const test = await  this.dispatchLintos()
+    const test = await this.dispatchLintos()
   },
   watch: {
     dataLoaded (data) {
@@ -145,30 +143,30 @@ export default {
     },
     dataLoaded () {
       return (this.lintoLoaded.status === 'success')
-    },
+    }
   },
   mounted () {
     const socket = io(process.env.VUE_APP_URL)
-    
     // On "linto_status" update
     // Only "fleet" types are handled for now
     socket.on('linto_status', (data) => {
       this.$store.commit('UPDATE_LINTO_FLEET', data)
     })
-
   },
   methods: {
     addLintoModal () {
       bus.$emit('add_linto_modal', {})
     },
-    
     async dispatchLintos () {
-      this.lintoLoaded = await this.$options.filters.dispatchStore('getLintoFleet')
-
-      if(this.lintoLoaded.status === 'error') {
+      try {
+        this.lintoLoaded = await this.$options.filters.dispatchStore('getLintoFleet')
+        if (this.lintoLoaded.status === 'error') {
+          throw 'Error on getting lintos'
+        }
+      } catch (error) {
         bus.$emit('app_notif', {
-          status: this.lintoLoaded.status,
-          msg: this.lintoLoaded.msg,
+          status: 'error',
+          msg: error,
           timeout: false,
           redirect: false
         })

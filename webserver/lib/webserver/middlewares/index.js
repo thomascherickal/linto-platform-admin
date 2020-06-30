@@ -19,22 +19,21 @@ async function checkAuth(req, res, next) {
     if (!!req && !!req.session) {
         if (!!req.session.logged) {
             debug(req.session.logged)
-            if (req.session.logged == 'on' && req.url == '/login') {
+            if (req.session.logged === 'on' && req.url === '/login') {
                 req.session.save((err) => {
-                    if (err && err != 'undefined') {
+                    if (err && err !== 'undefined') {
                         console.error('Err:', err)
                     }
                 })
                 res.redirect('/admin/fleet')
-            } else if (req.session.logged == 'on' && req.url != '/login') {
+            } else if (req.session.logged === 'on' && req.url !== '/login') {
                 next()
-            } else if (req.session.logged != 'on' && req.url != '/login') {
+            } else if (req.session.logged !== 'on' && req.url !== '/login') {
                 res.redirect('/login')
-            } else if (req.session.logged != 'on' && req.url == '/login') {
+            } else if (req.session.logged !== 'on' && req.url === '/login') {
                 next()
             }
         } else {
-
             const users = await UsersModel.getUsers()
             if (users.length === 0) {
                 res.redirect('/setup')
@@ -44,7 +43,7 @@ async function checkAuth(req, res, next) {
                 next()
             }
         }
-    } else {
+    } else { // session not found
         res.redirect('/login')
     }
 }

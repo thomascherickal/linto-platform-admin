@@ -18,9 +18,9 @@
           <AppInput :label="'Password confirmation'" :obj="user.password_confirm" :test="'null'" :type="'password'"></AppInput>
           <!-- Submit -->
           <button
-            class="button button--setup--submit"
+            class="button button-txt button--blue"
             @click="handleForm()"
-          >Create user</button>
+          ><span class="button__label">Create user</span></button>
         </div>
       </div>
     </div>

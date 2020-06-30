@@ -78,7 +78,16 @@ export default {
       }
     },
     async dispatchContext () {
-      this.contextLoaded = await this.$options.filters.dispatchStore('getFleetContexts')
+      try {
+        this.contextLoaded = await this.$options.filters.dispatchStore('getFleetContexts')
+      } catch (error) {
+        bus.$emit('app_notif', {
+          status: 'error',
+          msg: error,
+          timeout: false,
+          redirect: false
+        })
+      }
     }
   },
   components: {

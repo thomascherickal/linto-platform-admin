@@ -42,7 +42,7 @@
       </div>
       <div class="block block--transparent">
         <div class="flex row">
-
+<!--
           <div v-if="linto.config.network.length > 0" class="flex1 linto-config-table">
             <h2>Network informations</h2>
             <div v-for="(network, index) in linto.config.network" :key="index" class="network-item">
@@ -65,7 +65,8 @@
             </table>
           </div>
 
-          <div v-if="!!linto.config.sound" class="flex1 linto-config-table">
+          
+            <div v-if="!!linto.config.sound && !!linto.config.sound.volume" class="flex1 linto-config-table">
             <h2>Sound</h2>
             <table class="table table--full table--config">
               <tr v-for="(sound, index) in linto.config.sound" :key="index">
@@ -73,24 +74,23 @@
                 <td class="td--value">{{ sound }}</td>
               </tr>
             </table>
-          </div>
+          </div>-->
 
         </div>
       </div>
       <div class="block block--transparent">
         <h2>Settings</h2>
-        
           <div class="flex row">
             <div class="linto-settings-item">
               <div class="flex col">
                 
                 <button 
                   @click="ping()"
-                  class="button button--ping"
+                  class="button button-icon-txt button--blue"
                   :class="pingStatus.status"
                 > 
-                  <span class="icon"></span>
-                  <span class="label">Ping</span>
+                  <span class="button__icon button__icon--ping"></span>
+                  <span class="button__label">Ping</span>
                 </button>
                 <span class="ping-status" :class="pingStatus.status">{{ pingStatus.msg }}</span>
             </div>
@@ -100,8 +100,8 @@
             <div class="flex row">
               <span>Volume : </span>
               <button 
-                class="button button--img" 
-                :class="isMuted ? 'button--img__unmute ' :  'button--img__mute'"
+                class="button button-icon button--grey" 
+                :class="isMuted ? 'button__icon button__icon--unmute ' :  'button--img__mute'"
                 @click="isMuted ? unmute() : mute() "
               >
                 <span class="button__icon" :class="isMuted ? 'button__icon--unmute' : 'button__icon--mute'"
@@ -124,9 +124,9 @@
           <div class="linto-settings-item">
             <div class="flex row">
               <AppInput :label="'Make me talk...'" :obj="say" :test="'testSentence'"></AppInput>
-              <button @click="lintoSay()" class="button button--say"> 
-                <span class="icon"></span>
-                <span class="label">Make me talk</span>
+              <button @click="lintoSay()" class="button button-icon-txt button--blue"> 
+                <span class="button__icon button__icon--talk"></span>
+                <span class="button__label">Make me talk</span>
               </button>
             </div>
           </div>
@@ -151,8 +151,8 @@ export default {
         status: '',
         msg: ''
       },
-      isMuted: false,
       volume: 0,
+      volumeInit: false,
       tmpVolume: 0,
       say: {
         value: '',
@@ -163,9 +163,10 @@ export default {
   },
   created () {
     this.sn = this.$router.currentRoute.params.sn
-    this.dispatchLintos()
+    
   },
-  mounted () {
+  async mounted () {
+    await this.dispatchLintos()
     this.socket = io(process.env.VUE_APP_URL)
 
     // On "linto_status" update
@@ -175,32 +176,43 @@ export default {
         this.$store.commit('UPDATE_LINTO_FLEET', data)
       }
     })
+
   },
 
 computed: {
     linto () {
       if (this.$store.getters.LINTO_FLEET_BY_SN(this.sn) !== null) {
-        return this.$store.getters.LINTO_FLEET_BY_SN(this.sn)
+        let linto = this.$store.getters.LINTO_FLEET_BY_SN(this.sn)
+        if (!!linto.config.sound.volume) {
+          linto.config.sound.volume = 70
+        }
+        return linto
       } else {
         return null
       }
     },
     dataLoaded () {
       return this.lintoLoaded
+    },
+
+    isMuted () {
+      return parseInt(this.volume) === 0
     }
   },
   watch: {
     dataLoaded (data) {
       if (data) {
+        if (!this.volumeInit) {
+          if (!!this.linto.config.sound && !!this.linto.config.sound.volume) {
+            this.volume = this.linto.config.sound.volume
+            this.volumeInit = true
+          } else {
+            this.volume = 50
+            this.volumeInit = true
+
+          }
+        }
         this.loading = false
-      }
-    },
-    'linto.config.sound.volume' (data) {
-      this.volume = data
-      if (data === 0) {
-        this.isMuted = true
-      } else {
-        this.isMuted = false
       }
     }
   },
@@ -221,7 +233,6 @@ computed: {
           msg: `Pong received in ${diff} sec`
         }
       })
-
       setTimeout(()=>{
         if (this.pingEnd === null) {
           this.pingStatus = {
@@ -231,26 +242,27 @@ computed: {
         }
       }, 5000)
     },
-    mute () {
+    async mute () {
       if (!this.isMuted) {
         this.tmpVolume = this.volume // save current volume
+        this.volume = 0
         this.socket.emit('linto_mute', {sn: this.sn}) // Emit socket MUTE
         let currentLinto = this.linto 
         currentLinto.config.sound.volume = 0
         this.$store.commit('UPDATE_LINTO_FLEET', currentLinto) // Update store variable
+        await this.dispatchLintos()
       }
     },
-    
-    unmute () {
+    async unmute () {
       if (this.isMuted) {
         this.socket.emit('linto_unmute', { sn: this.sn }) // Emit socket UNMUTE
+        let currentLinto = this.linto
+        this.volume = this.tmpVolume !== 0 ? this.tmpVolume : 70
+        currentLinto.config.sound.volume = this.volume
+        this.$store.commit('UPDATE_LINTO_FLEET', currentLinto) // Update store variable
+        await this.dispatchLintos()
       }
-
-      let currentLinto = this.linto
-      currentLinto.config.sound.volume = this.tmpVolume !== 0 ? this.tmpVolume : 70
-      this.$store.commit('UPDATE_LINTO_FLEET', currentLinto) // Update store variable
     },
-    
     lintoSay () {
       this.$options.filters.testSentence(this.say)
       if (this.say.valid) {
@@ -264,19 +276,27 @@ computed: {
         value: this.volume,
         sn: this.sn
       })
+      let currentLinto = this.linto
+      currentLinto.config.sound.volume = this.volume
+      this.$store.commit('UPDATE_LINTO_FLEET', currentLinto) // Update store variable
+
+      await this.dispatchLintos()
     },
 
     async setVolumeEnd (e) {
       const volumeValue = e.target.value
       this.volume = volumeValue
-      let currentLinto = this.linto
-      currentLinto.config.sound.volume = this.volume
-      this.$store.commit('UPDATE_LINTO_FLEET', currentLinto) // Update store variable
-
       this.socket.emit('linto_volume_end', {
         value: this.volume,
         sn: this.sn
       })
+      await this.dispatchLintos()
+      let currentLinto = this.linto
+      currentLinto.config.sound.volume = this.volume
+      this.$store.commit('UPDATE_LINTO_FLEET', currentLinto) // Update store variable
+
+
+
     },
 
     async dispatchLintos () {

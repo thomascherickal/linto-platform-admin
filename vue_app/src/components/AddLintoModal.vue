@@ -4,7 +4,7 @@
     <div class="modal flex col" v-if="dataLoaded">
       <div class="modal-header flex row">
         <span class="modal-header__tilte flex1 flex row">Add a LinTO device</span>
-        <button @click="closeModal()" class="button button--img button--img__close"></button>
+        <button @click="closeModal()" class="button button__icon button--red"><span class="button__icon button__icon--close"></span></button>
 
       </div>
       <div class="modal-body flex1 flex col">
@@ -16,8 +16,8 @@
         </div>
       </div>
       <div class="modal-footer flex row">
-        <button class="button button--cancel" @click="closeModal()"><span class="label">Cancel</span></button>
-        <button class="button button--valid" @click="handleForm()"><span class="label">Submit</span></button>
+        <button class="button button--grey" @click="closeModal()"><span class="button__label">Cancel</span></button>
+        <button class="button button--green" @click="handleForm()"><span class="button__label">Submit</span></button>
       </div>
     </div>
   </div>
@@ -73,8 +73,8 @@ export default {
         this.sendForm()
       }
     },
-    testSerialNumber () {
-      this.$options.filters.dispatchStore('getLintoFleet')
+    async testSerialNumber () {
+      await this.dispatchLintos()
       this.$options.filters.testName(this.serialNumber)
       this.$options.filters.testSerialNumber(this.serialNumber)
     },
@@ -88,18 +88,34 @@ export default {
         if (addLinto.data.status === 'success') {
           await this.dispatchLintos()
           this.closeModal()
-        }
-        bus.$emit('app_notif', {
-          status: addLinto.data.status,
-          msg: addLinto.data.msg,
-          timeout: 4000
-        })
+            bus.$emit('app_notif', {
+            status: addLinto.data.status,
+            msg: addLinto.data.msg,
+            timeout: 4000
+          })
+        } else {
+          throw addLinto.data.msg
+        } 
       } catch (error) {
-        console.error(error)
+        bus.$emit('app_notif', {
+          status: 'error',
+          msg: error,
+          timeout: false,
+          redirect: false
+        })
       }
     },
-    async dispatchLintos (topic) {
-      this.lintosLoaded = await this.$options.filters.dispatchStore('getLintoFleet')
+    async dispatchLintos () {
+      try {
+        this.lintosLoaded = await this.$options.filters.dispatchStore('getLintoFleet')
+      } catch (error) {
+         bus.$emit('app_notif', {
+          status: 'error',
+          msg: error,
+          timeout: false,
+          redirect: false
+        })
+      }
     }
   },
   components: {

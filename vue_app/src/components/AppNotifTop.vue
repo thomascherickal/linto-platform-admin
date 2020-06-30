@@ -1,6 +1,5 @@
 <template>
   <div id="top-notif" v-if="show" v-html="stateMsg" class="flex col">
-    
   </div>
 </template>
 <script>
@@ -21,6 +20,9 @@ export default {
   computed: {
     lmGenerating () {
       return this.$store.getters.STT_GRAPH_GENERATION
+    },
+    brokenLm () {
+      return this.$store.getters.STT_LM_ERRORS
     }
   },
   watch: {
@@ -56,6 +58,7 @@ export default {
         }
       }
     }
+    
   },
   async created () {
     await this.dispatchLM()

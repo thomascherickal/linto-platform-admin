@@ -1,6 +1,7 @@
 <template>
   <div id="app" class="flex col">
     <AppNotifTop></AppNotifTop>
+    <!-- <AppNotifTopErrors></AppNotifTopErrors> -->
     <AppHeader :extraClass="fullScreenFrame ? 'fullscreen-child' : ''"></AppHeader>
     <div id="page-view" class="flex1 flex row">
       <AppVerticalNav :extraClass="fullScreenFrame ? 'fullscreen-child' : ''"></AppVerticalNav>
@@ -12,11 +13,6 @@
     <AddLintoModal></AddLintoModal>
     <LoadPatternModal></LoadPatternModal>
     <SavePatternModal></SavePatternModal>
-    <!-- STT MODALS -->
-    <addACModelModal v-if="path === '/admin/stt/overview'"></addACModelModal>
-    <AddLanguageModelModal v-if="path === '/admin/stt/overview'"></AddLanguageModelModal>
-    <AddSTTServiceModal v-if="path === '/admin/stt/overview'"></AddSTTServiceModal>
-
     <!-- Create context -->
     <AddContextModal v-if="path === '/admin/context/create'"></AddContextModal>
   </div>
@@ -31,11 +27,9 @@
   import AddLintoModal from '@/components/AddLintoModal.vue'
   import LoadPatternModal from '@/components/LoadPatternModal.vue'
   import SavePatternModal from '@/components/SavePatternModal.vue'
-  import AddACModelModal from '@/components/AddACModelModal.vue'
-  import AddLanguageModelModal from '@/components/AddLanguageModelModal.vue'
-  import AddSTTServiceModal from '@/components/AddSTTServiceModal.vue'
   import AddContextModal from '@/components/AddContextModal.vue'
   import AppNotifTop from '@/components/AppNotifTop.vue'
+  import AppNotifTopErrors from '@/components/AppNotifTopErrors.vue'
   import { bus } from './main.js'
   export default {
     data () {
@@ -55,10 +49,8 @@
       AddLintoModal,
       LoadPatternModal,
       SavePatternModal,
-      AddACModelModal,
-      AddLanguageModelModal,
-      AddSTTServiceModal,
-      AddContextModal
+      AddContextModal,
+      AppNotifTopErrors
     },
     mounted () {
       bus.$on('iframe-set-fullscreen', () => {
