@@ -7,33 +7,33 @@
     <div class="iframe__controls flex row">
       <div class="flex1 flex row iframe__controls-left">
         <button
-          class="button button-icon button__with-desc  button__blue"
+          class="button button-icon button--with-desc  button--blue"
           :class="fullScreen ? 'enabled' : 'disabled'"
           @click="toggleFullScreen()"
           :data-desc="fullScreen ? 'Leave full screen' : 'Full screen'"
-        ><span class="button--icon" :class="fullScreen ? 'button--icon__leave-fullscreen' : 'button--icon__fullscreen'"></span></button>
+        ><span class="button__icon" :class="fullScreen ? 'button__icon--leave-fullscreen' : 'button__icon--fullscreen'"></span></button>
       </div>
       <div class="flex1 flex row iframe__controls-right">
         <button
-          class="button button-icon-txt button__bluemid"
+          class="button button-icon-txt button--bluemid"
           @click="OpenSavePatternModal()"
         >
-          <span class="button--icon button--icon__save"></span>
-          <span class="button--label">Save as new flow pattern</span></button>
+          <span class="button__icon button__icon--save"></span>
+          <span class="button__label">Save as new flow pattern</span></button>
         <button
-          class="button button-icon-txt button__bluemid"
+          class="button button-icon-txt button--bluemid"
           @click="OpenLoadFromPatternModal()"
         >
-          <span class="button--icon button--icon__load"></span>
-          <span class="button--label">Load from flow pattern</span>
+          <span class="button__icon button__icon--load"></span>
+          <span class="button__label">Load from flow pattern</span>
         </button>
         <button
-          class="button button-icon-txt button__valid"
+          class="button button-icon-txt button--valid"
           @click="saveAndPublish()"
           v-if="contextFrame !== 'manager'"
         >
-          <span class="button--icon button--icon__publish"></span>
-          <span class="button--label">Save and publish</span>
+          <span class="button__icon button__icon--publish"></span>
+          <span class="button__label">Save and publish</span>
         </button>
       </div>
     </div>

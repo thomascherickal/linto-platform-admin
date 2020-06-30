@@ -3,7 +3,7 @@
     <div class="modal flex col">
       <div class="modal-header flex row">
         <span class="modal-header__tilte flex1 flex row">Save as new flow pattern</span>
-        <button @click="closeModal()" class="button button-icon button__red"><span class="button--icon button--icon__close"></span></button>
+        <button @click="closeModal()" class="button button-icon button--red"><span class="button__icon button__icon--close"></span></button>
       </div>
       <div class="modal-body flex1 flex col" v-if="loading">
         Loading
@@ -19,8 +19,8 @@
       </div>
       <div v-else>Loading</div>
       <div class="modal-footer flex row">
-        <button class="button button-txt button__grey" @click="closeModal()"><span class="button--label">Cancel</span></button>
-        <button class="button button-txt button__green" @click="handleForm()"><span class="button--label">Submit</span></button>
+        <button class="button button-txt button--grey" @click="closeModal()"><span class="button__label">Cancel</span></button>
+        <button class="button button-txt button--green" @click="handleForm()"><span class="button__label">Submit</span></button>
       </div>
     </div>
   </div>
@@ -137,16 +137,25 @@ export default {
       }
     },
     async dispatchStore (topic) {
-      const resp = await this.$options.filters.dispatchStore(topic)
-      switch(topic) {
-        case 'getContextTypes':
-          this.contextTypesLoaded = resp
-          break
-        case 'getFlowPatterns':
-          this.patternsLoaded = resp
-          break
-        default:
-          return
+      try {
+        const resp = await this.$options.filters.dispatchStore(topic)
+        switch(topic) {
+          case 'getContextTypes':
+            this.contextTypesLoaded = resp
+            break
+          case 'getFlowPatterns':
+            this.patternsLoaded = resp
+            break
+          default:
+            return
+        }
+      } catch (error) {
+        bus.$emit('app_notif', {
+          status: 'error',
+          msg: error,
+          timeout: false,
+          redirect: false
+        })
       }
     }
   },

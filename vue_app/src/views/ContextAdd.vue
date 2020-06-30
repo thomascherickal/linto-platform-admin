@@ -42,8 +42,8 @@
             <h3>STT service</h3>
             <AppSelect :label="'STT service'" :obj="sttService" :list="availableServices" :params="{key:'_id', value:'serviceId', optLabel: 'serviceId'}" :disabled="!languageSelected || noSttService" :disabledTxt="'Select a language'"></AppSelect>
             <div class="flex row">
-              <button class="button button-txt button__valid" @click="handleForm()">
-                <span class="button--label">Create a context</span>
+              <button class="button button-txt button--valid" @click="handleForm()">
+                <span class="button__label">Create a context</span>
               </button>
             </div>
           </div>

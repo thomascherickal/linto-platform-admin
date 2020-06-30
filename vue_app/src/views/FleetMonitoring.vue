@@ -86,11 +86,11 @@
                 
                 <button 
                   @click="ping()"
-                  class="button button-icon-txt button__blue"
+                  class="button button-icon-txt button--blue"
                   :class="pingStatus.status"
                 > 
-                  <span class="button--icon button--icon__ping"></span>
-                  <span class="button--label">Ping</span>
+                  <span class="button__icon button__icon--ping"></span>
+                  <span class="button__label">Ping</span>
                 </button>
                 <span class="ping-status" :class="pingStatus.status">{{ pingStatus.msg }}</span>
             </div>
@@ -100,11 +100,11 @@
             <div class="flex row">
               <span>Volume : </span>
               <button 
-                class="button button-icon button__grey" 
-                :class="isMuted ? 'button--icon button--icon__unmute ' :  'button--img__mute'"
+                class="button button-icon button--grey" 
+                :class="isMuted ? 'button__icon button__icon--unmute ' :  'button--img__mute'"
                 @click="isMuted ? unmute() : mute() "
               >
-                <span class="button--icon" :class="isMuted ? 'button--icon__unmute' : 'button--icon__mute'"
+                <span class="button__icon" :class="isMuted ? 'button__icon--unmute' : 'button__icon--mute'"
                 ></span>
               </button>
               <input
@@ -124,9 +124,9 @@
           <div class="linto-settings-item">
             <div class="flex row">
               <AppInput :label="'Make me talk...'" :obj="say" :test="'testSentence'"></AppInput>
-              <button @click="lintoSay()" class="button button-icon-txt button__blue"> 
-                <span class="button--icon button--icon__talk"></span>
-                <span class="button--label">Make me talk</span>
+              <button @click="lintoSay()" class="button button-icon-txt button--blue"> 
+                <span class="button__icon button__icon--talk"></span>
+                <span class="button__label">Make me talk</span>
               </button>
             </div>
           </div>

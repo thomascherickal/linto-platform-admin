@@ -14,7 +14,6 @@ let whitelistDomains = [`${middlewares.useSSL() + process.env.LINTO_STACK_DOMAIN
 
 if (process.env.LINTO_STACK_ADMIN_API_WHITELIST_DOMAINS.length > 0) {
     whitelistDomains.push(...process.env.LINTO_STACK_ADMIN_API_WHITELIST_DOMAINS.split(','))
-    console.log('whitelist: ', whitelistDomains)
     corsOptions = {
         origin: function(origin, callback) {
             if (!origin || whitelistDomains.indexOf(origin) !== -1 || origin === 'undefined') {

@@ -12,7 +12,7 @@
     cursor: pointer;
     position: relative;
     /* label & icon */
-    .button--label {
+    .button__label {
         display: inline-block;
         font-size: 15px;
         font-weight: 400;
@@ -24,7 +24,7 @@
         border: 1px solid transparent;
         @include borderRadius(3px);
     }
-    .button--icon {
+    .button__icon {
         display: inline-block;
         width: 30px;
         height: 30px;
@@ -32,154 +32,154 @@
         margin: 0;
         padding: 0;
         @include borderRadius(3px);
-        &.button--icon__monitoring {
+        &.button__icon--monitoring {
             @include maskImage('../img/svg/levels.svg');
             background-color: $blueMid;
         }
-        &.button--icon__close {
+        &.button__icon--close {
             @include maskImage('../img/svg/close.svg');
             background-color: $error;
         }
-        &.button--icon__ping {
+        &.button__icon--ping {
             @include maskImage('../img/svg/ping.svg');
             background-color: $blueLinto;
         }
-        &.button--icon__talk {
+        &.button__icon--talk {
             @include maskImage('../img/svg/chat.svg');
             background-color: $blueLinto;
         }
-        &.button--icon__mute {
+        &.button__icon--mute {
             @include maskImage('../img/svg/mute.svg');
             background-color: $textColor;
         }
-        &.button--icon__unmute {
+        &.button__icon--unmute {
             @include maskImage('../img/svg/unmute.svg');
             background-color: $textColor;
         }
-        &.button--icon__workflow {
+        &.button__icon--workflow {
             @include maskImage('../img/svg/workflow.svg');
             background-color: $blueMid;
         }
-        &.button--icon__fullscreen {
+        &.button__icon--fullscreen {
             @include maskImage('../img/svg/fullscreen.svg');
             background-color: $blueLinto;
         }
-        &.button--icon__leave-fullscreen {
+        &.button__icon--leave-fullscreen {
             @include maskImage('../img/svg/leave-fullscreen.svg');
             background-color: $blueLinto;
         }
-        &.button--icon__save {
+        &.button__icon--save {
             @include maskImage('../img/svg/save.svg');
             background-color: $blueMid;
         }
-        &.button--icon__load {
+        &.button__icon--load {
             @include maskImage('../img/svg/upload.svg');
             background-color: $blueMid;
         }
-        &.button--icon__publish {
+        &.button__icon--publish {
             @include maskImage('../img/svg/rocket.svg');
             background-color: $valid;
         }
-        &.button--icon__logout {
+        &.button__icon--logout {
             @include maskImage('../img/svg/logout.svg');
             background-color: $error;
         }
     }
     /* Type of button */
     &.button-icon-txt {
-        .button--icon {
+        .button__icon {
             margin-left: 5px;
         }
-        .button--label {
+        .button__label {
             padding: 0 10px 0 5px;
         }
     }
-    &.button__full {
+    &.button--full {
         width: 100%;
         padding: 0;
     }
     /* Button colors */
-    &.button__valid,
-    &.button__green {
+    &.button--valid,
+    &.button--green {
         border-color: $valid;
-        .button--label {
+        .button__label {
             color: $valid;
         }
         &:hover {
             background-color: $valid;
-            .button--label {
+            .button__label {
                 color: #fff;
             }
         }
     }
-    &.button__important,
-    &.button__red {
+    &.button--important,
+    &.button--red {
         border-color: $error;
-        .button--label {
+        .button__label {
             color: $error;
         }
         &:hover {
             background-color: $error;
-            .button--label {
+            .button__label {
                 color: #fff;
             }
         }
     }
-    &.button__cancel,
-    &.button__grey {
+    &.button--cancel,
+    &.button--grey {
         border-color: #666;
-        .button--label {
+        .button__label {
             color: #666;
         }
         &:hover {
             background-color: #666;
-            .button--label {
+            .button__label {
                 color: #fff;
             }
         }
     }
-    &.button__blue {
+    &.button--blue {
         border-color: $blueLinto;
-        .button--label {
+        .button__label {
             color: $blueLinto;
         }
         &:hover {
             background-color: $blueLinto;
-            .button--label {
+            .button__label {
                 color: #fff;
             }
         }
     }
-    &.button__bluemid {
+    &.button--bluemid {
         border-color: $blueMid;
-        .button--label {
+        .button__label {
             color: $blueMid;
         }
         &:hover {
             background-color: $blueMid;
-            .button--label {
+            .button__label {
                 color: #fff;
             }
         }
     }
-    &.button__bluedark {
+    &.button--bluedark {
         border-color: $blueDark;
-        .button--label {
+        .button__label {
             color: $blueDark;
         }
         &:hover {
             background-color: $blueDark;
-            .button--label {
+            .button__label {
                 color: #fff;
             }
         }
     }
     &:hover {
         /* Button icons HOVER */
-        .button--icon {
+        .button__icon {
             background-color: #fff;
         }
-        &.button__with-desc {
+        &.button--with-desc {
             &::after {
                 content: attr(data-desc);
                 position: absolute;
