@@ -42,6 +42,10 @@ export default {
   async mounted () {
     this.staticWorkflowId = this.$route.params.workflowId
     await this.dispatchStaticWorkflows()
+    
+    bus.$on('save_as_workflow_template_success', async (data) => {
+      await this.dispatchStaticWorkflows()
+    })
   },
   computed: {
     dataLoaded () {

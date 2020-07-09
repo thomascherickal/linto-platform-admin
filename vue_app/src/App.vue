@@ -12,15 +12,13 @@
     <AppNotif></AppNotif>
     <!-- <LoadPatternModal></LoadPatternModal>
     <SavePatternModal></SavePatternModal> -->
-    <ModalDeleteClientStatic v-if="path.indexOf('/clients/static')"></ModalDeleteClientStatic>
-    <ModalUpdateClientStatic v-if="path.indexOf('/clients/static')"></ModalUpdateClientStatic>
-    <ModalUpdateWorkflowServices v-if="path.indexOf('/clients/static')"></ModalUpdateWorkflowServices>
-    <ModalDissociateStaticDevice v-if="path.indexOf('/clients/static')"></ModalDissociateStaticDevice>
+    <ModalDeleteClientStatic v-if="path.indexOf('/clients/static') >= 0"></ModalDeleteClientStatic>
+    <ModalUpdateClientStatic v-if="path.indexOf('/clients/static') >= 0"></ModalUpdateClientStatic>
+    <ModalUpdateWorkflowServices v-if="path.indexOf('/clients/static') >= 0"></ModalUpdateWorkflowServices>
+    <ModalDissociateStaticDevice v-if="path.indexOf('/clients/static') >= 0"></ModalDissociateStaticDevice>
 
-    <!-- Worflows templates 
-      <ModalSaveWorkflowTemplate v-if="path.indexOf('/workflows')"></ModalSaveWorkflowTemplate>
-    <ModalLoadWorkflowTemplate v-if="path.indexOf('/workflows')"></ModalLoadWorkflowTemplate>
-    --> 
+    <!-- Worflows templates -->
+    <ModalSaveAsWorkflowTemplate v-if="path.indexOf('/admin/workflows') >= 0 || path.indexOf('/clients/static/workflow') "></ModalSaveAsWorkflowTemplate>
   
   </div>
 </template>
@@ -36,6 +34,7 @@
   import ModalUpdateClientStatic from '@/components/ModalUpdateClientStatic.vue'
   import ModalUpdateWorkflowServices from '@/components/ModalUpdateWorkflowServices.vue'
   import ModalDissociateStaticDevice from '@/components/ModalDissociateStaticDevice.vue'
+  import ModalSaveAsWorkflowTemplate from '@/components/ModalSaveAsWorkflowTemplate.vue'
   
   import { bus } from './main.js'
   export default {
@@ -56,10 +55,8 @@
       ModalDeleteClientStatic,
       ModalUpdateClientStatic,
       ModalUpdateWorkflowServices,
-      ModalDissociateStaticDevice
-  //    ModalSaveWorkflowTemplate,
-    //  ModalLoadWorkflowTemplate
-
+      ModalDissociateStaticDevice,
+      ModalSaveAsWorkflowTemplate
     },
     mounted () {
       bus.$on('iframe-set-fullscreen', () => {

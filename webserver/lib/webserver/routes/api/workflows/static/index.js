@@ -1,12 +1,13 @@
 const workflowsStaticModel = require(`${process.cwd()}/model/mongodb/models/workflows-static.js`)
-const workflowTemplatesModel = require(`${process.cwd()}/model/mongodb/models/workflows-templates.js`)
+const workflowsTemplatesModel = require(`${process.cwd()}/model/mongodb/models/workflows-templates.js`)
 const clientsStaticModel = require(`${process.cwd()}/model/mongodb/models/clients-static.js`)
 const nodered = require(`${process.cwd()}/lib/webserver/middlewares/nodered.js`)
 const moment = require('moment')
+
 module.exports = (webServer) => {
     return [{
             // Get all static workflows from database
-            path: '/static',
+            path: '/',
             method: 'get',
             requireAuth: true,
             controller: async(req, res, next) => {
@@ -21,7 +22,7 @@ module.exports = (webServer) => {
         },
         {
             // Get a workflow by its name
-            path: '/static/name/:name',
+            path: '/name/:name',
             method: 'get',
             requireAuth: true,
             controller: async(req, res, next) => {
@@ -47,7 +48,7 @@ module.exports = (webServer) => {
             tockApplicationName: String
             }
             */
-            path: '/static',
+            path: '/',
             method: 'post',
             requireAuth: true,
             controller: async(req, res, next) => {
@@ -81,7 +82,7 @@ module.exports = (webServer) => {
         },
         {
             // Update a static workflow services parameters
-            path: '/static/:id',
+            path: '/:id',
             method: 'patch',
             requireAuth: true,
             controller: async(req, res, next) => {
@@ -158,7 +159,7 @@ module.exports = (webServer) => {
         },
         {
             // Remove a static workflow and dissociate Static device and workflow template
-            path: '/static/:id',
+            path: '/:id',
             method: 'delete',
             requireAuth: true,
             controller: async(req, res, next) => {
@@ -191,25 +192,11 @@ module.exports = (webServer) => {
                         throw `Error on deleting workflow "${getWorkflow.name}" from Business logic server`
                     }
                 } catch (error) {
+                    console.error(error)
                     res.json({
                         status: 'error',
                         error
                     })
-                }
-            }
-        },
-        {
-            // Get all static workflows from database
-            path: '/templates',
-            method: 'get',
-            requireAuth: true,
-            controller: async(req, res, next) => {
-                try {
-                    const getWorkflowTemplates = await workflowTemplatesModel.getAllWorkflowsTemplates()
-                    res.json(getWorkflowTemplates)
-                } catch (error) {
-                    console.error(error)
-                    res.json({ error: error.toString() })
                 }
             }
         }

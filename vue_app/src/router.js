@@ -77,7 +77,7 @@ const router = new Router({
             }
         },
         {
-            path: '/admin/workflows',
+            path: '/admin/workflow-editor',
             name: 'Worflow editor',
             component: WorkflowEditor,
         }, {

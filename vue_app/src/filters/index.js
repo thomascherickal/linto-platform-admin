@@ -49,6 +49,19 @@ Vue.filter('testStaticWorkflowName', function(obj) {
     }
 })
 
+// TEST WORKFLOW TEMPLATE NAME
+Vue.filter('testWorkflowTemplateName', function(obj) {
+    obj.error = null
+    obj.valid = false
+    const workflowsTemplates = store.state.workflowsTemplates
+    console.log('workflowsTemplates', workflowsTemplates)
+    if (workflowsTemplates.length > 0 && workflowsTemplates.filter(wf => wf.name === obj.value).length > 0) {
+        obj.error = 'This workflow template name is already used'
+        obj.valid = false
+    }
+})
+
+
 // TEST SERIAL NUMBER
 Vue.filter('testSerialNumber', function(obj) {
     const lintos = store.state.lintoFleet

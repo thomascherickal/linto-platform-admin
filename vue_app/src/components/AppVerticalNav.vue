@@ -52,7 +52,7 @@ export default {
   data () {
     return {
       clientsUrl: '/admin/clients',
-      workflowEditorUrl: '/admin/workflows',
+      workflowEditorUrl: '/admin/workflow-editor',
       nluUrl: '/admin/nlu',
       routePath: ''
     }

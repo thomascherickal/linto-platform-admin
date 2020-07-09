@@ -35,6 +35,12 @@ export default {
     testName (obj) {
       this.$options.filters.testName(obj)
     },
+    testWorkflowTemplateName (obj) {
+      this.$options.filters.testWorkflowTemplateName(obj)
+      if (obj.error === null) {
+        this.$options.filters.testName(obj)
+      }
+    },
     exec (functionName) {
       switch(functionName) {
         case 'testName':
@@ -42,6 +48,9 @@ export default {
           break
         case 'testWorkflowName':
           this.testWorkflowName(this.obj)
+          break
+        case 'testWorkflowTemplateName':
+          this.testWorkflowTemplateName(this.obj)
           break
         default:
           return
