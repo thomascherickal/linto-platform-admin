@@ -7,48 +7,23 @@ Vue.use(Vuex)
 export default new Vuex.Store({
     strict: false,
     state: {
-        contextTypes: '',
-        contextFleet: '',
-        flowPatterns: '',
-        flowPatternTmp: '',
-        lintoFleet: '',
-        mqttDefaultSettings: '',
-        nluServices: '',
-        tockapps: '',
+        staticClients: '',
+        staticWorkflows: '',
         sttServices: '',
         sttLanguageModels: '',
-        sttAcousticModels: ''
+        sttAcousticModels: '',
+        tockApplications: '',
+        workflowsTemplates: '',
     },
     mutations: {
-        SET_LINTO_FLEET: (state, data) => {
-            state.lintoFleet = data
+        SET_STATIC_CLIENTS: (state, data) => {
+            state.staticClients = data
         },
-        UPDATE_LINTO_FLEET: (state, data) => {
-            state.lintoFleet.map(l => {
-                if (l.sn === data.sn) {
-                    for (let index in data) {
-                        l[index] = data[index]
-                    }
-                }
-            })
+        SET_STATIC_WORKFLOWS: (state, data) => {
+            state.staticWorkflows = data
         },
-        SET_CONTEXT_FLEET: (state, data) => {
-            state.contextFleet = data
-        },
-        SET_CONTEXT_TYPES: (state, data) => {
-            state.contextTypes = data
-        },
-        SET_PATTERNS: (state, data) => {
-            state.flowPatterns = data
-        },
-        SET_TMP_PATTERN: (state, data) => {
-            state.flowPatternTmp = data
-        },
-        SET_MQTT_SETTINGS: (state, data) => {
-            state.mqttDefaultSettings = data
-        },
-        SET_NLU_SERVICES: (state, data) => {
-            state.nluServices = data
+        SET_WORKFLOWS_TEMPLATES: (state, data) => {
+            state.workflowsTemplates = data
         },
         SET_STT_SERVICES: (state, data) => {
             state.sttServices = data
@@ -60,105 +35,40 @@ export default new Vuex.Store({
             state.sttAcousticModels = data
         },
         SET_TOCK_APPS: (state, data) => {
-            state.tockapps = data
+            state.tockApplications = data
         }
     },
     actions: {
-        getLintoFleet: async({ commit, state }) => {
+        getStaticClients: async({ commit, state }) => {
             try {
-                const getLintos = await axios.get(`${process.env.VUE_APP_URL}/api/lintos/fleet`)
-                commit('SET_LINTO_FLEET', getLintos.data)
-                return state.lintoFleet
+                const getStaticClients = await axios.get(`${process.env.VUE_APP_URL}/api/clients/static`)
+                commit('SET_STATIC_CLIENTS', getStaticClients.data)
+                return state.staticClients
             } catch (error) {
                 return ({
-                    error: 'Error on getting Linto(s)'
+                    error: 'Error on getting Linto(s) static devices'
                 })
             }
         },
-        getFleetContexts: async({ commit, state }) => {
+        getStaticWorkflows: async({ commit, state }) => {
             try {
-                const getFleetContexts = await axios.get(`${process.env.VUE_APP_URL}/api/context/fleet`)
-                commit('SET_CONTEXT_FLEET', getFleetContexts.data)
-                return state.contextFleet
+                const getStaticWorkflows = await axios.get(`${process.env.VUE_APP_URL}/api/workflows/static`)
+                commit('SET_STATIC_WORKFLOWS', getStaticWorkflows.data)
+                return state.staticWorkflows
             } catch (error) {
                 return ({
-                    error: 'Error on getting contexts'
+                    error: 'Error on getting static workflows'
                 })
             }
         },
-        getContextTypes: async({ commit, state }) => {
+        getWorkflowsTemplates: async({ commit, state }) => {
             try {
-                const getTypes = await axios.get(`${process.env.VUE_APP_URL}/api/context/types`)
-                commit('SET_CONTEXT_TYPES', getTypes.data)
-                return state.contextTypes
+                const getWorkflowsTemplates = await axios.get(`${process.env.VUE_APP_URL}/api/workflows/templates`)
+                commit('SET_WORKFLOWS_TEMPLATES', getWorkflowsTemplates.data)
+                return state.workflowsTemplates
             } catch (error) {
                 return ({
-                    error: 'Error on getting contexts types'
-                })
-            }
-        },
-        getFlowPatterns: async({ commit, state }) => {
-            try {
-                const getPatterns = await axios.get(`${process.env.VUE_APP_URL}/api/flow/patterns`)
-                commit('SET_PATTERNS', getPatterns.data)
-                return state.flowPatterns
-            } catch (error) {
-                return ({
-                    error: 'Error on getting workflow patterns'
-                })
-            }
-        },
-        getTmpPattern: async({ commit, state }) => {
-            try {
-                const getTmpPattern = await axios.get(`${process.env.VUE_APP_URL}/api/flow/tmp`)
-                commit('SET_TMP_PATTERN', getTmpPattern.data[0])
-                return state.flowPatternTmp
-            } catch (error) {
-                return ({
-                    error: 'Error on saving changes'
-                })
-            }
-        },
-        getNluServices: async({ commit, state }) => {
-            try {
-                const getSettings = await axios.get(`${process.env.VUE_APP_URL}/api/context/nluServices`)
-                commit('SET_NLU_SERVICES', getSettings.data)
-                return state.nluServices
-            } catch (error) {
-                return ({
-                    error: 'Error on getting NLU services'
-                })
-            }
-        },
-        getTockApplications: async({ commit, state }) => {
-            try {
-                const getApps = await axios.get(`${process.env.VUE_APP_URL}/api/tock/applications`)
-                if (getApps.data.status === 'error') {
-                    throw getApps.data.msg
-                }
-                let applications = []
-                getApps.data.map(app => {
-                    applications.push({
-                        name: app.name,
-                        namespace: app.namespace
-                    })
-                })
-                commit('SET_TOCK_APPS', applications)
-                return state.tockapps
-            } catch (error) {
-                return ({
-                    error: 'Error on getting tock applications'
-                })
-            }
-        },
-        getmqttDefaultSettings: async({ commit, state }) => {
-            try {
-                const getSettings = await axios.get(`${process.env.VUE_APP_URL}/api/context/getMqttDefaultSettings`)
-                commit('SET_MQTT_SETTINGS', getSettings.data)
-                return state.mqttDefaultSettings
-            } catch (error) {
-                return ({
-                    error: 'Error on getting MQTT default settings'
+                    error: 'Error on getting workflow templates'
                 })
             }
         },
@@ -196,42 +106,76 @@ export default new Vuex.Store({
                 })
             }
         },
+        getTockApplications: async({ commit, state }) => {
+            try {
+                const getApps = await axios.get(`${process.env.VUE_APP_URL}/api/tock/applications`)
+                if (getApps.data.status === 'error') {
+                    throw getApps.data.msg
+                }
+                let applications = []
+                getApps.data.map(app => {
+                    applications.push({
+                        name: app.name,
+                        namespace: app.namespace
+                    })
+                })
+                commit('SET_TOCK_APPS', applications)
+                return state.tockApplications
+            } catch (error) {
+                return { error: 'Error on getting tock applications' }
+            }
+        }
     },
     getters: {
-        ASSOCIATED_LINTO_FLEET: (state) => {
+        STT_SERVICES_AVAILABLE: (state) => {
             try {
-                return state.lintoFleet.filter(f => f.associated_context !== null)
-            } catch (error) {
-                return error.toString()
-            }
-        },
-        NOT_ASSOCIATED_LINTO_FLEET: (state) => {
-            try {
-                return state.lintoFleet.filter(f => f.associated_context === null)
-            } catch (error) {
-                return error.toString()
-            }
-        },
-        LINTO_FLEET_BY_SN: (state) => (sn) => {
-            try {
-                if (state.lintoFleet.length > 0) {
-                    return state.lintoFleet.filter(f => f.sn === sn)[0]
+                let services = state.sttServices || []
+                let languageModels = state.sttLanguageModels || []
+                let availableServices = []
+                if (services.length > 0) {
+                    services.map(s => {
+                        let lm = languageModels.filter(l => l.modelId === s.LModelId)
+                        if (lm.length > 0) {
+                            if (lm[0].isGenerated === 1 || lm[0].isDirty === 1 && lm[0].isGenerated === 0 && lm[0].updateState >= 0) {
+                                availableServices.push(s)
+                            }
+                        }
+                    })
+                    return availableServices
                 } else {
-                    throw null
+                    throw 'No service found.'
                 }
-
             } catch (error) {
-                return error.toString()
+                return { error }
             }
         },
-        CONTEXT_BY_ID: (state) => (id) => {
+        WORKFLOW_TEMPLATES_BY_TYPE: (state) => (type) => {
             try {
-
-                return state.contextFleet.filter(context => context._id === id)[0]
+                if (state.workflowsTemplates.length > 0) {
+                    return state.workflowsTemplates.filter(wf => wf.type === type)
+                } else {
+                    throw 'No workflow template found'
+                }
             } catch (error) {
-                return error.toString()
+                return { error }
             }
         },
+        STATIC_CLIENTS_AVAILABLE: (state) => {
+            try {
+                return state.staticClients.filter(sc => sc.associated_workflow === null)
+            } catch (error) {
+                return { error }
+            }
+        },
+        STATIC_WORKFLOW_BY_ID: (state) => (id) => {
+            try {
+                return state.staticWorkflows.filter(sw => sw._id === id)[0]
+            } catch (error) {
+                return { error }
+            }
+        }
+
+        /*
         STT_SERVICES_AVAILABLE: (state) => {
             try {
                 let services = state.sttServices || []
@@ -302,6 +246,6 @@ export default new Vuex.Store({
             } catch (error) {
                 return error.toString
             }
-        }
+        }*/
     }
 })

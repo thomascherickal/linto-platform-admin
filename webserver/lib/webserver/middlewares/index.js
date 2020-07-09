@@ -25,7 +25,7 @@ async function checkAuth(req, res, next) {
                         console.error('Err:', err)
                     }
                 })
-                res.redirect('/admin/fleet')
+                res.redirect('/admin/clients/static')
             } else if (req.session.logged === 'on' && req.url !== '/login') {
                 next()
             } else if (req.session.logged !== 'on' && req.url !== '/login') {

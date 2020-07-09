@@ -30,7 +30,7 @@
         <button
           class="button button-icon-txt button--valid"
           @click="saveAndPublish()"
-          v-if="contextFrame !== 'manager'"
+          v-if="contextFrame !== 'sandbox'"
         >
           <span class="button__icon button__icon--publish"></span>
           <span class="button__label">Save and publish</span>
@@ -49,7 +49,7 @@
 import axios from 'axios'
 import { bus } from '../main.js'
 export default {
-  props: ['contextFrame', 'blsurl','flowId','contextId'],
+  props: ['contextFrame','blsurl','noderedFlowId','workflowId'],
   data () {
     return {
       iframeUrl: '',
@@ -59,7 +59,8 @@ export default {
   mounted () {
     if (this.blsurl !== null && typeof(this.blsurl) !== 'undefined') {
       this.iframeUrl = this.blsurl
-    } else {
+          } else {
+      console.error('Passe par else BLS URL')
       this.iframeUrl = process.env.VUE_APP_NODERED
     }
 
@@ -92,7 +93,7 @@ export default {
       const save = await axios(`${process.env.VUE_APP_URL}/api/flow/publish`, {
         method: 'post',
         data: {
-          flowId: this.flowId,
+          flowId: this.noderedFlowId,
           contextId: this.contextId
         }
       })

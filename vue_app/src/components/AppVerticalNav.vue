@@ -1,57 +1,42 @@
 <template>
   <div id="vertical-nav" class="flex col" :class="extraClass">
-    <!-- LinTO fleet -->
-    <div class="vertical-nav-item flex col" :class="routePath.indexOf(fleetManagementUrl) >= 0 ? 'active' : ''">
-      <a
-        class="vertical-nav-item__link vertical-nav-item__link"
-        :href="fleetManagementUrl"
-      >LinTO fleet management</a>
-    </div>
-    <!-- Context -->
+    <!-- Clients -->
     <div class="vertical-nav-item flex col">
       <a
-        class="vertical-nav-item__link vertical-nav-item__link--parent flex1 closed"
-        href="#"
-        :class="routePath.indexOf(contextUrl) >= 0 ? 'opened' : 'closed'"
-        @click="toggleChildren($event, 'context-links')"
-
-      >Context</a>
+        class="vertical-nav-item__link vertical-nav-item__link--parent flex1"
+        :class="routePath.indexOf(clientsUrl) >= 0 ? 'opened' : 'closed'"
+        @click="toggleChildren($event, 'clients-links')"
+        href="javascript:;"
+      >Clients</a>
       <div
         class="vertical-nav-item--children flex col"
-        :class="routePath.indexOf(contextUrl) >= 0 ? 'visible' : 'hidden'"
-        id="context-links"
+        :class="routePath.indexOf(clientsUrl) >= 0 ? 'visible' : 'hidden'"
+        id="clients-links"
       >
         <a
           class="vertical-nav-item__link vertical-nav-item__link--children flex1"
-          href="/admin/context/overview"
-          :class="routePath.indexOf('/admin/context/overview') >= 0 ? 'active' : ''"
+          href="/admin/clients/static"
+          :class="routePath.indexOf('/admin/clients/static') >= 0 ? 'active' : ''"
         >
-          Overview
+          Static devices
         </a>
         <a
           class="vertical-nav-item__link vertical-nav-item__link--children flex1"
-          href="/admin/context/create"
-          :class="routePath.indexOf('/admin/context/create') >= 0 ? 'active' : ''">
-            Create context
+          href="/admin/clients/application"
+          :class="routePath.indexOf('admin/clients/application') >= 0 ? 'active' : ''">
+            Applications
         </a>
       </div>
     </div>
+    
     <!-- Workflow editor -->
     <div class="vertical-nav-item flex col" :class="routePath.indexOf(workflowEditorUrl) >= 0 ? 'active' : ''">
       <a
         class="vertical-nav-item__link vertical-nav-item__link"
         :href="workflowEditorUrl"
-      >Workflow editor</a>
+      >Workflow templates</a>
     </div>
-    <!-- STT interface -->
-    <!--
-    <div class="vertical-nav-item flex col" :class="routePath.indexOf(sttUrl) >= 0 ? 'active' : ''">
-      <a
-        class="vertical-nav-item__link vertical-nav-item__link"
-        :href="sttUrl"
-      >STT</a>
-    </div>
-    -->
+    
     <!-- NLU interface -->
     <div class="vertical-nav-item flex col" :class="routePath.indexOf(nluUrl) >= 0 ? 'active' : ''">
       <a
@@ -66,10 +51,8 @@ export default {
   props: ['extraClass'],
   data () {
     return {
-      fleetManagementUrl: '/admin/fleet',
+      clientsUrl: '/admin/clients',
       workflowEditorUrl: '/admin/workflows',
-      contextUrl: '/admin/context',
-      sttUrl: '/admin/stt/overview',
       nluUrl: '/admin/nlu',
       routePath: ''
     }

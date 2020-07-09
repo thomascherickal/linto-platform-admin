@@ -1,10 +1,7 @@
 <template>
   <div>
-    <div class="flex col" v-if="loading">
-      LOADING
-    </div>
-    <div class="flex col flex1" v-if="dataLoaded">
-      <h1>Context : "{{ context.name }}" - Workflow editor</h1>
+    <div class="flex col flex1">
+      <h1>Workflow editor - {{ currentWorkflow.name }}</h1>
       <details open class="description">
         <summary>Infos</summary>
         <span>The workflow editor uses an embedded application called node-red. You will have to log in to the node-red application to be able to edit workflows.<br/>
@@ -17,7 +14,7 @@
         </span>
       </details>
       <div class="block block--transparent block--no-margin block--no-padding flex1 flex">
-        <NodeRedIframe :contextFrame="'contextEdit'" :blsurl="blsUrl" :flowId="context.flowId" :contextId="contextId"></NodeRedIframe>
+        <NodeRedIframe :contextFrame="'statciWorkflow'" :blsurl="blsUrl" :noderedFlowId="currentWorkflow.flowId" :workflowId="staticWorkflowId" v-if="dataLoaded"></NodeRedIframe>
       </div>
     </div>
   </div>
@@ -30,34 +27,34 @@ export default {
   data () {
     return {
       loading: true,
-      contextLoaded: false,
-      contextId: '',
       blsUp: false,
       blsUrl: '',
       noderedUser: process.env.VUE_APP_NODERED_USER,
-      noderedPassword: process.env.VUE_APP_NODERED_PASSWORD
+      noderedPassword: process.env.VUE_APP_NODERED_PASSWORD,
+      staticWorkflowsLoaded: false,
+      staticWorkflowId: null
     }
   },
   beforeRouteEnter (to, form, next) {
     // Check if Business logic server is UP before enter route
     next(vm => vm.isBlsUp())
   },
-  created () {
-    this.contextId = this.$route.params.id
+  async mounted () {
+    this.staticWorkflowId = this.$route.params.workflowId
+    await this.dispatchStaticWorkflows()
   },
   computed: {
-    context () {
-      return this.$store.getters.CONTEXT_BY_ID(this.contextId)
-    },
     dataLoaded () {
-      return (this.blsUp && this.contextLoaded)
+      return this.staticWorkflowsLoaded && this.blsUp
+    },
+    currentWorkflow () {
+      return this.$store.getters.STATIC_WORKFLOW_BY_ID(this.staticWorkflowId)
     }
   },
   watch: {
-    dataLoaded (data) {
-      if (data) {
-        this.loading = false
-        this.blsUrl = `${process.env.VUE_APP_NODERED}/#flow/${this.context.flowId}`
+    currentWorkflow (data) {
+      if(!data.error) {
+        this.blsUrl = `${process.env.VUE_APP_NODERED}/#flow/${this.currentWorkflow.flowId}`
       }
     }
   },
@@ -67,7 +64,6 @@ export default {
         const connectBls = await axios.get(process.env.VUE_APP_NODERED)
         if (connectBls.status === 200) {
           this.blsUp = true
-          this.dispatchContext()
         }
       } catch (error) {
         bus.$emit('app_notif', {
@@ -77,10 +73,18 @@ export default {
         })
       }
     },
-    async dispatchContext () {
+    async dispatchStaticWorkflows () {
+      const dispatchStaticWorkflows = await this.dispatchStore('getStaticWorkflows')
+      if (dispatchStaticWorkflows.status === 'success') {
+        this.staticWorkflowsLoaded = true
+      }
+    },
+    // Execute actions from store by topic
+    async dispatchStore (topic) {
       try {
-        this.contextLoaded = await this.$options.filters.dispatchStore('getFleetContexts')
+        return await this.$options.filters.dispatchStore(topic)
       } catch (error) {
+        console.error(error)
         bus.$emit('app_notif', {
           status: 'error',
           msg: error,

@@ -106,7 +106,7 @@ export default {
         data: payload
       })
       if (userAuth.data.status === 'success') {
-        window.location.href = process.env.VUE_APP_URL + '/admin/fleet'
+        window.location.href = process.env.VUE_APP_URL + '/admin/clients/static'
       } else {
         this.loginError = userAuth.data.msg
       }

@@ -1,11 +1,17 @@
-const moment = require('moment')
 const axios = require('axios')
-const nodered = require(`${process.cwd()}/lib/webserver/middlewares/nodered.js`)
 const lexSeed = require(`${process.cwd()}/lib/webserver/middlewares/lexicalseeding.js`)
 const contextModel = require(`${process.cwd()}/model/mongodb/models/context.js`)
 const flowPatternModel = require(`${process.cwd()}/model/mongodb/models/flowpattern.js`)
 const flowPatternTmpModel = require(`${process.cwd()}/model/mongodb/models/flowpatterntmp.js`)
 const middlewares = require(`${process.cwd()}/lib/webserver/middlewares/index.js`)
+
+
+const workflowsStaticModel = require(`${process.cwd()}/model/mongodb/models/workflows-static.js`)
+const workflowTemplatesModel = require(`${process.cwd()}/model/mongodb/models/workflows-templates.js`)
+const clientStaticModel = require(`${process.cwd()}/model/mongodb/models/clients-static.js`)
+const nodered = require(`${process.cwd()}/lib/webserver/middlewares/nodered.js`)
+const moment = require('moment')
+
 module.exports = (webServer) => {
     return [{
             path: '/healthcheck',
@@ -370,45 +376,30 @@ module.exports = (webServer) => {
             requireAuth: true,
             controller: async(req, res, next) => {
                 try {
-                    // FORMAT WORKFLOW
                     const payload = req.body.payload
-                    const workflowName = payload.workflowPattern
-                    const getWorkflowPattern = await flowPatternModel.getWorkflowPatternByName(workflowName)
-                    let flow = getWorkflowPattern[0].flow
-                    const updatedFlow = nodered.generateContextFlow(flow, payload)
-
-                    // POST WORKFLOW ON BLS
-                    const accessToken = await nodered.getBLSAccessToken()
-                    let blsPost = await axios(`${middlewares.useSSL() + process.env.LINTO_STACK_BLS_SERVICE + process.env.LINTO_STACK_BLS_SERVICE_UI_PATH}/flow`, {
-                        method: 'post',
-                        headers: {
-                            'charset': 'utf-8',
-                            'Accept': 'application/json',
-                            'Content-Type': 'application/json',
-                            'Node-RED-Deployment-Type': 'flows',
-                            'Authorization': accessToken
+                    const workflowTemplate = await workflowTemplatesModel.getWorkflowTemplateByName(payload.workflowTemplate)
+                        // Format flow to be posted on BLS
+                    const formattedFlow = nodered.generateStaticWorkflowFromTemplate(workflowTemplate.flow, {
+                        sn: payload.sn,
+                        workflowName: payload.workflowName,
+                        language: payload.sttServiceLanguage,
+                        nlu: {
+                            app_name: payload.tockApplicationName
                         },
-                        data: updatedFlow
+                        stt: {
+                            service_name: payload.sttService
+                        }
                     })
 
-                    // Validtion
-                    if (blsPost.status == 200 && blsPost.data) {
-                        res.json({
-                            status: 'success',
-                            msg: 'The worfklow has been deployed',
-                            flowId: blsPost.data.id
-                        })
-                    } else {
-                        throw {
-                            msg: 'Error on posting flow on the business logic server',
-                            code: 'postBls'
-                        }
-                    }
+                    // Post flow on BLS
+                    const postFlowOnBLS = await nodered.postBLSFlow(formattedFlow)
+                    res.json(postFlowOnBLS)
+
                 } catch (error) {
                     console.error(error)
                     res.json({
                         status: 'error',
-                        msg: error.toString()
+                        error
                     })
                 }
             }
