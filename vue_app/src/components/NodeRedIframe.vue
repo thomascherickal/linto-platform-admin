@@ -102,6 +102,9 @@ export default {
     SaveAsWorkflowTemplate () {
       bus.$emit('save_as_workflow_template', {payload: this.payload})
     },
+    saveAndPublish () {
+      console.log('TODO')
+    }
     /*LoadFromWorkflowTemplate () {
       bus.$emit('load_from_workflow_template', {payload: this.payload})
     }*/

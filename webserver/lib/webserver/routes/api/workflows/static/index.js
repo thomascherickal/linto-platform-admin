@@ -192,7 +192,7 @@ module.exports = (webServer) => {
                         throw `Error on deleting workflow "${getWorkflow.name}" from Business logic server`
                     }
                 } catch (error) {
-                    console.error(error)
+                    console.error('here: ', error)
                     res.json({
                         status: 'error',
                         error

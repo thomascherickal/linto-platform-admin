@@ -1,4 +1,4 @@
-const flowPatternTmpModel = require(`${process.cwd()}/model/mongodb/models/flowpatterntmp.js`)
+const flowPatternTmpModel = require(`${process.cwd()}/model/mongodb/models/flow-tmp.js`)
 const workflowsTemplatesModel = require(`${process.cwd()}/model/mongodb/models/workflows-templates.js`)
 
 const moment = require('moment')

@@ -63,10 +63,27 @@ export default {
           method: 'delete',
           data: { payload }
         })
-        console.log(dissociateStaticDevice)
-        // Todo : vérif de la route API et traitement de la réponse
+        if (dissociateStaticDevice.data.status === 'success') {
+          bus.$emit('app_notif', {
+            status: 'success',
+            msg: dissociateStaticDevice.data.msg,
+            timeout: false,
+            redirect: false
+          })
+          this.closeModal()
+          bus.$emit('dissociate_static_device_success', {})
+          
+        } else {
+          throw dissociateStaticDevice.data.msg
+        }
       } catch (error) {
-        
+        console.error(error)
+        bus.$emit('app_notif', {
+          status: 'error',
+          msg: error,
+          timeout: false,
+          redirect: false
+        })
       }
     }
   }

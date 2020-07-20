@@ -95,13 +95,9 @@ export default {
       sttLexSeedStatus: 'Updating STT service dictionnaries'
     }
   },
-  
   computed: {
     dataLoaded () {
       return (this.sttLanguageModelsLoaded && this.sttServicesLoaded && this.tockApplicationsLoaded && this.workflowTemplatesLoaded)
-    },
-    staticWorkflowsTemplates () {
-      return this.$store.state.staticWorkflowsTemplates
     },
     sttServices () {
       return this.$store.getters.STT_SERVICES_AVAILABLE

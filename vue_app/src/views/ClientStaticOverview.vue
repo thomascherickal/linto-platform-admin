@@ -122,7 +122,9 @@ export default {
     bus.$on('update_workflow_services_success', async (data) => {
       await this.dispatchStaticClients()
     })
-    
+    bus.$on('dissociate_static_device_success', async (data) => {
+      console.log(data)
+    })
   },
   computed: {
     staticClients () {
@@ -159,7 +161,6 @@ export default {
     // Dissociate device from a workflow and remove workflow
     async dissociateStaticDevice (sn, workflow){
       bus.$emit('dissociate_static_device', {sn , workflow})
-      
     },
     // Get static clients from store
     async dispatchStaticClients () {

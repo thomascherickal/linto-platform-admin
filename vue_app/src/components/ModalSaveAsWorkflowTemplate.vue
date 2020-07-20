@@ -10,6 +10,7 @@
       <div class="modal-body">
         <div class="modal-body__content">
           <AppInput :label="'Workflow template name'" :obj="workflowTemplateName" :test="'testWorkflowTemplateName'"></AppInput>
+          <AppSelect :label="'Workflow type'" :obj="workflowType" :list="workflowTypes" :params="{key:'value', value:'value', optLabel: 'value'}"></AppSelect>
         </div>
       </div>
       <div class="modal-footer flex row">
@@ -31,6 +32,7 @@
 </template>
 <script>
 import AppInput from '@/components/AppInput.vue'
+import AppSelect from '@/components/AppSelect.vue'
 import { bus } from '../main.js'
 import axios from 'axios'
 export default {
@@ -48,7 +50,8 @@ export default {
         value: '',
         error: null,
         valid: false
-      }
+      },
+      workflowTypes: [{value: 'static'}, {value: 'application'}]
     }
   },
   computed: {
@@ -56,7 +59,7 @@ export default {
       return this.workflowTemplatesLoaded
     },
     formValid () {
-      return this.workflowTemplateName.valid
+      return this.workflowTemplateName.valid && this.workflowType.valid
     }
   },
   async mounted () {
@@ -79,9 +82,11 @@ export default {
         if (this.workflowTemplateName.error === null) {
           this.$options.filters.testName(this.workflowTemplateName)
         }
+        this.$options.filters.testSelectField(this.workflowType)
+        
         const payload = {
           workflowTemplateName: this.workflowTemplateName.value,
-          workflowType: 'static' // Todo > Implem select 
+          workflowType: this.workflowType.value
         }
 
         if (this.formValid) {
@@ -121,7 +126,8 @@ export default {
     }
   },
   components: {
-    AppInput
+    AppInput,
+    AppSelect
   }
 }
 </script>
