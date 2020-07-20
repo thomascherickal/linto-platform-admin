@@ -1,5 +1,4 @@
 const workflowsStaticModel = require(`${process.cwd()}/model/mongodb/models/workflows-static.js`)
-const workflowsTemplatesModel = require(`${process.cwd()}/model/mongodb/models/workflows-templates.js`)
 const clientsStaticModel = require(`${process.cwd()}/model/mongodb/models/clients-static.js`)
 const nodered = require(`${process.cwd()}/lib/webserver/middlewares/nodered.js`)
 const moment = require('moment')

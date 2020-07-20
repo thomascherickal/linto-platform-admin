@@ -123,7 +123,7 @@ export default {
       await this.dispatchStaticClients()
     })
     bus.$on('dissociate_static_device_success', async (data) => {
-      console.log(data)
+      await this.dispatchStaticClients()
     })
   },
   computed: {
