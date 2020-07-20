@@ -1,0 +1,118 @@
+<template>
+  <div class="modal-wrapper" v-if="modalVisible">
+    <div class="modal">
+      <div class="modal-header flex row">
+        <span class="modal-header__tilte flex1">Update enrolled static device</span>
+        <button class="button button-icon button--red" @click="closeModal()">
+          <span class="button__icon button__icon--close"></span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-body__content">
+          <p>You're about to replace the actual static device attached to "<strong>{{workflow.name}}</strong>" workflow. If you want to continue, please select a device in the following list and apply your choice.</p>
+          <AppSelect :label="'Select a static device'" :obj="targetDevice" :list="availableStaticClients" :params="{key:'_id', value:'sn', optLabel: 'sn'}" :disabled="noStaticDevice" :disabledTxt="'No static device available'"></AppSelect>
+        </div>
+      </div>
+      <div class="modal-footer flex row">
+        <div class="flex flex1 modal-footer-left">
+          <button class="button button-icon-txt button--grey" @click="closeModal()">
+            <span class="button__icon button__icon--cancel"></span>
+            <span class="button__label">Cancel</span>
+          </button>
+        </div>
+        <div class="flex flex1 modal-footer-right">
+          <button class="button button-icon-txt button--green" @click="updateStaticDevice()">
+            <span class="button__icon button__icon--apply"></span>
+            <span class="button__label">Apply</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+<script>
+import AppSelect from '@/components/AppSelect.vue'
+import { bus } from '../main.js'
+import axios from 'axios'
+export default {
+  data () {
+    return {
+      modalVisible: false,
+      sn: null,
+      workflow: null,
+      targetDevice: {
+        value: '',
+        error: null,
+        valid: false
+      },
+      staticClientsLoaded: false
+    }
+  },
+  computed: {
+    availableStaticClients () {
+      return this.$store.getters.STATIC_CLIENTS_AVAILABLE
+    },
+    noStaticDevice () {
+      return this.availableStaticClients.length === 0
+    }
+  },
+  mounted () {
+    bus.$on('update_enrolled_static_device', (data) => {
+      this.sn = data.sn
+      this.workflow = data.workflow
+      this.showModal()
+    })
+  },
+  methods: {
+    showModal () {
+      this.modalVisible = true
+    },
+    closeModal () {
+      this.modalVisible = false
+    },
+    async updateStaticDevice () {
+      this.$options.filters.testSelectField(this.targetDevice)
+      if (this.targetDevice.valid) {
+        try {
+          const payload = {
+            sn: this.sn,
+            workflow: this.workflow,
+            targetDevice: this.targetDevice.value
+          }
+          const updateDevice = await axios(`${process.env.VUE_APP_URL}/api/clients/static/replace`, {
+            method: 'post', 
+            data: { payload }
+          })
+          if (updateDevice.data.status === 'success') {
+            bus.$emit('app_notif', {
+              status: 'success',
+              msg: updateDevice.data.msg,
+              timeout: 3000,
+              redirect: false
+            })
+            this.closeModal()
+            bus.$emit('update_enrolled_static_device_success', {})
+          }
+        } catch (error) {
+          console.error(error)
+          bus.$emit('app_notif', {
+            status: 'error',
+            msg: error,
+            timeout: false,
+            redirect: false
+          })
+        }
+      }
+    },
+    async dispatchClients () {
+      const dispatchClients = await this.dispatchStore('getStaticClients')
+      if (dispatchClients.status === 'success') {
+        this.staticClientsLoaded = true
+      }
+    }
+  },
+  components: {
+    AppSelect
+  }
+}
+</script>

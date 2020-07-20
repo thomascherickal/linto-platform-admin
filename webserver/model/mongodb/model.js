@@ -1,4 +1,6 @@
 const MongoDriver = require(`${process.cwd()}/model/mongodb/driver.js`)
+const ZSchema = require("z-schema")
+const validator = new ZSchema({})
 
 class MongoModel {
     constructor(collection) {
@@ -8,6 +10,22 @@ class MongoModel {
 
     getObjectId(id) {
         return MongoDriver.constructor.mongoDb.ObjectID(id)
+    }
+
+    testSchema(json, schema) {
+        const schemaValid = validator.validate(json, schema)
+        var schemaErrors = validator.getLastErrors() // this will return an array of validation errors encountered
+        if (schemaValid) {
+            return {
+                valid: schemaValid,
+                errors: null
+            }
+        } else {
+            return {
+                valid: schemaValid,
+                errors: schemaErrors
+            }
+        }
     }
 
     /* ========================= */

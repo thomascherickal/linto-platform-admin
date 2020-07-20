@@ -25,14 +25,14 @@ h1 {
 }
 
 h2 {
-    font-size: 26px;
+    font-size: 24px;
     font-weight: 600;
     padding: 0 0 5px 0;
     color: $blueMid;
 }
 
 h3 {
-    font-size: 22px;
+    font-size: 20px;
     font-weight: 500;
     padding: 0 0 5px 0;
 }
@@ -69,6 +69,12 @@ img {
 
 .hidden {
     display: none;
+}
+
+.divider {
+    height: 1px;
+    width: 100%;
+    margin: 40px 0 0 0;
 }
 
 .block {
@@ -134,11 +140,11 @@ img {
     thead {
         tr {
             th {
-                font-size: 16px;
+                font-size: 14px;
                 font-weight: 600;
-                padding: 5px 10px;
+                padding: 5px 20px;
                 text-align: left;
-                color: $greenChart;
+                color: $blueMid;
                 &.status {
                     width: 100px;
                 }
@@ -172,17 +178,22 @@ img {
                     -moz-border-radius-bottomright: 3px;
                     border-bottom-right-radius: 3px;
                 }
-                td {
-                    border: none;
-                }
             }
             td {
                 border-bottom: 1px solid #ececec;
                 font-size: 16px;
-                padding: 15px 10px;
+                padding: 10px 20px;
                 background-color: #fefefe;
                 font-size: 14px;
-                color: #777;
+                border-right: 1px solid #f2f2f2;
+                strong {
+                    display: inline-block;
+                    vertical-align: top;
+                    color: $blueMid;
+                    font-weight: 600;
+                    padding-right: 5px;
+                    line-height: 32px;
+                }
                 &.important {
                     font-weight: 600;
                     color: #545454;
@@ -192,6 +203,9 @@ img {
                 }
                 &.status {
                     width: 100px;
+                }
+                &::last-child {
+                    border: none;
                 }
             }
             &:hover {
@@ -204,8 +218,20 @@ img {
                     background-color: $greenLight;
                 }
             }
+            &.center {
+                td {
+                    text-align: center;
+                }
+            }
         }
     }
+}
+
+.no-content {
+    font-style: italic;
+    padding: 20px;
+    font-weight: 600;
+    color: $blueMid;
 }
 
 .icon.icon--status {

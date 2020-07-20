@@ -16,21 +16,23 @@
       <div class="flex1 flex row iframe__controls-right">
         <button
           class="button button-icon-txt button--bluemid"
-          @click="OpenSavePatternModal()"
+          @click="SaveAsWorkflowTemplate()"
         >
           <span class="button__icon button__icon--save"></span>
           <span class="button__label">Save as new flow pattern</span></button>
+        <!-- WIP 
         <button
           class="button button-icon-txt button--bluemid"
-          @click="OpenLoadFromPatternModal()"
+          @click="LoadFromWorkflowTemplate()"
         >
           <span class="button__icon button__icon--load"></span>
           <span class="button__label">Load from flow pattern</span>
         </button>
+        -->
         <button
           class="button button-icon-txt button--valid"
           @click="saveAndPublish()"
-          v-if="contextFrame !== 'manager'"
+          v-if="contextFrame !== 'sandbox'"
         >
           <span class="button__icon button__icon--publish"></span>
           <span class="button__label">Save and publish</span>
@@ -49,11 +51,12 @@
 import axios from 'axios'
 import { bus } from '../main.js'
 export default {
-  props: ['contextFrame', 'blsurl','flowId','contextId'],
+  props: ['contextFrame','blsurl','noderedFlowId','workflowId'],
   data () {
     return {
       iframeUrl: '',
-      fullScreen: false
+      fullScreen: false,
+      payload: {}
     }
   },
   mounted () {
@@ -61,6 +64,20 @@ export default {
       this.iframeUrl = this.blsurl
     } else {
       this.iframeUrl = process.env.VUE_APP_NODERED
+    }
+
+    //'contextFrame','blsurl','noderedFlowId','wokflowId'
+    if (!!this.contextFrame) {
+      this.payload.contextFrame = this.contextFrame
+    }
+    if (!!this.blsurl) {
+      this.payload.blsurl = this.blsurl
+    }
+    if (!!this.noderedFlowId) {
+      this.payload.noderedFlowId = this.noderedFlowId
+    }
+    if (!!this.workflowId) {
+      this.payload.workflowId = this.workflowId
     }
 
     bus.$on('iframe_reload', () => {
@@ -82,24 +99,16 @@ export default {
         bus.$emit('iframe-unset-fullscreen', {})
       }
     },
-    OpenSavePatternModal () {
-      bus.$emit('save_new_pattern', {})
+    SaveAsWorkflowTemplate () {
+      bus.$emit('save_as_workflow_template', {payload: this.payload})
     },
-    OpenLoadFromPatternModal () {
-      bus.$emit('load_from_pattern', {})
-    },
-    async saveAndPublish () {
-      const save = await axios(`${process.env.VUE_APP_URL}/api/flow/publish`, {
-        method: 'post',
-        data: {
-          flowId: this.flowId,
-          contextId: this.contextId
-        }
-      })
-      if (save.data.status === 'success') {
-        location.reload()
-      }
+    saveAndPublish () {
+      console.log('TODO')
     }
+    /*LoadFromWorkflowTemplate () {
+      bus.$emit('load_from_workflow_template', {payload: this.payload})
+    }*/
+    
   }
 }
 </script>

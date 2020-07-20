@@ -13,7 +13,7 @@
       </span>
     </details>
     <div class="block block--transparent block--no-margin block--no-padding flex1 flex">
-      <NodeRedIframe :contextFrame="'manager'" v-if="sandBoxFound" :blsurl="sandBoxUrl"></NodeRedIframe>
+      <NodeRedIframe :contextFrame="'sandbox'" v-if="sandBoxFound" :blsurl="sandBoxUrl"></NodeRedIframe>
     </div>
   </div>
 </template>
@@ -35,20 +35,17 @@ export default {
   components: {
     NodeRedIframe
   },
-  mounted () {
-    setTimeout(async () => {
-      await this.isBlsUp()
-    }, 500)
+   beforeRouteEnter (to, form, next) {
+    // Check if Business logic server is UP before enter route
+    next(vm => vm.isBlsUp())
   },
   methods: {
     async isBlsUp () {
       try {
-        const connectBls = await axios.get(`${process.env.VUE_APP_URL}/api/flow/healthcheck`)
-        if (connectBls.data.status === 'success') {
+        const connectBls = await axios.get(process.env.VUE_APP_NODERED)
+        if (connectBls.status === 200) {
           this.blsUp = true
           this.getSandBoxId()
-        } else {
-          throw 'Cannot connect to Business logic server'
         }
       } catch (error) {
         bus.$emit('app_notif', {

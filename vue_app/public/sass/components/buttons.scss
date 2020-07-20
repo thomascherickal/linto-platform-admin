@@ -34,55 +34,59 @@
         @include borderRadius(3px);
         &.button__icon--monitoring {
             @include maskImage('../img/svg/levels.svg');
-            background-color: $blueMid;
         }
         &.button__icon--close {
             @include maskImage('../img/svg/close.svg');
-            background-color: $error;
         }
         &.button__icon--ping {
             @include maskImage('../img/svg/ping.svg');
-            background-color: $blueLinto;
         }
         &.button__icon--talk {
             @include maskImage('../img/svg/chat.svg');
-            background-color: $blueLinto;
         }
         &.button__icon--mute {
             @include maskImage('../img/svg/mute.svg');
-            background-color: $textColor;
         }
         &.button__icon--unmute {
             @include maskImage('../img/svg/unmute.svg');
-            background-color: $textColor;
         }
         &.button__icon--workflow {
             @include maskImage('../img/svg/workflow.svg');
-            background-color: $blueMid;
         }
         &.button__icon--fullscreen {
             @include maskImage('../img/svg/fullscreen.svg');
-            background-color: $blueLinto;
         }
         &.button__icon--leave-fullscreen {
             @include maskImage('../img/svg/leave-fullscreen.svg');
-            background-color: $blueLinto;
         }
         &.button__icon--save {
             @include maskImage('../img/svg/save.svg');
-            background-color: $blueMid;
         }
         &.button__icon--load {
             @include maskImage('../img/svg/upload.svg');
-            background-color: $blueMid;
         }
-        &.button__icon--publish {
+        &.button__icon--publish,
+        &.button__icon--deploy {
             @include maskImage('../img/svg/rocket.svg');
-            background-color: $valid;
         }
         &.button__icon--logout {
             @include maskImage('../img/svg/logout.svg');
-            background-color: $error;
+        }
+        &.button__icon--settings {
+            @include maskImage('../img/svg/settings.svg');
+        }
+        &.button__icon--barcode {
+            @include maskImage('../img/svg/barcode.svg');
+        }
+        &.button__icon--delete,
+        &.button__icon--trash {
+            @include maskImage('../img/svg/delete.svg');
+        }
+        &.button__icon--cancel {
+            @include maskImage('../img/svg/cancel.svg');
+        }
+        &.button__icon--apply {
+            @include maskImage('../img/svg/apply.svg');
         }
     }
     /* Type of button */
@@ -102,6 +106,9 @@
     &.button--valid,
     &.button--green {
         border-color: $valid;
+        .button__icon {
+            background-color: $valid;
+        }
         .button__label {
             color: $valid;
         }
@@ -115,6 +122,9 @@
     &.button--important,
     &.button--red {
         border-color: $error;
+        .button__icon {
+            background-color: $error;
+        }
         .button__label {
             color: $error;
         }
@@ -128,6 +138,10 @@
     &.button--cancel,
     &.button--grey {
         border-color: #666;
+        margin-right: 20px;
+        .button__icon {
+            background-color: #666;
+        }
         .button__label {
             color: #666;
         }
@@ -140,6 +154,9 @@
     }
     &.button--blue {
         border-color: $blueLinto;
+        .button__icon {
+            background-color: $blueLinto;
+        }
         .button__label {
             color: $blueLinto;
         }
@@ -152,6 +169,9 @@
     }
     &.button--bluemid {
         border-color: $blueMid;
+        .button__icon {
+            background-color: $blueMid;
+        }
         .button__label {
             color: $blueMid;
         }
@@ -164,6 +184,9 @@
     }
     &.button--bluedark {
         border-color: $blueDark;
+        .button__icon {
+            background-color: $blueDark;
+        }
         .button__label {
             color: $blueDark;
         }
@@ -184,15 +207,26 @@
                 content: attr(data-desc);
                 position: absolute;
                 font-size: 14px;
-                width: auto;
-                top: 0;
+                width: 180px;
+                height: auto;
+                top: 2px;
                 left: 110%;
                 padding: 5px;
                 color: #ffffff;
-                background-color: $blueLinto;
+                background-color: inherit;
+                font-style: italic;
                 white-space: nowrap;
                 @include borderRadius(3px);
                 z-index: 10;
+                white-space: break-spaces;
+                text-align: center;
+            }
+            &.bottom {
+                &::after {
+                    top: 35px;
+                    left: 50%;
+                    margin-left: -90px;
+                }
             }
         }
     }

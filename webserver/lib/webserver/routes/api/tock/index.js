@@ -64,12 +64,19 @@ module.exports = (webServer) => {
                 try {
                     const flowId = req.body.flowId
                     const lexicalSeeding = await lexSeed.nluLexicalSeeding(flowId)
-                    res.json(lexicalSeeding)
+                    if (lexicalSeeding.status === 200) {
+                        res.json({
+                            status: 'success',
+                            msg: 'Tock application updated'
+                        })
+                    } else {
+                        throw 'Error on updating tock application'
+                    }
                 } catch (error) {
                     console.error(error)
                     res.json({
                         status: 'error',
-                        msg: error.toString()
+                        error
                     })
                 }
             }

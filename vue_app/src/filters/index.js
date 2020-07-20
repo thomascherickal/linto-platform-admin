@@ -39,22 +39,28 @@ Vue.filter('testSelectField', function(obj) {
 })
 
 // TEST CONTEXT NAME
-Vue.filter('testContextName', function(obj) {
-    const contexts = store.state.contextFleet
-    if (contexts.filter(l => l.name === obj.value).length > 0) {
-        obj.error = 'This context name is already used'
+Vue.filter('testStaticWorkflowName', function(obj) {
+    obj.error = null
+    obj.valid = false
+    const workflows = store.state.staticWorkflows
+    if (workflows.length > 0 && workflows.filter(wf => wf.name === obj.value).length > 0) {
+        obj.error = 'This workflow name is already used'
         obj.valid = false
     }
 })
 
-// TEST PATTERN NAME
-Vue.filter('testPatternName', function(obj) {
-    const patterns = store.state.flowPatterns
-    if (patterns.filter(l => l.name === obj.value).length > 0) {
-        obj.error = 'This pattern name is already used'
+// TEST WORKFLOW TEMPLATE NAME
+Vue.filter('testWorkflowTemplateName', function(obj) {
+    obj.error = null
+    obj.valid = false
+    const workflowsTemplates = store.state.workflowsTemplates
+    console.log('workflowsTemplates', workflowsTemplates)
+    if (workflowsTemplates.length > 0 && workflowsTemplates.filter(wf => wf.name === obj.value).length > 0) {
+        obj.error = 'This workflow template name is already used'
         obj.valid = false
     }
 })
+
 
 // TEST SERIAL NUMBER
 Vue.filter('testSerialNumber', function(obj) {
@@ -72,8 +78,8 @@ Vue.filter('testName', function(obj) {
     obj.error = null
     if (obj.value.length === 0) {
         obj.error = 'This field is required'
-    } else if (obj.value.length < 3) {
-        obj.error = 'This field must contain at least 3 characters'
+    } else if (obj.value.length < 6) {
+        obj.error = 'This field must contain at least 6 characters'
     } else if (obj.value.match(regex)) {
         obj.valid = true
     } else {
@@ -103,17 +109,6 @@ Vue.filter('testEmail', function(obj) {
         obj.valid = true
     } else {
         obj.error = 'Invalid email'
-    }
-
-})
-
-Vue.filter('testSentence', function(obj) {
-    obj.valid = false
-    obj.error = null
-    if (obj.value.length === 0) {
-        obj.error = 'This field is required'
-    } else {
-        obj.valid = true
     }
 
 })

@@ -2,7 +2,8 @@ const axios = require('axios')
 const nodered = require('./nodered.js')
 const middlewares = require('./index.js')
 const fs = require('fs')
-const request = require('request')
+    //const request = require('request')
+var FormData = require('form-data')
 
 async function sttLexicalSeeding(flowId, service_name) {
     try {
@@ -79,8 +80,6 @@ async function sttLexicalSeeding(flowId, service_name) {
         }
         // Result
         if (intentsUpdated && entitiesUpdated) {
-
-
             if (updateInt.errors.length === 0 && updateEnt.errors.length === 0) {
                 return ({
                     status: 'success',
@@ -111,7 +110,7 @@ async function sttLexicalSeeding(flowId, service_name) {
         return ({
             status: 'error',
             msg: 'Error on updating language model',
-            error: error.toString()
+            error: error
         })
     }
 }
@@ -213,11 +212,12 @@ async function updateLangModel(payload, modelId) {
 }
 
 async function nluLexicalSeeding(flowId) {
+    let getNluLexicalSeeding = ''
     try {
         const accessToken = await nodered.getBLSAccessToken()
 
         // Get lexical seeding object to send to TOCK
-        const getNluLexicalSeeding = await axios(`${middlewares.useSSL() + process.env.LINTO_STACK_BLS_SERVICE + process.env.LINTO_STACK_BLS_SERVICE_API_PATH}/${flowId}/dataset/tock`, {
+        getNluLexicalSeeding = await axios(`${middlewares.useSSL() + process.env.LINTO_STACK_BLS_SERVICE + process.env.LINTO_STACK_BLS_SERVICE_API_PATH}/${flowId}/dataset/tock`, {
             method: 'get',
             headers: {
                 'charset': 'utf-8',
@@ -228,56 +228,43 @@ async function nluLexicalSeeding(flowId) {
             }
         })
         const jsonContent = JSON.stringify(getNluLexicalSeeding.data.application)
-
-        // get Tock auth token
+            // get Tock auth token
         const token = middlewares.basicAuthToken(process.env.LINTO_STACK_TOCK_USER, process.env.LINTO_STACK_TOCK_PASSWORD)
 
         // Tmp json file path
         const filePath = process.cwd() + '/public/tockapp.json'
 
-        // Create json file
-        return new Promise(function(resolve, reject) {
-            fs.writeFile(filePath, jsonContent, (err) => {
-                if (err) throw err
-                else {
-                    // Tock service post request
-                    request.post({
+        return new Promise((resolve, reject) => {
+            fs.writeFile(filePath, jsonContent, async(err) => {
+                if (err) {
+                    console.error(err)
+                    throw err
+                } else {
+                    const formData = new FormData()
+                    formData.append('file', fs.createReadStream(filePath))
+                    axios({
                         url: `${middlewares.useSSL() + process.env.LINTO_STACK_TOCK_SERVICE}:${process.env.LINTO_STACK_TOCK_SERVICE_PORT}/rest/admin/dump/sentences`,
+                        method: 'post',
+                        data: formData,
                         headers: {
-                            'Authorization': token
-                        },
-                        formData: {
-                            file: fs.createReadStream(filePath),
-                            filetype: 'json'
-                        },
-                    }, function(error, response, body) {
-                        let resp
-                        if (typeof(body) !== 'object') {
-                            resp = JSON.parse(body)
-                        } else {
-                            resp = body
+                            'Authorization': token,
+                            'Content-Type': formData.getHeaders()['content-type']
                         }
-                        if (error) {
-                            reject(error)
-                        }
-                        if (resp.success) {
-                            fs.unlinkSync(filePath)
-                            resolve({
-                                status: 'success',
-                                msg: 'Tock application has been deployed'
-                            })
-                        } else {
-                            reject('Error on creating tock application')
-                        }
+                    }).then((res) => {
+                        //fs.unlinkSync(filePath)
+                        resolve(res)
+                    }).catch((err) => {
+                        //console.error('HERE', err)
+                        reject(err)
                     })
                 }
             })
         })
     } catch (error) {
-        console.error(error)
         return ({
             status: 'error',
-            msg: error.toString()
+            msg: 'Error on updating Tock application',
+            error
         })
     }
 }

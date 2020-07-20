@@ -18,64 +18,40 @@ export default {
     return {}
   },
   computed: {
-    contexts () {
-      return this.$store.state.contextFleet
-    },
+    staticWorkflow () {
+      return this.$store.state.staticWorkflows
+    }
   },
   methods: {
-    testEmail (obj) {
-      this.$options.filters.testEmail(obj)
-    },
-    testPassword (obj) {
-      this.$options.filters.testPassword(obj)
+    testWorkflowName (obj) {
+      this.$options.filters.dispatchStore('getStaticWorkflows')
+      // Test if workflow name is not used
+      this.$options.filters.testStaticWorkflowName(obj)
+      if (obj.error === null) {
+        // Test if workflow name is valid
+        this.$options.filters.testName(obj)
+      }
     },
     testName (obj) {
       this.$options.filters.testName(obj)
     },
-    testContextName (obj) {
-      this.$options.filters.dispatchStore('getFleetContexts')
-      this.$options.filters.testName(obj)
-      this.$options.filters.testContextName(obj)
+    testWorkflowTemplateName (obj) {
+      this.$options.filters.testWorkflowTemplateName(obj)
+      if (obj.error === null) {
+        this.$options.filters.testName(obj)
+      }
     },
-    testPatternName (obj) {
-      this.$options.filters.dispatchStore('getFlowPatterns')
-      this.$options.filters.testName(obj)
-      this.$options.filters.testContextName(obj)
-    },
-    testSerialNumber (obj) {
-      this.$options.filters.dispatchStore('getLintoFleet')
-      this.$options.filters.testName(obj)
-      this.$options.filters.testSerialNumber(obj)
-    },
-    testSentence (obj) {
-      this.$options.filters.testSentence(obj)
-    },
-
     exec (functionName) {
       switch(functionName) {
         case 'testName':
           this.testName(this.obj)
           break
-        case 'testSn':
-          this.testSerialNumber(this.obj)
+        case 'testWorkflowName':
+          this.testWorkflowName(this.obj)
           break
-        case 'testEmail':
-          this.testEmail(this.obj)
+        case 'testWorkflowTemplateName':
+          this.testWorkflowTemplateName(this.obj)
           break
-        case 'testPassword':
-          this.testPassword(this.obj)
-          break
-        case 'testConfirmPassword':
-          this.testConfirmPassword(this.obj)
-          break
-        case 'testPatternName':
-          this.testPatternName(this.obj)
-          break
-        case 'testContextName':
-          this.testContextName(this.obj)
-          break
-          case 'testSentence':
-            this.testSentence(this.obj)
         default:
           return
       }
