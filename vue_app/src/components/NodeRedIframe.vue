@@ -51,7 +51,7 @@
 import axios from 'axios'
 import { bus } from '../main.js'
 export default {
-  props: ['contextFrame','blsurl','noderedFlowId','workflowId'],
+  props: ['contextFrame','blsurl','noderedFlowId','workflowId', 'workflowName'],
   data () {
     return {
       iframeUrl: '',
@@ -79,6 +79,9 @@ export default {
     if (!!this.workflowId) {
       this.payload.workflowId = this.workflowId
     }
+    if (!!this.workflowName) {
+      this.payload.workflowName = this.workflowName
+    }
 
     bus.$on('iframe_reload', () => {
       setTimeout(() => {
@@ -102,13 +105,37 @@ export default {
     SaveAsWorkflowTemplate () {
       bus.$emit('save_as_workflow_template', {payload: this.payload})
     },
-    saveAndPublish () {
-      console.log('TODO')
+    async saveAndPublish () {
+      try {
+        if (this.payload.contextFrame === 'statciWorkflow') {
+          const saveAndPublish = await axios(`${process.env.VUE_APP_URL}/api/workflows/static/saveandpublish`, {
+            method: 'post',
+            data: { payload: this.payload }
+          })
+
+          if (saveAndPublish.data.status === 'success') {
+            bus.$emit('app_notif', {
+              status: 'success',
+              msg: saveAndPublish.data.msg,
+              timeout: 3000,
+              redirect: false
+            })
+            bus.$emit('iframe_reload', {})
+
+          } else {
+            throw saveAndPublish
+          }
+        }
+      } catch (error) {
+        console.error(error)
+        bus.$emit('app_notif', {
+          status: 'error',
+          msg: error,
+          timeout: false,
+          redirect: false
+        })
+      }
     }
-    /*LoadFromWorkflowTemplate () {
-      bus.$emit('load_from_workflow_template', {payload: this.payload})
-    }*/
-    
   }
 }
 </script>

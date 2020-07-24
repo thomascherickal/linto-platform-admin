@@ -1,6 +1,36 @@
 import Vue from 'vue'
 import store from '../store.js'
 
+// Test password format
+const testPassword = (obj) => {
+    obj.valid = false
+    obj.error = null
+    const regex = /^[0-9A-Za-z\!\@\#\$\%\-\_\s]{4,}$/ // alphanumeric + special chars "!","@","#","$","%","-","_"
+    if (obj.value.length === 0) {
+        obj.error = 'This field is required'
+    } else if (obj.value.length < 6) {
+        obj.error = 'This field must contain at least 6 characters'
+    } else if (obj.value.match(regex)) {
+        obj.valid = true
+    } else {
+        obj.error = 'Invalid password'
+    }
+    return obj
+}
+
+// Test email format
+const testEmail = (obj) => {
+    obj.valid = false
+    obj.error = null
+    const regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
+    if (obj.value.match(regex)) {
+        obj.valid = true
+    } else {
+        obj.error = 'Invalid email'
+    }
+    return obj
+}
+
 // DISPATCH STORE
 Vue.filter('dispatchStore', async function(label) {
     try {
@@ -38,7 +68,7 @@ Vue.filter('testSelectField', function(obj) {
     }
 })
 
-// TEST CONTEXT NAME
+// TEST STATIC WORKFLOW NAME
 Vue.filter('testStaticWorkflowName', function(obj) {
     obj.error = null
     obj.valid = false
@@ -49,12 +79,33 @@ Vue.filter('testStaticWorkflowName', function(obj) {
     }
 })
 
+// TEST APPLICATION WORKFLOW NAME
+Vue.filter('testApplicationWorkflowName', function(obj) {
+    obj.error = null
+    obj.valid = false
+    const workflows = store.state.applicationWorkflows
+    if (workflows.length > 0 && workflows.filter(wf => wf.name === obj.value).length > 0) {
+        obj.error = 'This workflow name is already used'
+        obj.valid = false
+    }
+})
+
+// TEST STATIC DEVICE SERIAL NUMBER
+Vue.filter('testStaticClientsSN', function(obj) {
+    obj.error = null
+    obj.valid = false
+    const clients = store.state.staticClients
+    if (clients.length > 0 && clients.filter(wf => wf.sn === obj.value).length > 0) {
+        obj.error = 'This serial number is already used'
+        obj.valid = false
+    }
+})
+
 // TEST WORKFLOW TEMPLATE NAME
 Vue.filter('testWorkflowTemplateName', function(obj) {
     obj.error = null
     obj.valid = false
     const workflowsTemplates = store.state.workflowsTemplates
-    console.log('workflowsTemplates', workflowsTemplates)
     if (workflowsTemplates.length > 0 && workflowsTemplates.filter(wf => wf.name === obj.value).length > 0) {
         obj.error = 'This workflow template name is already used'
         obj.valid = false
@@ -87,28 +138,43 @@ Vue.filter('testName', function(obj) {
     }
 })
 
+// TEST PASSWORD FORMAT
 Vue.filter('testPassword', function(obj) {
-    obj.valid = false
-    obj.error = null
-    const regex = /^[0-9A-Za-z\!\@\#\$\%\-\_\s]{4,}$/ // alphanumeric + special chars "!","@","#","$","%","-","_"
-    if (obj.value.length === 0) {
-        obj.error = 'This field is required'
-    } else if (obj.value.length < 6) {
-        obj.error = 'This field must contain at least 6 characters'
-    } else if (obj.value.match(regex)) {
-        obj.valid = true
-    } else {
-        obj.error = 'Invalid password'
+    obj = testPassword(obj)
+})
+
+// TEST PASSWORD CONFIRMATION
+Vue.filter('testPasswordConfirm', function(obj, compareObj) {
+    obj = testPassword(obj)
+    if (obj.valid) {
+        if (obj.value === compareObj.value) {
+            obj.valid = true
+        } else {
+            obj.valid = false
+            obj.error = 'The confirmation password is different from password'
+        }
     }
 })
+
+// TEST EMAIL FORMAT
 Vue.filter('testEmail', function(obj) {
+    obj = testEmail(obj)
+})
+
+// TEST ANDROID USER EMAIL EXIST
+Vue.filter('testAndroidUserEmail', function(obj) {
     obj.valid = false
     obj.error = null
-    const regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
-    if (obj.value.match(regex)) {
-        obj.valid = true
-    } else {
-        obj.error = 'Invalid email'
+    obj = testEmail(obj)
+    if (obj.valid) {
+        const users = store.state.androidUsers
+        const userExist = users.filter(user => user.email === obj.value)
+        if (userExist.length > 0) {
+            obj.valid = false
+            obj.error = 'This email address is already used'
+        } else {
+            obj.valid = true
+            obj.error = null
+        }
     }
-
 })

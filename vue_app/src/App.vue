@@ -10,16 +10,21 @@
       </div>
     </div>
     <AppNotif></AppNotif>
-    <!-- <LoadPatternModal></LoadPatternModal>
-    <SavePatternModal></SavePatternModal> -->
     <ModalDeleteClientStatic v-if="path.indexOf('/clients/static') >= 0"></ModalDeleteClientStatic>
     <ModalUpdateClientStatic v-if="path.indexOf('/clients/static') >= 0"></ModalUpdateClientStatic>
     <ModalUpdateWorkflowServices v-if="path.indexOf('/clients/static') >= 0"></ModalUpdateWorkflowServices>
     <ModalDissociateStaticDevice v-if="path.indexOf('/clients/static') >= 0"></ModalDissociateStaticDevice>
+    <ModalAddStaticDevice v-if="path.indexOf('/clients/static') >= 0"></ModalAddStaticDevice>
+
+    <!-- Android users -->
+    <ModalManageAndroidUsers v-if="path.indexOf('/clients/application') >= 0"></ModalManageAndroidUsers>
+    <ModalAddAndroidUsers v-if="path.indexOf('/users/android')"></ModalAddAndroidUsers
+    >
+    <ModalEditAndroidUser v-if="path.indexOf('/users/android')"></ModalEditAndroidUser>
+    <ModalDeleteAndroidUser v-if="path.indexOf('/users/android')"></ModalDeleteAndroidUser>
 
     <!-- Worflows templates -->
     <ModalSaveAsWorkflowTemplate v-if="path.indexOf('/admin/workflows') >= 0 || path.indexOf('/clients/static/workflow') "></ModalSaveAsWorkflowTemplate>
-  
   </div>
 </template>
 <script>
@@ -35,7 +40,12 @@
   import ModalUpdateWorkflowServices from '@/components/ModalUpdateWorkflowServices.vue'
   import ModalDissociateStaticDevice from '@/components/ModalDissociateStaticDevice.vue'
   import ModalSaveAsWorkflowTemplate from '@/components/ModalSaveAsWorkflowTemplate.vue'
-  
+  import ModalAddStaticDevice from '@/components/ModalAddStaticDevice.vue'
+  import ModalManageAndroidUsers from '@/components/ModalManageAndroidUsers.vue'
+  import ModalAddAndroidUsers from '@/components/ModalAddAndroidUsers.vue'
+  import ModalEditAndroidUser from '@/components/ModalEditAndroidUser.vue'
+  import ModalDeleteAndroidUser from '@/components/ModalDeleteAndroidUser.vue'
+
   import { bus } from './main.js'
   export default {
     data () {
@@ -52,11 +62,18 @@
       AppNotif,
       AppNotifTop,
       AppVerticalNav,
+      ModalAddStaticDevice,
       ModalDeleteClientStatic,
       ModalUpdateClientStatic,
       ModalUpdateWorkflowServices,
       ModalDissociateStaticDevice,
-      ModalSaveAsWorkflowTemplate
+      ModalSaveAsWorkflowTemplate,
+      
+      // Android users Modal
+      ModalAddAndroidUsers,
+      ModalManageAndroidUsers,
+      ModalEditAndroidUser,
+      ModalDeleteAndroidUser
     },
     mounted () {
       bus.$on('iframe-set-fullscreen', () => {

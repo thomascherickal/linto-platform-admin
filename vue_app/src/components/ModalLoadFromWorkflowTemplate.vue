@@ -96,7 +96,6 @@ export default {
   },
   async mounted () {
     bus.$on('load_from_workflow_template', async (data) => {
-      console.log(data)
       this.workflowId = data.payload.workflowId
       this.noderedFlowId = data.payload.noderedFlowId
       await this.dispatchWorkflowTempaltes()
@@ -125,7 +124,6 @@ export default {
             method: 'put',
             data: {payload}
           })
-          console.log(loadTemplate)
         }
         
       } catch (error) {

@@ -14,7 +14,7 @@
         </span>
       </details>
       <div class="block block--transparent block--no-margin block--no-padding flex1 flex">
-        <NodeRedIframe :contextFrame="'statciWorkflow'" :blsurl="blsUrl" :noderedFlowId="currentWorkflow.flowId" :workflowId="staticWorkflowId" v-if="dataLoaded"></NodeRedIframe>
+        <NodeRedIframe :contextFrame="'statciWorkflow'" :blsurl="blsUrl" :noderedFlowId="currentWorkflow.flowId" :workflowId="staticWorkflowId" :workflowName="currentWorkflow.name" v-if="dataLoaded"></NodeRedIframe>
       </div>
     </div>
   </div>

@@ -28,9 +28,11 @@ module.exports = (webServer) => {
         "/api": require('./api')(webServer),
         /* NEW */
         "/api/clients": require('./api/clients')(webServer),
+        "/api/workflows/application": require('./api/workflows/application')(webServer),
         "/api/workflows/static": require('./api/workflows/static')(webServer),
         "/api/workflows/template": require('./api/workflows/template')(webServer),
         "/api/workflows/templates": require('./api/workflows/templates')(webServer),
+        "/api/androidusers": require('./api/androidusers')(webServer),
         /* end NEW */
         "/api/flow": require('./api/flow')(webServer),
         "/api/tock": require('./api/tock')(webServer),

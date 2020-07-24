@@ -13,7 +13,7 @@
 </template>
 <script>
 export default {
-  props: ['label', 'obj', 'test', 'lintos', 'patterns', 'type'],
+  props: ['label', 'obj', 'test', 'lintos', 'patterns', 'type', 'compare', 'workflowId'],
   data () {
     return {}
   },
@@ -41,6 +41,26 @@ export default {
         this.$options.filters.testName(obj)
       }
     },
+    testStaticClientsSN (obj) {
+      this.$options.filters.testStaticClientsSN(obj)
+      if (obj.error === null) {
+        this.$options.filters.testName(obj)
+      }
+    },
+    testEmail (obj) {
+      this.$options.filters.testEmail(obj)
+    },
+    testAndroidUserEmail (obj) {
+      this.$options.filters.testAndroidUserEmail(obj, this.workflowId)
+    },
+    testPassword (obj) {
+      this.$options.filters.testPassword(obj)
+    },
+    testPasswordConfirm (obj) {
+      if (!!this.compare) {
+        this.$options.filters.testPasswordConfirm(obj, this.compare)
+      }
+    },
     exec (functionName) {
       switch(functionName) {
         case 'testName':
@@ -51,6 +71,21 @@ export default {
           break
         case 'testWorkflowTemplateName':
           this.testWorkflowTemplateName(this.obj)
+          break
+        case 'testStaticClientsSN': 
+          this.testStaticClientsSN(this.obj)
+          break
+        case 'testEmail':
+          this.testEmail(this.obj)
+          break
+        case 'testAndroidUserEmail':
+          this.testAndroidUserEmail(this.obj)
+          break
+        case 'testPassword': 
+          this.testPassword(this.obj)
+          break
+        case 'testPasswordConfirm':
+          this.testPasswordConfirm(this.obj)
           break
         default:
           return

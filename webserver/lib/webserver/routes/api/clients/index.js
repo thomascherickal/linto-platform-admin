@@ -35,6 +35,33 @@ module.exports = (webServer) => {
             }
         },
         {
+            // Add a static device
+            path: '/static',
+            method: 'post',
+            requireAuth: true,
+            controller: async(req, res, next) => {
+                try {
+                    const payload = req.body.payload
+                    const sn = payload.sn
+                    const addStaticDevice = await clientsStaticModel.addStaticClient(sn)
+                    if (addStaticDevice === 'success') {
+                        res.json({
+                            status: 'success',
+                            msg: `The static client "${sn}" has been added.`
+                        })
+                    } else {
+                        throw addStaticDevice
+                    }
+                } catch (error) {
+                    console.error(error)
+                    res.json({
+                        status: 'error',
+                        error
+                    })
+                }
+            }
+        },
+        {
             // Replace a static device Serial Number by a target one (BLS + Database)
             path: '/static/replace',
             method: 'post',

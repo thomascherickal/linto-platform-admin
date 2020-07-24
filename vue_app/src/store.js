@@ -7,6 +7,8 @@ Vue.use(Vuex)
 export default new Vuex.Store({
     strict: false,
     state: {
+        applicationWorkflows: '',
+        androidUsers: '',
         staticClients: '',
         staticWorkflows: '',
         sttServices: '',
@@ -16,6 +18,9 @@ export default new Vuex.Store({
         workflowsTemplates: '',
     },
     mutations: {
+        SET_APPLICATION_WORKFLOWS: (state, data) => {
+            state.applicationWorkflows = data
+        },
         SET_STATIC_CLIENTS: (state, data) => {
             state.staticClients = data
         },
@@ -36,9 +41,13 @@ export default new Vuex.Store({
         },
         SET_TOCK_APPS: (state, data) => {
             state.tockApplications = data
+        },
+        SET_ANDROID_USERS: (state, data) => {
+            state.androidUsers = data
         }
     },
     actions: {
+        // Static clients
         getStaticClients: async({ commit, state }) => {
             try {
                 const getStaticClients = await axios.get(`${process.env.VUE_APP_URL}/api/clients/static`)
@@ -50,6 +59,7 @@ export default new Vuex.Store({
                 })
             }
         },
+        // Static workflows
         getStaticWorkflows: async({ commit, state }) => {
             try {
                 const getStaticWorkflows = await axios.get(`${process.env.VUE_APP_URL}/api/workflows/static`)
@@ -58,6 +68,18 @@ export default new Vuex.Store({
             } catch (error) {
                 return ({
                     error: 'Error on getting static workflows'
+                })
+            }
+        },
+        // Application workflows
+        getApplicationWorkflows: async({ commit, state }) => {
+            try {
+                const getApplicationWorkflows = await axios.get(`${process.env.VUE_APP_URL}/api/workflows/application`)
+                commit('SET_APPLICATION_WORKFLOWS', getApplicationWorkflows.data)
+                return state.applicationWorkflows
+            } catch (error) {
+                return ({
+                    error: 'Error on getting Linto(s) static devices'
                 })
             }
         },
@@ -72,6 +94,27 @@ export default new Vuex.Store({
                 })
             }
         },
+        // Android users 
+        getAndroidUsers: async({ commit, state }) => {
+            try {
+                const getAndroidUsers = await axios.get(`${process.env.VUE_APP_URL}/api/workflows/application/androidusers`)
+                let nestedObj = []
+                getAndroidUsers.data.map(user => {
+                    nestedObj.push({
+                        _id: user._id,
+                        email: user.email,
+                        applications: user.applications
+                    })
+                })
+                commit('SET_ANDROID_USERS', nestedObj)
+                return state.androidUsers
+            } catch (error) {
+                return ({
+                    error: 'Error on getting android applications users'
+                })
+            }
+        },
+        // Stt services
         getSttServices: async({ commit, state }) => {
             try {
                 const getServices = await axios.get(`${process.env.VUE_APP_URL}/api/stt/services`)
@@ -106,6 +149,7 @@ export default new Vuex.Store({
                 })
             }
         },
+        // Tock
         getTockApplications: async({ commit, state }) => {
             try {
                 const getApps = await axios.get(`${process.env.VUE_APP_URL}/api/tock/applications`)
@@ -173,6 +217,56 @@ export default new Vuex.Store({
             } catch (error) {
                 return { error }
             }
+        },
+        ANDROID_USERS_BY_APPS: (state) => {
+            try {
+                const users = state.androidUsers
+                let usersByApp = []
+
+                if (users.length > 0) {
+                    users.map(user => {
+                        user.applications.map(app => {
+                            if (!usersByApp[app]) {
+                                usersByApp[app] = [user.email]
+                            } else {
+                                usersByApp[app].push(user.email)
+                            }
+                        })
+                    })
+                }
+                return usersByApp
+
+            } catch (error) {
+                return { error }
+            }
+        },
+        ANDROID_USERS_BY_APP_ID: (state) => (workflowId) => {
+            try {
+                const users = state.androidUsers
+                return users.filter(user => user.applications.indexOf(workflowId) >= 0)
+            } catch (error) {
+                return { error }
+            }
+        },
+        ANDROID_USER_BY_ID: (state) => (userId) => {
+            try {
+                const users = state.androidUsers
+                const user = users.filter(user => user._id.indexOf(userId) >= 0)
+                return user[0]
+            } catch (error) {
+                return { error }
+            }
+        },
+        APP_WORKFLOWS_NAME_BY_ID: (state) => {
+            const workflows = state.applicationWorkflows
+            let workflowNames = []
+            if (workflows.length > 0) {
+                workflows.map(wf => {
+                    workflowNames[wf._id] = wf.name
+                })
+            }
+
+            return workflowNames
         }
 
         /*

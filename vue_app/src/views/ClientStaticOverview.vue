@@ -47,7 +47,7 @@
                 </a>
               </td>
               <td class="center">
-                <button class="button button-icon-txt button--green button--with-desc bottom" data-desc="Edit services settings" @click="updateWorkflowSericesSettings(client.sn, client.associated_workflow)">
+                <button class="button button-icon-txt button--green button--with-desc bottom" data-desc="Edit services settings" @click="updateWorkflowServicesSettings(client.sn, client.associated_workflow)">
                   <span class="button__icon button__icon--settings"></span>
                   <span class="button__label">Edit</span>
                 </button>
@@ -97,6 +97,13 @@
         </table>
         <div class="no-content" v-else>No unassociated static device were found.</div>
       </div>
+      <div class="divider"></div>
+      <div class="flex row">
+        <button class="button button-icon-txt button--green" @click="addStaticDevice()">
+          <span class="button__icon button__icon--add"></span>
+          <span class="button__label">Add a static device</span>
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -118,11 +125,13 @@ export default {
     bus.$on('update_enrolled_static_device_success', async (data) => {
         await this.dispatchStaticClients()
     })
-
     bus.$on('update_workflow_services_success', async (data) => {
       await this.dispatchStaticClients()
     })
     bus.$on('dissociate_static_device_success', async (data) => {
+      await this.dispatchStaticClients()
+    })
+    bus.$on('add_static_device_success', async (data) => {
       await this.dispatchStaticClients()
     })
   },
@@ -144,23 +153,27 @@ export default {
     }
   },
   methods: {
-    async updateEnrolledStaticDevice (sn, workflow) {
+    updateEnrolledStaticDevice (sn, workflow) {
       bus.$emit('update_enrolled_static_device', {sn, workflow})
     },
     // Deploy an unassociated device
-    async deployDevice (sn) {
+    deployDevice (sn) {
       bus.$emit('deploy_static_device', {sn})
     },
-    async updateWorkflowSericesSettings (sn, workflow) {
+    updateWorkflowServicesSettings (sn, workflow) {
       bus.$emit('update_workflow_services', {sn, workflow})
     },
     // Delete a device in provisionning list 
-    async deleteStaticDevice (sn) {
+    deleteStaticDevice (sn) {
       bus.$emit('delete_static_device', {sn})
     },
     // Dissociate device from a workflow and remove workflow
-    async dissociateStaticDevice (sn, workflow){
+    dissociateStaticDevice (sn, workflow){
       bus.$emit('dissociate_static_device', {sn , workflow})
+    },
+    // Add a static device
+    addStaticDevice () {
+      bus.$emit('add_static_device', {})
     },
     // Get static clients from store
     async dispatchStaticClients () {

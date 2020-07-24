@@ -17,7 +17,9 @@ import ClientStaticDeploy from './views/ClientStaticDeploy.vue'
 import WorkflowEditor from './views/WorkflowEditor.vue'
 import TockView from './views/TockView.vue'
 import ClientStaticWorkflowEditor from './views/ClientStaticWorkflowEditor.vue'
-
+import ApplicationsOverview from './views/ApplicationsOverview.vue'
+import ApplicationCreate from './views/ApplicationCreate.vue'
+import AndroidUsers from './views/AndroidUsers.vue'
 Vue.use(Router)
 const router = new Router({
     mode: 'history',
@@ -77,6 +79,26 @@ const router = new Router({
             }
         },
         {
+            path: '/admin/clients/application',
+            name: 'Applications overview',
+            component: ApplicationsOverview,
+            // META DATA
+            meta: [{
+                    name: 'title',
+                    content: 'Linto Admin - applications'
+                },
+                {
+                    name: 'robots',
+                    content: 'noindex, nofollow'
+                }
+            ]
+        }, {
+            path: '/admin/workflows/application/create',
+            name: 'Create new application',
+            component: ApplicationCreate,
+            meta: []
+        },
+        {
             path: '/admin/workflow-editor',
             name: 'Worflow editor',
             component: WorkflowEditor,
@@ -84,6 +106,11 @@ const router = new Router({
             path: '/admin/nlu',
             name: 'tock interface',
             component: TockView
+        },
+        {
+            path: '/admin/users/android',
+            name: 'Android users interface',
+            component: AndroidUsers
         }
         /*,
                 {

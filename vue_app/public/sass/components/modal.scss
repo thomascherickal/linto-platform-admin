@@ -5,7 +5,7 @@
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
-    z-index: 999;
+    z-index: 990;
     align-items: center;
     justify-content: center;
     display: flex;
@@ -20,8 +20,11 @@
 .modal {
     max-width: 880px;
     min-width: 600px;
+    max-height: 600px;
     height: auto;
     background-color: #fff;
+    display: flex;
+    flex-direction: column;
     @include borderRadius(5px);
     @include blockShadow();
     padding: 20px;
@@ -40,7 +43,17 @@
     }
     .modal-body {
         padding: 20px 0;
+        overflow: auto;
+        flex: 1;
         .modal-body__content {
+            .subtitle {
+                display: inline-block;
+                width: 100%;
+                font-size: 18px;
+                font-weight: 600;
+                color: $blueMid;
+                padding-bottom: 20px;
+            }
             strong {
                 font-weight: 600;
                 color: $error;

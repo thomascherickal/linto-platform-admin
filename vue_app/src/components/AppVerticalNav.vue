@@ -29,6 +29,14 @@
       </div>
     </div>
     
+    <!-- Android users -->
+    <div class="vertical-nav-item flex col" :class="routePath.indexOf(androidUsersUrl) >= 0 ? 'active' : ''">
+      <a
+        class="vertical-nav-item__link vertical-nav-item__link"
+        :href="androidUsersUrl"
+      >Android users</a>
+    </div>
+
     <!-- Workflow editor -->
     <div class="vertical-nav-item flex col" :class="routePath.indexOf(workflowEditorUrl) >= 0 ? 'active' : ''">
       <a
@@ -54,6 +62,7 @@ export default {
       clientsUrl: '/admin/clients',
       workflowEditorUrl: '/admin/workflow-editor',
       nluUrl: '/admin/nlu',
+      androidUsersUrl: '/admin/users/android',
       routePath: ''
     }
   },

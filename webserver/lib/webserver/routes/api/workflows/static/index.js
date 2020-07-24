@@ -1,5 +1,6 @@
 const workflowsStaticModel = require(`${process.cwd()}/model/mongodb/models/workflows-static.js`)
 const clientsStaticModel = require(`${process.cwd()}/model/mongodb/models/clients-static.js`)
+const tmpFlowModel = require(`${process.cwd()}/model/mongodb/models/flow-tmp.js`)
 const nodered = require(`${process.cwd()}/lib/webserver/middlewares/nodered.js`)
 const moment = require('moment')
 
@@ -60,7 +61,7 @@ module.exports = (webServer) => {
                         name: payload.workflowName,
                         flowId: payload.flowId,
                         created_date: moment().format(),
-                        update_date: moment().format(),
+                        updated_date: moment().format(),
                         associated_device: payload.sn,
                         flow: getPostedFlow
                     }
@@ -71,7 +72,7 @@ module.exports = (webServer) => {
                             msg: `Workflow "${payload.workFlowName} has been created`
                         })
                     } else {
-                        throw postFlowOnBls
+                        throw postWorkflow
                     }
                 } catch (error) {
                     console.error(error)
@@ -126,7 +127,8 @@ module.exports = (webServer) => {
                             sn: workflowPayload.associated_device,
                             associated_workflow: {
                                 _id: workflowId,
-                                name: workflowPayload.name
+                                name: workflowPayload.name,
+                                updated_date: moment().format()
                             }
                         })
                         if (updateStaticDevice === 'success') {
@@ -191,7 +193,51 @@ module.exports = (webServer) => {
                         throw `Error on deleting workflow "${getWorkflow.name}" from Business logic server`
                     }
                 } catch (error) {
-                    console.error('here: ', error)
+                    console.error(error)
+                    res.json({
+                        status: 'error',
+                        error
+                    })
+                }
+            }
+        },
+        {
+            path: '/saveandpublish',
+            method: 'post',
+            requireAuth: true,
+            controller: async(req, res, next) => {
+                try {
+                    const payload = req.body.payload
+
+                    // Get tmp flow
+                    const getTmpFlow = await tmpFlowModel.getTmpFlow()
+                    const formattedFlow = nodered.formatFlowGroupedNodes(getTmpFlow)
+
+                    // Update BLS
+                    const putBls = await nodered.putBLSFlow(payload.noderedFlowId, formattedFlow)
+                    if (putBls.status === 'success') {
+                        const getUdpatedFlow = await nodered.getFlowById(payload.noderedFlowId)
+
+                        // update static workflow
+                        const updateStaticWorkflow = await workflowsStaticModel.updateStaticWorkflow({
+                            _id: payload.workflowId,
+                            flow: getUdpatedFlow,
+                            updated_date: moment().format()
+                        })
+                        if (updateStaticWorkflow === 'success') {
+                            res.json({
+                                status: 'success',
+                                msg: `The static workflow "${payload.workflowName}" has been updated`
+                            })
+                        } else {
+                            c
+                            throw 'Error on updating static workflow'
+                        }
+                    } else {
+                        throw 'Error on updating flow on Business Logic Server'
+                    }
+                } catch (error) {
+                    console.error(error)
                     res.json({
                         status: 'error',
                         error

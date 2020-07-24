@@ -88,6 +88,18 @@
         &.button__icon--apply {
             @include maskImage('../img/svg/apply.svg');
         }
+        &.button__icon--add {
+            @include maskImage('../img/svg/add.svg');
+        }
+        &.button__icon--back {
+            @include maskImage('../img/svg/back.svg');
+        }
+        &.button__icon--user-settings {
+            @include maskImage('../img/svg/user-settings.svg');
+        }
+        &.button__icon--android {
+            @include maskImage('../img/svg/android.svg');
+        }
     }
     /* Type of button */
     &.button-icon-txt {
@@ -192,6 +204,21 @@
         }
         &:hover {
             background-color: $blueDark;
+            .button__label {
+                color: #fff;
+            }
+        }
+    }
+    &.button--orange {
+        border-color: $warning;
+        .button__icon {
+            background-color: $warning;
+        }
+        .button__label {
+            color: $warning;
+        }
+        &:hover {
+            background-color: $warning;
             .button__label {
                 color: #fff;
             }
