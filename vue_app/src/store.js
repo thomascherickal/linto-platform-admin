@@ -97,7 +97,7 @@ export default new Vuex.Store({
         // Android users 
         getAndroidUsers: async({ commit, state }) => {
             try {
-                const getAndroidUsers = await axios.get(`${process.env.VUE_APP_URL}/api/workflows/application/androidusers`)
+                const getAndroidUsers = await axios.get(`${process.env.VUE_APP_URL}/api/androidusers`)
                 let nestedObj = []
                 getAndroidUsers.data.map(user => {
                     nestedObj.push({

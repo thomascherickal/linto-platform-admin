@@ -163,7 +163,7 @@ export default {
           const payload = {
             applications: this.selectedApps
           }
-          const updateUser = await axios(`${process.env.VUE_APP_URL}/api/androidusers/${this.user._id}/applications/update`, {
+          const updateUser = await axios(`${process.env.VUE_APP_URL}/api/androidusers/${this.user._id}/applications`, {
             method: 'put',
             data: { payload }
           })
@@ -191,7 +191,7 @@ export default {
     },
     async removeUserFromApp (user, appId) {
       try {
-        const removeUserFromApp = await axios(`${process.env.VUE_APP_URL}/api/androidusers/${user._id}/application/${appId}/remove`, {
+        const removeUserFromApp = await axios(`${process.env.VUE_APP_URL}/api/androidusers/${user._id}/applications/${appId}/remove`, {
           method: 'patch'
         })
         if (removeUserFromApp.data.status === 'success'){

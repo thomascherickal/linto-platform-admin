@@ -68,6 +68,12 @@ module.exports = (webServer) => {
             }
         },
         {
+            // Delete a workflow application
+            /* 
+            payload : {
+              workflowName: String
+            }
+            */
             path: '/:workflowId',
             method: 'delete',
             requireAuth: true,
@@ -94,48 +100,6 @@ module.exports = (webServer) => {
             }
         },
         {
-            path: '/androidusers',
-            method: 'patch',
-            requireAuth: true,
-            controller: async(req, res, next) => {
-                try {
-                    const payload = req.body.payload
-                    const updateAndroidUsers = await androidUsersModel.removeAllFromApplication(payload._id)
-                    if (updateAndroidUsers === 'success') {
-                        res.json({
-                            status: 'success',
-                            msg: `All android users have been removed from application ${payload.name}`
-                        })
-                    } else {
-                        throw updateAndroidUsers.msg
-                    }
-                } catch (error) {
-                    console.error(error)
-                    res.json({
-                        status: 'error',
-                        error
-                    })
-                }
-            }
-        },
-        {
-            path: '/androidusers',
-            method: 'get',
-            requireAuth: true,
-            controller: async(req, res, next) => {
-                try {
-                    const getAndroidUsers = await androidUsersModel.getAllAndroidUsers()
-                    res.json(getAndroidUsers)
-                } catch (error) {
-                    console.error(error)
-                    res.json({
-                        status: 'error',
-                        error
-                    })
-                }
-            }
-        },
-        {
             // Get android users list by workflow ID
             path: '/:workflowId/androidusers',
             method: 'get',
@@ -148,39 +112,6 @@ module.exports = (webServer) => {
                     const users = getAndroidUsers.filter(user => workflowId.indexOf(user.applications) >= 0)
 
                     res.json(users)
-                } catch (error) {
-                    console.error(error)
-                    res.json({
-                        status: 'error',
-                        error
-                    })
-                }
-            }
-        },
-        {
-            path: '/:id/androiduser',
-            method: 'put',
-            requireAuth: true,
-            controller: async(req, res, next) => {
-                try {
-                    const payload = req.body.payload
-
-                    const getUserByEmail = await androidUsersModel.getUserByEmail(payload.email)
-
-                    // update existing user
-                    let userPayload = getUserByEmail[0]
-                    userPayload.applications.push(payload.workflowId)
-
-                    const updateUser = await androidUsersModel.updateAndroidUser(userPayload)
-
-                    if (updateUser === 'success') {
-                        res.json({
-                            status: 'success',
-                            msg: `The Android user "${payload.email}" has been added to application "${payload.appName}".`
-                        })
-                    } else {
-                        throw `Error on updating android user "${payload.email}"`
-                    }
                 } catch (error) {
                     console.error(error)
                     res.json({

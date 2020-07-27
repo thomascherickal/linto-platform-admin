@@ -137,7 +137,7 @@ export default {
           name: this.applicationWorkflowName,
           flowId: this.flowId
         }
-        const removeUserFromApp = await axios(`${process.env.VUE_APP_URL}/api/workflows/application/androidusers`, {
+        const removeUserFromApp = await axios(`${process.env.VUE_APP_URL}/api/androidusers/applications`, {
           method: 'patch',
           data: { payload }
         })

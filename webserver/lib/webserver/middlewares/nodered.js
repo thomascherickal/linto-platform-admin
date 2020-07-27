@@ -2,68 +2,6 @@ const axios = require('axios')
 const uuid = require('uuid/v1')
 const middlewares = require('./index.js')
 
-/* Format a workflow pattern to be post in database */
-function createFlowPattern(flow, workspaceId, workspaceLabel) {
-    let formattedFlow = {
-        id: workspaceId,
-        label: workspaceLabel,
-        configs: [],
-        nodes: []
-    }
-    let idCorrespond = []
-    let nodesArray = []
-
-    // make a an array to store current ids and new ids
-    flow.filter(node => node.type !== 'tab').map(f => {
-        if (!idCorrespond[f.id]) {
-            idCorrespond[f.id] = uuid()
-        }
-    })
-
-    // update ids for each node
-    flow.filter(node => node.type !== 'tab').map(f => {
-        f.z = workspaceId
-        f.id = idCorrespond[f.id]
-
-        // update wires ids
-        if (!!f.wires && f.wires.length > 0) {
-            for (let i = 0; i < f.wires.length; i++) {
-                if (!!idCorrespond[f.wires[i]]) {
-                    f.wires[i] = idCorrespond[f.wires[i]]
-                }
-            }
-        }
-        nodesArray.push(f)
-    })
-
-    formattedFlow.nodes = nodesArray
-    return formattedFlow
-}
-
-/*
-  Format a nodered flow from grouped nodes to splitted nodes
-  {id, label, nodes[]} => [{tab},{node},{node}...]
-*/
-function formaFlowSplitNodes(flow, workspaceId) {
-    let formattedFlow = []
-    let tabNode = {
-        id: workspaceId,
-        type: 'tab',
-        label: flow.label,
-        disabled: false,
-        info: ''
-    }
-    formattedFlow.push(tabNode)
-
-    flow.nodes.map(n => {
-        formattedFlow.push(n)
-    })
-    return formattedFlow
-}
-/*
-  Format a nodered flow from splitted nodes to grouped nodes
-  [{tab},{node},{node}...] => {id, label, nodes[]}
-*/
 function formatFlowGroupedNodes(flow) {
     let formattedFlow = {}
     let nodes = []
@@ -81,22 +19,7 @@ function formatFlowGroupedNodes(flow) {
     return formattedFlow
 }
 
-/* Update an existing workflow with a flow pattern */
-function updateGroupedNodesId(workFlow, patternFlow) {
-    const workspaceId = workFlow.id
-    let formatted = workFlow
-    let updatedNodes = []
-    patternFlow.flow.map(p => {
-        if (p.type !== 'tab') {
-            if (p.z !== workspaceId) {
-                p.z = workspaceId
-            }
-            updatedNodes.push(p)
-        }
-    })
-    formatted.nodes = updatedNodes
-    return formatted
-}
+
 /* Generate a workflow to be posted on BLS */
 function generateStaticWorkflowFromTemplate(flow, payload) {
     const flowId = uuid()
@@ -327,14 +250,11 @@ async function getFlowById(id) {
     }
 }
 module.exports = {
-    createFlowPattern,
     deleteBLSFlow,
-    formaFlowSplitNodes,
     formatFlowGroupedNodes,
     getBLSAccessToken,
     generateStaticWorkflowFromTemplate,
     getFlowById,
     postBLSFlow,
     putBLSFlow,
-    updateGroupedNodesId
 }

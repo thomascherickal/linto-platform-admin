@@ -43,7 +43,7 @@
                   <span class="button__label">Manage android users</span>
                 </a></p>
             <div class="flex col">
-              <AppSelect :label="'Select an user'" :obj="userEmail" :list="androidNotRegisteredUsers" :params="{key:'_id', value:'email', optLabel: 'email'}" :disabled="androidNotRegisteredUsers.length === 0" :disabledTxt="'No android user was found'"></AppSelect>
+              <AppSelect :label="'Select an user'" :obj="userId" :list="androidNotRegisteredUsers" :params="{key:'_id', value:'_id', optLabel: 'email'}" :disabled="androidNotRegisteredUsers.length === 0" :disabledTxt="'No android user was found'"></AppSelect>
               <div class="flex row">
                 <button class="button button-icon-txt button--green" @click="updateAndroidUser()">
                   <span class="button__icon button__icon--apply"></span>
@@ -88,7 +88,7 @@ export default {
       modalVisible: false,
       workflowId: null,
       appName: null,
-      userEmail: {
+      userId: {
         value: '',
         error: null,
         valid: false
@@ -130,20 +130,17 @@ export default {
       this.showAddUserForm = false
     },
     async updateAndroidUser () {
-      this.$options.filters.testSelectField(this.userEmail)
+      this.$options.filters.testSelectField(this.userId)
       
       try {
-        if (this.userEmail.valid) {
+        if (this.userId.valid) {
           const payload = {
-            email: this.userEmail.value,
-            workflowId: this.workflowId,
-            appName: this.appName
+            applications: [this.workflowId]
           }
-          const updateUser = await axios(`${process.env.VUE_APP_URL}/api/workflows/application/${this.workflowId}/androiduser`, {
+          const updateUser = await axios(`${process.env.VUE_APP_URL}/api/androidusers/${this.userId.value}/applications`, {
             method: 'put',
             data: { payload }
           })
-          
           if(updateUser.data.status === 'success') {
             bus.$emit('app_notif', {
               status: 'success',
@@ -167,7 +164,7 @@ export default {
     },
     async removeUserFromApp (user, appId) {
       try {
-        const removeUserFromApp = await axios(`${process.env.VUE_APP_URL}/api/androidusers/${user._id}/application/${appId}/remove`, {
+        const removeUserFromApp = await axios(`${process.env.VUE_APP_URL}/api/androidusers/${user._id}/applications/${appId}/remove`, {
           method: 'patch'
         })
         if (removeUserFromApp.data.status === 'success'){
