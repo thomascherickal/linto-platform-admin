@@ -102,6 +102,32 @@ class MongoModel {
         })
     }
 
+
+
+    // Update ONE, define update operator param
+    async mongoUpdateMany(query, operator) {
+        let operatorObj = {}
+        if (!!operator.pull) {
+            operatorObj.$pull = operator.pull
+        }
+        if (!!operator.set) {
+            operatorObj.$set = operator.set
+        }
+        return new Promise((resolve, reject) => {
+            try {
+                MongoDriver.constructor.db.collection(this.collection).updateMany(query, operatorObj, (error, result) => {
+                    if (error) {
+                        reject(error)
+                    }
+                    resolve('success')
+                })
+            } catch (error) {
+                console.error(error)
+                reject(error)
+            }
+        })
+    }
+
     /**
      * Delete function for mongoDB. This function will create an entry based on the "collection", the "query" passed in parmaters.
      * @param {Object} query

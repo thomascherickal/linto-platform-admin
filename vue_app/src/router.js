@@ -19,7 +19,10 @@ import TockView from './views/TockView.vue'
 import ClientStaticWorkflowEditor from './views/ClientStaticWorkflowEditor.vue'
 import ApplicationsOverview from './views/ApplicationsOverview.vue'
 import ApplicationCreate from './views/ApplicationCreate.vue'
+import ApplicationWorkflowEditor from './views/ApplicationWorkflowEditor.vue'
+
 import AndroidUsers from './views/AndroidUsers.vue'
+
 Vue.use(Router)
 const router = new Router({
     mode: 'history',
@@ -27,10 +30,9 @@ const router = new Router({
             path: '/admin/clients/static',
             name: 'Static devices overview',
             component: ClientStaticOverview,
-            // META DATA
             meta: [{
                     name: 'title',
-                    content: 'Linto Admin - Static clients'
+                    content: 'LinTO Admin - Static clients'
                 },
                 {
                     name: 'robots',
@@ -40,12 +42,11 @@ const router = new Router({
         },
         {
             path: '/admin/clients/static/workflow/:workflowId',
-            name: 'Static device Workflow editor',
+            name: 'Static device flow editor',
             component: ClientStaticWorkflowEditor,
-            // META DATA
             meta: [{
                     name: 'title',
-                    content: 'Linto Admin - Static clients workflow editor'
+                    content: 'LinTO Admin - Static clients workflow editor'
                 },
                 {
                     name: 'robots',
@@ -57,10 +58,9 @@ const router = new Router({
             path: '/admin/clients/static/:sn/deploy',
             name: 'Static devices - deployment',
             component: ClientStaticDeploy,
-            // META DATA
             meta: [{
                     name: 'title',
-                    content: 'Linto Admin - Static clients deployment'
+                    content: 'LinTO Admin - Static clients deployment'
                 },
                 {
                     name: 'robots',
@@ -82,10 +82,9 @@ const router = new Router({
             path: '/admin/clients/application',
             name: 'Applications overview',
             component: ApplicationsOverview,
-            // META DATA
             meta: [{
                     name: 'title',
-                    content: 'Linto Admin - applications'
+                    content: 'LinTO Admin - applications'
                 },
                 {
                     name: 'robots',
@@ -93,67 +92,74 @@ const router = new Router({
                 }
             ]
         }, {
-            path: '/admin/workflows/application/create',
+            path: '/admin/clients/application/create',
             name: 'Create new application',
             component: ApplicationCreate,
-            meta: []
+            meta: [{
+                    name: 'title',
+                    content: 'LinTO Admin - Create an application workflow'
+                },
+                {
+                    name: 'robots',
+                    content: 'noindex, nofollow'
+                }
+            ],
+        },
+        {
+            path: '/admin/clients/application/workflow/:workflowId',
+            name: 'Nodered application flow editor',
+            component: ApplicationWorkflowEditor,
+            meta: [{
+                    name: 'title',
+                    content: 'LinTO Admin - Application flow editor'
+                },
+                {
+                    name: 'robots',
+                    content: 'noindex, nofollow'
+                }
+            ]
         },
         {
             path: '/admin/workflow-editor',
             name: 'Worflow editor',
             component: WorkflowEditor,
+            meta: [{
+                    name: 'title',
+                    content: 'Sandbox workflow editor'
+                },
+                {
+                    name: 'robots',
+                    content: 'noindex, nofollow'
+                }
+            ],
         }, {
             path: '/admin/nlu',
             name: 'tock interface',
-            component: TockView
+            component: TockView,
+            meta: [{
+                    name: 'title',
+                    content: 'Tock interface'
+                },
+                {
+                    name: 'robots',
+                    content: 'noindex, nofollow'
+                }
+            ]
         },
         {
             path: '/admin/users/android',
             name: 'Android users interface',
-            component: AndroidUsers
+            component: AndroidUsers,
+            meta: [{
+                    name: 'title',
+                    content: 'LinTO admin - android users'
+                },
+                {
+                    name: 'robots',
+                    content: 'noindex, nofollow'
+                }
+            ]
         }
-        /*,
-                {
-                    path: '/admin/fleet/monitoring/:sn',
-                    name: 'Fleet monitoring',
-                    component: FleetMonitoring
-                },
-                {
-                    path: '/admin/workflows',
-                    name: 'Worflow editor',
-                    component: WorkflowEditor,
-                },
-                {
-                    path: '/admin/context/overview',
-                    name: 'Admin context overview',
-                    component: ContextOverview
-                },
-                {
-                    path: '/admin/context/create',
-                    name: 'Admin create context',
-                    component: ContextAdd
-                },
-                {
-                    path: '/admin/context/workflow/:id',
-                    name: 'Context worflow editor',
-                    component: ContextWorkflow
-                },
-                {
-                    path: '/admin/nlu',
-                    name: 'tock interface',
-                    component: TockView
-                },
-                {
-                    path: '/admin/stt/overview',
-                    name: 'STT management',
-                    component: SttManagement
-                },
-                // Other routes > 404
-                {
-                    path: '/admin/*',
-                    name: '404',
-                    component: page404,
-                },*/
     ]
 })
 

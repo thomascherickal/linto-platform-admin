@@ -29,7 +29,7 @@
             </td>
             <td>todo</td>
             <td>
-              <a :href="`/admin/clients/application/workflow/${app.flowId}`" class="button button-icon-txt button--bluemid button--with-desc bottom" data-desc="Edit on Node-red interface">
+              <a :href="`/admin/clients/application/workflow/${app._id}`" class="button button-icon-txt button--bluemid button--with-desc bottom" data-desc="Edit on Node-red interface">
                 <span class="button__icon button__icon--workflow"></span>
                 <span class="button__label">{{ app.name }}</span>
               </a>
@@ -41,7 +41,7 @@
               </button>
             </td>
             <td class="center">
-                <button class="button button-icon button--red button--with-desc bottom" data-desc="Unassociate device and delete workflow" >
+                <button class="button button-icon button--red button--with-desc bottom" @click="deleteApplicationWorkflow(app)" data-desc="Remove application and dissociate users" >
                   <span class="button__icon button__icon--close"></span>
                 </button>
               </td>
@@ -52,7 +52,7 @@
     </div>
     <div class="divider"></div>
     <div class="flex row">
-      <a href="/admin/workflows/application/create" class="button button-icon-txt button--green">
+      <a href="/admin/clients/application/create" class="button button-icon-txt button--green">
         <span class="button__icon button__icon--add"></span>
         <span class="button__label">Create an application</span>
       </a>
@@ -74,6 +74,11 @@ export default {
     await this.dispatchStore('getAndroidUsers')
 
     bus.$on('manage_android_users_success', async (data) => {
+      await this.dispatchStore('getApplicationWorkflows')
+      await this.dispatchStore('getAndroidUsers')
+    })
+    bus.$on('delete_application_workflow_success', async (data) => {
+      await this.dispatchStore('getApplicationWorkflows')
       await this.dispatchStore('getAndroidUsers')
     })
   },
@@ -94,7 +99,13 @@ export default {
   methods: {
     async manageAndroidUsers (workflowId, appName) {
       bus.$emit('manage_android_users', { workflowId, appName })
-      
+    },
+    async deleteApplicationWorkflow (app) {
+      bus.$emit('delete_application_workflow', {
+        _id: app._id,
+        name: app.name,
+        flowId: app.flowId
+      })
     },
     async dispatchStore (topic) {
       try {

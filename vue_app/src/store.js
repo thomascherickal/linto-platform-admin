@@ -257,6 +257,15 @@ export default new Vuex.Store({
                 return { error }
             }
         },
+        APP_WORKFLOW_BY_ID: (state) => (workflowId) => {
+            try {
+                const workflows = state.applicationWorkflows
+                const workflow = workflows.filter(wf => wf._id === workflowId)
+                return workflow[0]
+            } catch (error) {
+                return { error }
+            }
+        },
         APP_WORKFLOWS_NAME_BY_ID: (state) => {
             const workflows = state.applicationWorkflows
             let workflowNames = []

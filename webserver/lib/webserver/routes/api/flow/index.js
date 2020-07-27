@@ -39,11 +39,39 @@ module.exports = (webServer) => {
                     console.error(error)
                     res.json({
                         status: 'error',
-                        msg: 'unable to connect Business logic server'
+                        msg: 'unable to connect Business logic server',
+                        error
                     })
                 }
             }
-        }, {
+        },
+        {
+            path: '/:flowId',
+            method: 'delete',
+            requireAuth: true,
+            controller: async(req, res, next) => {
+                try {
+                    const flowId = req.params.flowId
+                    const deleteFlow = await nodered.deleteBLSFlow(flowId)
+                    if (deleteFlow.status === 'success') {
+                        res.json({
+                            status: 'success',
+                            msg: `The workflow "${flowId}" has been removed`
+                        })
+                    } else {
+                        throw `Error on deleting flow ${flowId} on the Business Logic Server`
+                    }
+                } catch (error) {
+                    console.error(error)
+                    res.json({
+                        status: 'error',
+                        msg: error,
+                        error
+                    })
+                }
+            }
+        },
+        {
             // Get sandbox workflow ID
             path: '/sandbox',
             method: 'get',

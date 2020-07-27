@@ -22,7 +22,10 @@
     >
     <ModalEditAndroidUser v-if="path.indexOf('/users/android')"></ModalEditAndroidUser>
     <ModalDeleteAndroidUser v-if="path.indexOf('/users/android')"></ModalDeleteAndroidUser>
-
+      
+      
+    <ModalDeleteApplication v-if="path.indexOf('admin/clients/application')"></ModalDeleteApplication>
+    
     <!-- Worflows templates -->
     <ModalSaveAsWorkflowTemplate v-if="path.indexOf('/admin/workflows') >= 0 || path.indexOf('/clients/static/workflow') "></ModalSaveAsWorkflowTemplate>
   </div>
@@ -45,7 +48,7 @@
   import ModalAddAndroidUsers from '@/components/ModalAddAndroidUsers.vue'
   import ModalEditAndroidUser from '@/components/ModalEditAndroidUser.vue'
   import ModalDeleteAndroidUser from '@/components/ModalDeleteAndroidUser.vue'
-
+  import ModalDeleteApplication from '@/components/ModalDeleteApplication.vue'
   import { bus } from './main.js'
   export default {
     data () {
@@ -68,7 +71,8 @@
       ModalUpdateWorkflowServices,
       ModalDissociateStaticDevice,
       ModalSaveAsWorkflowTemplate,
-      
+      // Applications
+      ModalDeleteApplication,
       // Android users Modal
       ModalAddAndroidUsers,
       ModalManageAndroidUsers,

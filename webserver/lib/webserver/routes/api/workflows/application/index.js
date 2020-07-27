@@ -14,7 +14,10 @@ module.exports = (webServer) => {
                     res.json(getApplicationWorkflows)
                 } catch (error) {
                     console.error(error)
-                    res.json({ error: error.toString() })
+                    res.json({
+                        status: 'error',
+                        error
+                    })
                 }
             }
         },
@@ -57,7 +60,61 @@ module.exports = (webServer) => {
                     }
                 } catch (error) {
                     console.error(error)
-                    res.json({ error })
+                    res.json({
+                        status: 'error',
+                        error
+                    })
+                }
+            }
+        },
+        {
+            path: '/:workflowId',
+            method: 'delete',
+            requireAuth: true,
+            controller: async(req, res, next) => {
+                try {
+                    const workflowId = req.params.workflowId
+                    const workflowName = req.body.workflowName
+                    const removeApplication = await applicationWorkflowsModel.deleteApplicationWorkflow(workflowId)
+                    if (removeApplication === 'success') {
+                        res.json({
+                            status: 'success',
+                            msg: `The application workflow "${workflowName}" has been removed.`
+                        })
+                    } else {
+                        throw removeApplication.msg
+                    }
+                } catch (error) {
+                    console.error(error)
+                    res.json({
+                        status: 'error',
+                        error
+                    })
+                }
+            }
+        },
+        {
+            path: '/androidusers',
+            method: 'patch',
+            requireAuth: true,
+            controller: async(req, res, next) => {
+                try {
+                    const payload = req.body.payload
+                    const updateAndroidUsers = await androidUsersModel.removeAllFromApplication(payload._id)
+                    if (updateAndroidUsers === 'success') {
+                        res.json({
+                            status: 'success',
+                            msg: `All android users have been removed from application ${payload.name}`
+                        })
+                    } else {
+                        throw updateAndroidUsers.msg
+                    }
+                } catch (error) {
+                    console.error(error)
+                    res.json({
+                        status: 'error',
+                        error
+                    })
                 }
             }
         },
@@ -100,7 +157,6 @@ module.exports = (webServer) => {
                 }
             }
         },
-
         {
             path: '/:id/androiduser',
             method: 'put',
