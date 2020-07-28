@@ -1,4 +1,5 @@
 const workflowsStaticModel = require(`${process.cwd()}/model/mongodb/models/workflows-static.js`)
+const workflowsApplicationModel = require(`${process.cwd()}/model/mongodb/models/workflows-application.js`)
 const clientsStaticModel = require(`${process.cwd()}/model/mongodb/models/clients-static.js`)
 const tmpFlowModel = require(`${process.cwd()}/model/mongodb/models/flow-tmp.js`)
 const nodered = require(`${process.cwd()}/lib/webserver/middlewares/nodered.js`)
@@ -111,12 +112,18 @@ module.exports = (webServer) => {
                     // Set variables & values
                     const payload = req.body.payload
                     const workflowId = req.params.id
+                    let getWorkflow = []
 
                     // Get static workflow object
-                    const getWorkflow = await workflowsStaticModel.getStaticWorkflowById(workflowId)
+                    if (payload.type === 'static') {
+                        getWorkflow = await workflowsStaticModel.getStaticWorkflowById(workflowId)
+
+                    } else if (payload.type === 'application') {
+                        getWorkflow = await workflowsApplicationModel.getApplicationWorkflowById(workflowId)
+                    }
                     let workflowPayload = getWorkflow
 
-                    // get worlflow name
+                    // set worlflow name
                     workflowPayload.name = payload.workflowName
                     workflowPayload.flow.label = payload.workflowName
 
@@ -142,20 +149,46 @@ module.exports = (webServer) => {
                         nodeNluConfig[0].appname = payload.tockApplicationName
                     }
 
-                    // Update static workflow
-                    const updateWorkflow = await workflowsStaticModel.updateStaticWorkflow(workflowPayload)
+                    let updateWorkflow = null
+
+                    if (payload.type === 'static') {
+                        // Update static workflow
+                        updateWorkflow = await workflowsStaticModel.updateStaticWorkflow(workflowPayload)
+                    } else if (payload.type === 'application') {
+                        // Update application workflow
+                        updateWorkflow = await workflowsApplicationModel.updateApplicationWorkflow(workflowPayload)
+                    }
 
                     if (updateWorkflow === 'success') {
-                        // update static device 
-                        const updateStaticDevice = await clientsStaticModel.updateStaticClient({
-                            sn: workflowPayload.associated_device,
-                            associated_workflow: {
-                                _id: workflowId,
-                                name: workflowPayload.name,
-                                updated_date: moment().format()
+                        if (payload.type === 'static') {
+                            // STATIC WORKFLOW
+                            // Update static device 
+                            const updateStaticDevice = await clientsStaticModel.updateStaticClient({
+                                sn: workflowPayload.associated_device,
+                                associated_workflow: {
+                                    _id: workflowId,
+                                    name: workflowPayload.name
+                                }
+                            })
+                            if (updateStaticDevice === 'success') {
+                                // Update workflow on BLS (put)
+                                const updateBls = await nodered.putBLSFlow(workflowPayload.flowId, workflowPayload.flow)
+
+                                // Resonse
+                                if (updateBls.status === 'success') {
+                                    res.json({
+                                        status: 'success',
+                                        msg: `The workflow "${payload.workflowName}" has been updated`
+                                    })
+                                } else {
+                                    throw `Error on updating workflow ${getWorkflow.name} on Business logic server`
+                                }
+                            } else {
+                                throw `Error on updating associated static device "${workflowPayload.associated_device}"`
                             }
-                        })
-                        if (updateStaticDevice === 'success') {
+
+                        } else if (payload.type === 'application') {
+                            // APPLICATION WORKFLOW
                             // Update workflow on BLS (put)
                             const updateBls = await nodered.putBLSFlow(workflowPayload.flowId, workflowPayload.flow)
 
@@ -168,8 +201,6 @@ module.exports = (webServer) => {
                             } else {
                                 throw `Error on updating workflow ${getWorkflow.name} on Business logic server`
                             }
-                        } else {
-                            throw `Error on updating associated static device "${workflowPayload.associated_device}"`
                         }
                     } else {
                         throw `Error on updating workflow ${getWorkflow.name}`

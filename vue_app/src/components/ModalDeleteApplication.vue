@@ -112,7 +112,6 @@ export default {
         const removeBLSFlow = await axios(`${process.env.VUE_APP_URL}/api/flow/${flowId}`, {
           method: 'delete'
         })
-      console.log('RemoveBLs  reps :', removeBLSFlow)
         if (removeBLSFlow.data.status === 'success') {
           return 'success'
         } else {

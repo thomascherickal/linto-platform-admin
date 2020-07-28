@@ -7,11 +7,11 @@
       <!-- Workflow tempalte -->
       <AppSelect :label="'Workflow template'" :obj="workflowTemplate" :list="workflowTemplates" :params="{key:'_id', value:'name' , optLabel: 'name'}"></AppSelect>
 
-      <!-- STT language -->
-      <AppSelect :label="'Select a language'" :obj="sttServiceLanguage" :list="sttAvailableLanguages" :params="{key:'value', value:'value', optLabel: 'value'}" :disabled="noSttService" :disabledTxt="'Create a STT service'"></AppSelect>
+      <!-- LinSTT language -->
+      <AppSelect :label="'Select a language'" :obj="sttServiceLanguage" :list="sttAvailableLanguages" :params="{key:'value', value:'value', optLabel: 'value'}" :disabled="noSttService" :disabledTxt="'Create a LinSTT service'"></AppSelect>
 
-      <!-- STT services -->
-      <AppSelect :label="'Select a STT service'" :obj="sttService" :list="sttServiceByLanguage" :params="{key:'_id', value:'serviceId', optLabel: 'serviceId'}" :disabled="sttServiceLanguage.value === ''" :disabledTxt="'Please select a language'"></AppSelect>
+      <!-- LinSTT services -->
+      <AppSelect :label="'Select a LinSTT service'" :obj="sttService" :list="sttServiceByLanguage" :params="{key:'_id', value:'serviceId', optLabel: 'serviceId'}" :disabled="sttServiceLanguage.value === ''" :disabledTxt="'Please select a language'"></AppSelect>
       
       <!-- TOCK application -->
       <AppSelect :label="'Select Tock application'" :obj="tockApplicationName" :list="tockApplications" :params="{key:'name', value:'name', optLabel: 'name'}" :options="{value:'new', label:'Create a new tock application'}"></AppSelect>

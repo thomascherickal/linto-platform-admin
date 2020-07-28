@@ -53,6 +53,7 @@ export default {
       modalVisible: false,
       sn: null,
       workflow: null,
+      workflowType: null,
       workflowInit: false,
       workflowName: {
         value: '',
@@ -78,16 +79,26 @@ export default {
       staticClientsLoaded: false,
       sttServicesLoaded: false,
       tockApplicationsLoaded: false,
-      sttLanguageModelsLoaded: false
-      
-    }
+      sttLanguageModelsLoaded: false,
+      applicationWorkflowsLoaded: false
+          }
   },
   
   async mounted () {
     bus.$on('update_workflow_services', async (data) => {
-      this.sn = data.sn
+      if (!!data.sn && data.type === 'static') {
+        this.sn = data.sn
+      }
       this.workflow = data.workflow
+      this.workflowType = data.type
+      this.workflowName = {
+        value: this.workflow.name,
+        error: null,
+        valid: true
+      }
+
       await this.dispatchStore('getStaticWorkflows')
+      await this.dispatchStore('getApplicationWorkflows')
       await this.dispatchStore('getStaticClients')
       await this.dispatchStore('getSttServices')
       await this.dispatchStore('getSttLanguageModels')
@@ -97,10 +108,16 @@ export default {
   },
   computed: {
     dataLoaded () {
-      return (this.staticClientsLoaded && this.staticWorkflowsLoaded && this.sttServicesLoaded)
+      return (this.staticClientsLoaded && this.staticWorkflowsLoaded && this.sttServicesLoaded && this.applicationWorkflowsLoaded && this.tockApplicationsLoaded && this.sttLanguageModelsLoaded)
     },
     currentWorkflow () {
-      return this.$store.getters.STATIC_WORKFLOW_BY_ID(this.workflow._id)
+      if (this.workflowType === 'static') {
+        return this.$store.getters.STATIC_WORKFLOW_BY_ID(this.workflow._id) 
+      } else if (this.workflowType === 'application') {
+        return this.$store.getters.APP_WORKFLOW_BY_ID(this.workflow._id) 
+      } else {
+        return null
+      }
     },
     sttServices () {
       return this.$store.getters.STT_SERVICES_AVAILABLE
@@ -140,7 +157,7 @@ export default {
   watch: {
     dataLoaded (data) {
       if (data) {
-        if (!this.workflowInit) {
+        if (!this.workflowInit && this.currentWorkflow !== null && !this.currentWorkflow.error) {
           // get worlflow name
           this.workflowName.value = this.currentWorkflow.name
           this.workflowName.valid = true 
@@ -171,7 +188,6 @@ export default {
           this.workflowInit = true
         }
       }
-      
     }
   },
   methods: {
@@ -203,7 +219,8 @@ export default {
         workflowName: this.workflowName.value,
         sttServiceLanguage: this.sttServiceLanguage.value,
         sttService: this.sttService.value,
-        tockApplicationName: this.tockApplicationName.value
+        tockApplicationName: this.tockApplicationName.value,
+        type: this.workflowType
       }
       try {
         const updateWorkflow = await axios(`${process.env.VUE_APP_URL}/api/workflows/static/${this.workflow._id}/services`, {
@@ -242,6 +259,9 @@ export default {
         switch(topic) {
           case 'getStaticWorkflows':
             this.staticWorkflowsLoaded = dispatchSuccess
+            break
+          case 'getApplicationWorkflows': 
+            this.applicationWorkflowsLoaded = dispatchSuccess
             break
           case 'getStaticClients':
             this.staticClientsLoaded = dispatchSuccess

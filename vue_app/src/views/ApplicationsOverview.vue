@@ -35,7 +35,7 @@
               </a>
             </td>
             <td class="center">
-              <button class="button button-icon-txt button--green button--with-desc bottom" data-desc="Edit services settings">
+              <button class="button button-icon-txt button--green button--with-desc bottom" data-desc="Edit services settings" @click="updateWorkflowServicesSettings(app)">
                 <span class="button__icon button__icon--settings"></span>
                 <span class="button__label">Edit</span>
               </button>
@@ -73,10 +73,16 @@ export default {
     await this.dispatchStore('getApplicationWorkflows')
     await this.dispatchStore('getAndroidUsers')
 
+    bus.$on('update_workflow_services_success', async (data) => {
+      await this.dispatchStore('getApplicationWorkflows')
+      await this.dispatchStore('getAndroidUsers')
+    })
+
     bus.$on('manage_android_users_success', async (data) => {
       await this.dispatchStore('getApplicationWorkflows')
       await this.dispatchStore('getAndroidUsers')
     })
+    
     bus.$on('delete_application_workflow_success', async (data) => {
       await this.dispatchStore('getApplicationWorkflows')
       await this.dispatchStore('getAndroidUsers')
@@ -106,6 +112,16 @@ export default {
         name: app.name,
         flowId: app.flowId
       })
+    },
+    async updateWorkflowServicesSettings (workflow) {
+      bus.$emit('update_workflow_services', {
+        workflow: {
+          _id: workflow._id, 
+          name: workflow.name
+        },
+        type:'application'
+      })
+
     },
     async dispatchStore (topic) {
       try {

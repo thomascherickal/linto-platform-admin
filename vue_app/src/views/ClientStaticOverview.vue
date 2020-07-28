@@ -161,7 +161,7 @@ export default {
       bus.$emit('deploy_static_device', {sn})
     },
     updateWorkflowServicesSettings (sn, workflow) {
-      bus.$emit('update_workflow_services', {sn, workflow})
+      bus.$emit('update_workflow_services', {sn, workflow, type: 'static'})
     },
     // Delete a device in provisionning list 
     deleteStaticDevice (sn) {

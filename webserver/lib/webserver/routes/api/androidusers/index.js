@@ -173,7 +173,7 @@ module.exports = (webServer) => {
                     if (updateUser === 'success') {
                         res.json({
                             status: 'success',
-                            msg: `The user "${user[0].email}" has been dissociated from android application "${applicationWorkflow[0].name}"`
+                            msg: `The user "${user[0].email}" has been dissociated from android application "${applicationWorkflow.name}"`
                         })
                     } else {
                         throw 'Error on updating android application user'

@@ -91,7 +91,7 @@ export default {
       nluLexSeedUpdate: false,
       nluLexSeedStatus: 'Updating natural language understanding dictionnaries',
       sttLexSeedUpdate: false,
-      sttLexSeedStatus: 'Updating STT service dictionnaries'
+      sttLexSeedStatus: 'Updating LinSTT service dictionnaries'
     }
   },
   computed: {

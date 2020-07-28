@@ -12,7 +12,7 @@
     <AppNotif></AppNotif>
     <ModalDeleteClientStatic v-if="path.indexOf('/clients/static') >= 0"></ModalDeleteClientStatic>
     <ModalUpdateClientStatic v-if="path.indexOf('/clients/static') >= 0"></ModalUpdateClientStatic>
-    <ModalUpdateWorkflowServices v-if="path.indexOf('/clients/static') >= 0"></ModalUpdateWorkflowServices>
+    <ModalUpdateWorkflowServices v-if="path.indexOf('/clients/static') >= 0 || path.indexOf('/clients/application') >= 0"></ModalUpdateWorkflowServices>
     <ModalDissociateStaticDevice v-if="path.indexOf('/clients/static') >= 0"></ModalDissociateStaticDevice>
     <ModalAddStaticDevice v-if="path.indexOf('/clients/static') >= 0"></ModalAddStaticDevice>
 

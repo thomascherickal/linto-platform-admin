@@ -20,12 +20,12 @@
           <tr v-for="user in androidRegisteredUsers" :key="user._id">
             <td>{{ user.email }}</td>
             <td>
-              <ul v-if="user.applications.length > 0">
+              <ul class="checkbox-list no-borders" v-if="user.applications.length > 0">
                 <li v-for="app in user.applications" :key="app">
                   {{ workflowByName[app] }}
                 </li>
               </ul>
-              <span v-else><i>none</i></span>
+              <span class="none" v-else>none</span>
             </td>
             <td class="center">
               <button class="button button-icon-txt button--green" @click="editAndroidUser(user)">

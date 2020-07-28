@@ -38,7 +38,7 @@
           <div class="flex col no-content" v-if="androidRegisteredUsers.length === 0 && !showAddUserForm">No android user was found for application.</div>
 
           <div class="flex col android-users-form" v-if="showAddUserForm">
-            <p>Select an user to be added in "{{ appName }}" application, or <a class="button button-icon-txt button--bluemid" href="/admin/users/android">
+            <p>Select an user to be <strong>added</strong> in "<strong>{{ appName }}</strong>" application, or <a class="button button-icon-txt button--bluemid" href="/admin/users/android">
                   <span class="button__icon button__icon--settings"></span>
                   <span class="button__label">Manage android users</span>
                 </a></p>
@@ -68,7 +68,7 @@
             <span class="button__icon button__icon--add"></span>
             <span class="button__label">Add an user</span>
           </button>
-          <button class="button button-icon-txt button--green" @click="hideAndroidUsersForm()" v-else>
+          <button class="button button-icon-txt button--orange" @click="hideAndroidUsersForm()" v-else>
             <span class="button__icon button__icon--back"></span>
             <span class="button__label">Back to list</span>
           </button>

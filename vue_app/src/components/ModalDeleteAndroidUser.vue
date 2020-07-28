@@ -49,7 +49,6 @@ export default {
   },
   async mounted () {
     bus.$on('delete_android_user', async (data) => {
-      console.log('la:', data)
       this.showModal()
       this.userId = data.userId
       this.userEmail = data.email
