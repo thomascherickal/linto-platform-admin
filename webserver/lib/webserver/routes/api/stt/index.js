@@ -89,7 +89,7 @@ module.exports = (webServer) => {
                         throw lexicalseeding
                     }
                 } catch (error) {
-                    console.error('LS api', error)
+                    console.error(error)
                     res.json({
                         status: 'error',
                         msg: !!error.msg ? error.msg : 'Error on updating language model',

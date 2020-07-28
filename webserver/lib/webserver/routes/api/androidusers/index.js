@@ -2,12 +2,16 @@ const applicationWorkflowsModel = require(`${process.cwd()}/model/mongodb/models
 const androidUsersModel = require(`${process.cwd()}/model/mongodb/models/android-users.js`)
 module.exports = (webServer) => {
     return [{
+            // Get all android users
             path: '/',
             method: 'get',
             requireAuth: true,
             controller: async(req, res, next) => {
                 try {
+                    // Request
                     const getAndroidUsers = await androidUsersModel.getAllAndroidUsers()
+
+                    // Response
                     res.json(getAndroidUsers)
                 } catch (error) {
                     console.error(error)
@@ -18,14 +22,26 @@ module.exports = (webServer) => {
                 }
             }
         }, {
+            // Create a new android user
+            /*
+            payload = {
+              email: String (android user email)
+              pswd: String (android user password)
+              applications: Array (Array of workflow_id)
+            }
+            */
             path: '/',
             method: 'post',
             requireAuth: true,
             controller: async(req, res, next) => {
                 try {
+                    // Set variables & values
                     const payload = req.body.payload
+
+                    // Request
                     const createUser = await androidUsersModel.createAndroidUsers(payload)
 
+                    // Response
                     if (createUser === 'success') {
                         res.json({
                             status: 'success',
@@ -45,13 +61,25 @@ module.exports = (webServer) => {
         },
         {
             // Remove an application for all android users
+            /* 
+            paylaod = {
+              _id: String (application workflow_id),
+              name: String (application worfklow name),
+              flowId: String (Nodered flow Id)
+            }
+            */
             path: '/applications',
             method: 'patch',
             requireAuth: true,
             controller: async(req, res, next) => {
                 try {
+                    // Set variables & values 
                     const payload = req.body.payload
+
+                    // Request
                     const updateAndroidUsers = await androidUsersModel.removeApplicationFromAndroidUsers(payload._id)
+
+                    // Response
                     if (updateAndroidUsers === 'success') {
                         res.json({
                             status: 'success',
@@ -73,7 +101,7 @@ module.exports = (webServer) => {
             // Add an application to an android user
             /* 
             payload = {
-              applications: Array
+              applications: Array (Array of application workflow_id)
             }
             */
             path: '/:userId/applications',
@@ -81,18 +109,22 @@ module.exports = (webServer) => {
             requireAuth: true,
             controller: async(req, res, next) => {
                 try {
+                    // Set variables & values
                     const payload = req.body.payload
                     const userId = req.params.userId
                     const applicationsToAdd = payload.applications
 
+                    // Get android user data
                     const getAndroidUser = await androidUsersModel.getUserById(userId)
 
+                    // Format data for update
                     let user = getAndroidUser[0]
-
                     user.applications.push(...applicationsToAdd)
 
+                    // Request
                     const updateUser = await androidUsersModel.updateAndroidUser(user)
 
+                    // Response
                     if (updateUser === 'success') {
                         res.json({
                             status: 'success',
@@ -117,23 +149,27 @@ module.exports = (webServer) => {
             requireAuth: true,
             controller: async(req, res, next) => {
                 try {
+                    // Set variables & values
                     const applicationId = req.params.applicationId
                     const userId = req.params.userId
-                        // get user
+
+                    // get android user data
                     const user = await androidUsersModel.getUserById(userId)
-                        // get application
+
+                    // get application workflow data
                     const applicationWorkflow = await applicationWorkflowsModel.getApplicationWorkflowById(applicationId)
 
-
+                    // Format data for update
                     let applications = user[0].applications
                     applications.pop(applicationId)
 
-                    // update user
+                    // Request
                     const updateUser = await androidUsersModel.updateAndroidUser({
                         _id: userId,
                         applications
                     })
 
+                    // Response
                     if (updateUser === 'success') {
                         res.json({
                             status: 'success',
@@ -158,8 +194,13 @@ module.exports = (webServer) => {
             requireAuth: true,
             controller: async(req, res, next) => {
                 try {
+                    // Set variables & values
                     const userId = req.params.userId
+
+                    // Request
                     const getAndroidUser = await androidUsersModel.getUserById(userId)
+
+                    // Response
                     res.json(getAndroidUser[0])
                 } catch (error) {
                     console.error(error)
@@ -171,16 +212,25 @@ module.exports = (webServer) => {
             }
         },
         {
-            // Dissociate an android user from an andoird application
+            // Delete an android user
+            /*
+            payload = {
+              email : String (android user email)
+            }
+            */
             path: '/:userId',
             method: 'delete',
             requireAuth: true,
             controller: async(req, res, next) => {
                 try {
+                    // Set variables & values
                     const userId = req.params.userId
                     const payload = req.body.payload
+
+                    // Request
                     const removeUser = await androidUsersModel.deleteAndroidUser(userId)
 
+                    // Response
                     if (removeUser === 'success') {
                         res.json({
                             status: 'success',

@@ -12,7 +12,10 @@ module.exports = (webServer) => {
             requireAuth: true,
             controller: async(req, res, next) => {
                 try {
+                    // Request
                     const getStaticWorkflows = await workflowsStaticModel.getAllStaticWorkflows()
+
+                    // Response
                     res.json(getStaticWorkflows)
                 } catch (error) {
                     console.error(error)
@@ -21,14 +24,17 @@ module.exports = (webServer) => {
             }
         },
         {
-            // Get a workflow by its name
+            // Get a static workflow by its name
             path: '/name/:name',
             method: 'get',
             requireAuth: true,
             controller: async(req, res, next) => {
                 try {
                     const name = req.params.name
+                        // Request
                     const getStaticWorkflow = await workflowsStaticModel.getStaticWorkflowByName(name)
+
+                    // Response
                     res.json(getStaticWorkflow)
                 } catch (error) {
                     console.error(error)
@@ -53,7 +59,10 @@ module.exports = (webServer) => {
             requireAuth: true,
             controller: async(req, res, next) => {
                 try {
+                    // Set variables & values
                     const payload = req.body.payload
+
+                    // get flow object
                     const getPostedFlow = await nodered.getFlowById(payload.flowId)
 
                     // Create workflow 
@@ -65,7 +74,11 @@ module.exports = (webServer) => {
                         associated_device: payload.sn,
                         flow: getPostedFlow
                     }
+
+                    // Request
                     const postWorkflow = await workflowsStaticModel.postStaticWorkflow(workflowPayload)
+
+                    // Response
                     if (postWorkflow === 'success') {
                         res.json({
                             status: 'success',
@@ -82,14 +95,24 @@ module.exports = (webServer) => {
         },
         {
             // Update a static workflow services parameters
-            path: '/:id',
+            /* 
+            payload = {
+              workflowName,
+              sttServiceLanguage,
+              sttService,
+              tockApplicationName,
+            }
+            */
+            path: '/:id/services',
             method: 'patch',
             requireAuth: true,
             controller: async(req, res, next) => {
                 try {
+                    // Set variables & values
                     const payload = req.body.payload
                     const workflowId = req.params.id
 
+                    // Get static workflow object
                     const getWorkflow = await workflowsStaticModel.getStaticWorkflowById(workflowId)
                     let workflowPayload = getWorkflow
 
@@ -119,6 +142,7 @@ module.exports = (webServer) => {
                         nodeNluConfig[0].appname = payload.tockApplicationName
                     }
 
+                    // Update static workflow
                     const updateWorkflow = await workflowsStaticModel.updateStaticWorkflow(workflowPayload)
 
                     if (updateWorkflow === 'success') {
@@ -132,9 +156,10 @@ module.exports = (webServer) => {
                             }
                         })
                         if (updateStaticDevice === 'success') {
-                            // Update workflow on BLS
+                            // Update workflow on BLS (put)
                             const updateBls = await nodered.putBLSFlow(workflowPayload.flowId, workflowPayload.flow)
 
+                            // Resonse
                             if (updateBls.status === 'success') {
                                 res.json({
                                     status: 'success',
@@ -165,8 +190,11 @@ module.exports = (webServer) => {
             requireAuth: true,
             controller: async(req, res, next) => {
                 try {
+                    // Set variables & values
                     const payload = req.body.payload
                     const workflowId = req.params.id
+
+                    // Get static workflow
                     const getWorkflow = await workflowsStaticModel.getStaticWorkflowById(workflowId)
                     const staticDeviceSn = payload.sn
 
@@ -230,7 +258,6 @@ module.exports = (webServer) => {
                                 msg: `The static workflow "${payload.workflowName}" has been updated`
                             })
                         } else {
-                            c
                             throw 'Error on updating static workflow'
                         }
                     } else {

@@ -206,7 +206,7 @@ export default {
         tockApplicationName: this.tockApplicationName.value
       }
       try {
-        const updateWorkflow = await axios(`${process.env.VUE_APP_URL}/api/workflows/static/${this.workflow._id}`, {
+        const updateWorkflow = await axios(`${process.env.VUE_APP_URL}/api/workflows/static/${this.workflow._id}/services`, {
           method: 'patch',
           data: { payload }
         })

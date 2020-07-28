@@ -26,15 +26,18 @@ module.exports = (webServer) => {
         "/admin": require('./admin')(webServer),
         "/healthcheck": require('./healthcheck')(webServer),
         "/api": require('./api')(webServer),
-        /* NEW */
         "/api/clients": require('./api/clients')(webServer),
+        // Workflows
         "/api/workflows/application": require('./api/workflows/application')(webServer),
         "/api/workflows/static": require('./api/workflows/static')(webServer),
         "/api/workflows/template": require('./api/workflows/template')(webServer),
         "/api/workflows/templates": require('./api/workflows/templates')(webServer),
+        // Android users
         "/api/androidusers": require('./api/androidusers')(webServer),
-        /* end NEW */
+        // Flow
         "/api/flow": require('./api/flow')(webServer),
+        "/api/flow/tmp": require('./api/flow/tmp')(webServer),
+        "/api/flow/sandbox": require('./api/flow/sandbox')(webServer),
         "/api/tock": require('./api/tock')(webServer),
         "/api/stt": require('./api/stt')(webServer),
         "/": require('./_root')(webServer)
