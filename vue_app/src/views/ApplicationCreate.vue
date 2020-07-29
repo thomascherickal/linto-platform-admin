@@ -179,8 +179,7 @@ export default {
           workflowTemplate: this.workflowTemplate.value,
           sttServiceLanguage: this.sttServiceLanguage.value,
           sttService: this.sttService.value,
-          tockApplicationName: this.tockApplicationName.value,
-
+          tockApplicationName: this.tockApplicationName.value
         }
         this.submitting = true
 
@@ -212,7 +211,7 @@ export default {
     },
     async postFlowOnBLS (payload) {
       try {
-        const postBls = await axios(`${process.env.VUE_APP_URL}/api/flow/postbls`, {
+        const postBls = await axios(`${process.env.VUE_APP_URL}/api/flow/postbls/application`, {
           method: 'post', 
           data: { payload }
         })

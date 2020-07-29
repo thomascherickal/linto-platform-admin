@@ -217,7 +217,7 @@ export default {
     },
     async postFlowOnBLS (payload) {
       try {
-        const postBls = await axios(`${process.env.VUE_APP_URL}/api/flow/postbls`, {
+        const postBls = await axios(`${process.env.VUE_APP_URL}/api/flow/postbls/static`, {
           method: 'post', 
           data: { payload }
         })

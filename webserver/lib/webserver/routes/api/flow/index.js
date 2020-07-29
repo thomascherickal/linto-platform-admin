@@ -104,7 +104,7 @@ module.exports = (webServer) => {
               tockApplicationName
             }
             */
-            path: '/postbls',
+            path: '/postbls/static',
             method: 'post',
             requireAuth: true,
             controller: async(req, res, next) => {
@@ -117,6 +117,55 @@ module.exports = (webServer) => {
                     // Format flow to be posted on BLS
                     const formattedFlow = nodered.generateStaticWorkflowFromTemplate(workflowTemplate.flow, {
                         sn: payload.sn,
+                        workflowName: payload.workflowName,
+                        language: payload.sttServiceLanguage,
+                        nlu: {
+                            app_name: payload.tockApplicationName
+                        },
+                        stt: {
+                            service_name: payload.sttService
+                        }
+                    })
+
+                    // Request
+                    const postFlowOnBLS = await nodered.postBLSFlow(formattedFlow)
+
+                    // Response
+                    res.json(postFlowOnBLS)
+
+                } catch (error) {
+                    console.error(error)
+                    res.json({
+                        status: 'error',
+                        error
+                    })
+                }
+            }
+        },
+        {
+            // Post flow on BLS on context creation
+            /* 
+
+            payload = {
+              workflowName,
+              workflowTemplate,
+              sttServiceLanguage,
+              sttService,
+              tockApplicationName
+            }
+            */
+            path: '/postbls/application',
+            method: 'post',
+            requireAuth: true,
+            controller: async(req, res, next) => {
+                try {
+                    const payload = req.body.payload
+
+                    // Get selected nodered flow template object
+                    const workflowTemplate = await workflowTemplatesModel.getWorkflowTemplateByName(payload.workflowTemplate)
+
+                    // Format flow to be posted on BLS
+                    const formattedFlow = nodered.generateApplicationWorkflowFromTemplate(workflowTemplate.flow, {
                         workflowName: payload.workflowName,
                         language: payload.sttServiceLanguage,
                         nlu: {

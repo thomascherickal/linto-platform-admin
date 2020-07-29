@@ -1,6 +1,7 @@
 const axios = require('axios')
 const uuid = require('uuid/v1')
 const middlewares = require('./index.js')
+const md5 = require('md5')
 
 function formatFlowGroupedNodes(flow) {
     let formattedFlow = {}
@@ -85,6 +86,103 @@ function generateStaticWorkflowFromTemplate(flow, payload) {
                 f.sn = payload.sn
             }
 
+            if (typeof(idMap[f.id]) === 'undefined') {
+                idMap[f.id] = uuid()
+            }
+            f.id = idMap[f.id]
+            f.z = flowId
+
+            if (!!f.wires) {
+                for (let i = 0; i < f.wires.length; i++) {
+                    if (typeof(idMap[f.wires[i]]) === 'undefined') {
+                        idMap[f.wires[i]] = uuid()
+                    }
+                    f.wires[i] = idMap[f.wires[i]]
+                }
+            }
+        }
+        nodesArray.push(f)
+    })
+    const formattedFlow = {
+        label: payload.workflowName,
+        configs: [],
+        nodes: nodesArray,
+        id: flowId
+    }
+    return formattedFlow
+}
+
+
+/* Generate a workflow to be posted on BLS */
+/* 
+payload = {
+  workflowName
+  language
+  nlu: {
+    app_name
+  },
+  stt: {
+    service_name
+  },
+  mqttScope
+}*/
+
+function generateApplicationWorkflowFromTemplate(flow, payload) {
+    const flowId = uuid()
+    const mqttId = flowId + '-mqtt'
+    const nluId = flowId + '-nlu'
+    const sttId = flowId + '-stt'
+    const configId = flowId + '-config'
+
+    let idMap = [] // ID correlation array
+    let nodesArray = []
+    flow.filter(node => node.type === 'linto-config').map(f => {
+        // Update language
+        f.language = payload.language
+
+        // Update linto-config node ID
+        idMap[f.id] = configId
+        f.id = configId
+
+        // Update config-transcribe node ID
+        idMap[f.configTranscribe] = sttId
+        f.configTranscribe = sttId
+
+        // Update config-mqtt node ID
+        idMap[f.configMqtt] = mqttId
+        f.configMqtt = mqttId
+
+        // Update config-nlu node ID
+        idMap[f.configEvaluate] = nluId
+        f.configEvaluate = nluId
+
+        nodesArray.push(f)
+    })
+
+    flow.filter(node => node.type !== 'tab' && node.type !== 'linto-config').map(f => {
+        // uppdate STT node
+        if (f.type === 'linto-config-transcribe') {
+            f.id = sttId
+            f.host = `${process.env.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE}/${payload.stt.service_name}`
+            f.api = 'linstt'
+        }
+        // uppdate NLU node
+        else if (f.type === 'linto-config-evaluate') {
+            f.id = nluId
+            f.api = 'tock'
+            f.host = `${process.env.LINTO_STACK_TOCK_SERVICE}:${process.env.LINTO_STACK_TOCK_SERVICE_PORT}`
+            f.appname = payload.nlu.app_name
+            f.namespace = 'app'
+        }
+        // uppdate MQTT node
+        else if (f.type === 'linto-config-mqtt') {
+            f.id = mqttId
+            f.host = process.env.LINTO_STACK_MQTT_HOST
+            f.port = process.env.LINTO_STACK_MQTT_PORT
+            f.scope = 'app' + md5(payload.workflowName)
+            f.login = process.env.LINTO_STACK_MQTT_USER
+            f.password = process.env.LINTO_STACK_MQTT_PASSWORD
+        } else {
             if (typeof(idMap[f.id]) === 'undefined') {
                 idMap[f.id] = uuid()
             }
@@ -253,6 +351,7 @@ module.exports = {
     deleteBLSFlow,
     formatFlowGroupedNodes,
     getBLSAccessToken,
+    generateApplicationWorkflowFromTemplate,
     generateStaticWorkflowFromTemplate,
     getFlowById,
     postBLSFlow,
