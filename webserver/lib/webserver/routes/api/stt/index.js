@@ -99,7 +99,10 @@ module.exports = (webServer) => {
                     const service_name = req.body.service_name
                     const lexicalseeding = await lexSeed.sttLexicalSeeding(flowId, service_name)
                     if (lexicalseeding.status === 'success') {
-                        res.json(lexicalseeding)
+                        res.json({
+                            status: 'success',
+                            msg: 'STT service has been updated'
+                        })
                     } else {
                         throw lexicalseeding
                     }

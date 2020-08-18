@@ -118,6 +118,7 @@ async function sttLexicalSeeding(flowId, service_name) {
 }
 
 async function filterLMData(type, modelId, newData) {
+
     let getDataroutePath = ''
     if (type === 'intent') {
         getDataroutePath = 'intents'
@@ -180,7 +181,6 @@ async function generateGraph(service_name) {
                 'Authorization': sttAuthToken
             }
         })
-
         const sttService = getSttService.data.data
         const generateGraph = await axios(`${middlewares.useSSL() + process.env.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE}/langmodel/${sttService.LModelId}/generate/graph`, {
             method: 'get',
@@ -247,9 +247,8 @@ async function updateLangModel(payload, modelId) {
 
 async function nluLexicalSeeding(flowId) {
     try {
-        const accessToken = await nodered.getBLSAccessToken()
-
         // Get lexical seeding object to send to TOCK
+        const accessToken = await nodered.getBLSAccessToken()
         const getNluLexicalSeeding = await axios(`${middlewares.useSSL() + process.env.LINTO_STACK_BLS_SERVICE}/red/${flowId}/dataset/tock`, {
             method: 'get',
             headers: {
@@ -286,10 +285,20 @@ async function nluLexicalSeeding(flowId) {
                         }
                     }).then((res) => {
                         fs.unlinkSync(filePath)
-                        resolve(res)
-                    }).catch((err) => {
-                        console.error('HERE', err)
-                        reject(err)
+                        if (res.status === 200) {
+                            resolve({
+                                status: 'success',
+                                msg: 'Tock application has been updated'
+                            })
+                        } else {
+                            reject({
+                                status: 'error',
+                                msg: 'Error on updating Tock application'
+                            })
+                        }
+                    }).catch((error) => {
+                        console.error(error)
+                        reject(error)
                     })
                 }
             })
@@ -303,7 +312,45 @@ async function nluLexicalSeeding(flowId) {
     }
 }
 
+async function doLexicalSeeding(sttServiceName, flowId) {
+    try {
+        // NLU lexical seeding 
+        const nluLexSeed = await nluLexicalSeeding(flowId)
+        if (nluLexSeed.status !== 'success') {
+            throw !!nluLexSeed.msg ? nluLexSeed.msg : nluLexSeed
+        }
+
+        // STT lexical seeding 
+        const sttLexSeed = await sttLexicalSeeding(flowId, sttServiceName)
+        if (sttLexSeed.status !== 'success') {
+            throw !!sttLexSeed.msg ? sttLexSeed.msg : sttLexSeed
+        }
+
+        // Success
+        if (sttLexSeed.status === 'success' && nluLexSeed.status === 'success') {
+            return ({
+                status: 'success',
+                msg: 'Tock application and STT service have been updated'
+            })
+        } else {
+            throw {
+                stt: sttLexSeed,
+                nlu: nluLexSeed
+            }
+        }
+    } catch (error) {
+        console.error(error)
+        return ({
+            status: 'error',
+            error,
+            msg: !!error.msg ? error.msg : 'Error on executing lexical seeding'
+        })
+    }
+
+}
+
 module.exports = {
+    doLexicalSeeding,
     nluLexicalSeeding,
     sttLexicalSeeding,
     generateGraph

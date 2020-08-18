@@ -226,38 +226,36 @@ module.exports = (webServer) => {
                     const getWorkflow = await workflowsStaticModel.getStaticWorkflowById(workflowId)
                     const staticDeviceSn = payload.sn
 
-                    // Delete workflow from BLS
-                    const removeBlsWorkflow = await nodered.deleteBLSFlow(getWorkflow.flowId)
-                    if (removeBlsWorkflow.status === 'success') {
-                        // Delete Static workflow from DB
-                        const deleteStaticWorkflow = await workflowsStaticModel.deleteStaticWorkflowById({ _id: workflowId })
-                        if (deleteStaticWorkflow === 'success') {
-                            // Update static client in DB 
-                            const updateStaticDevice = await clientsStaticModel.updateStaticClient({ sn: staticDeviceSn, associated_workflow: null })
-                            if (updateStaticDevice === 'success') {
-                                res.json({
-                                    status: 'success',
-                                    msg: `The static device "${staticDeviceSn}" has been dissocaited from workflow "${getWorkflow.name}"`
-                                })
-                            } else {
-                                throw `Error on updating static device "${staticDeviceSn}"`
-                            }
+                    // Delete workflow from BLS 
+                    // "Success" is not required (if the workflow has been removed manually for exemple)
+                    await nodered.deleteBLSFlow(getWorkflow.flowId)
+
+                    // Delete Static workflow from DB
+                    const deleteStaticWorkflow = await workflowsStaticModel.deleteStaticWorkflowById({ _id: workflowId })
+                    if (deleteStaticWorkflow === 'success') {
+                        // Update static client in DB 
+                        const updateStaticDevice = await clientsStaticModel.updateStaticClient({ sn: staticDeviceSn, associated_workflow: null })
+                        if (updateStaticDevice === 'success') {
+                            res.json({
+                                status: 'success',
+                                msg: `The static device "${staticDeviceSn}" has been dissocaited from workflow "${getWorkflow.name}"`
+                            })
                         } else {
-                            throw `Error on deleting static workflow "${getWorkflow.name}"`
+                            throw `Error on updating static device "${staticDeviceSn}"`
                         }
                     } else {
-                        throw `Error on deleting workflow "${getWorkflow.name}" from Business logic server`
+                        throw `Error on deleting static workflow "${getWorkflow.name}"`
                     }
                 } catch (error) {
                     console.error(error)
                     res.json({
                         status: 'error',
+                        msg: error.toString(),
                         error
                     })
                 }
             }
-        },
-        {
+        }, {
             path: '/saveandpublish',
             method: 'post',
             requireAuth: true,
@@ -281,27 +279,18 @@ module.exports = (webServer) => {
                             updated_date: moment().format()
                         })
                         if (updateStaticWorkflow === 'success') {
-
-                            // NLU Lexical Seeding
-                            const nluLexicalSeeding = await lexSeed.nluLexicalSeeding(payload.noderedFlowId)
-                            if (nluLexicalSeeding.status === 200) {
-
-                                // STT Lexical Seeding
-                                const sttService = formattedFlow.nodes.filter(f => f.type === 'linto-config-transcribe')
-                                if (sttService.length > 0) {
-                                    const sttServiceName = sttService[0].service
-                                    const sttLexicalSeeding = await lexSeed.sttLexicalSeeding(payload.noderedFlowId, sttServiceName)
-                                    if (sttLexicalSeeding.status === 'success') {
-                                        res.json({
-                                            status: 'success',
-                                            msg: `The static workflow "${payload.workflowName}" has been updated`
-                                        })
-                                    } else {
-                                        throw sttLexicalSeeding.data.msg
-                                    }
+                            // Lexical Seeding
+                            const sttService = formattedFlow.nodes.filter(f => f.type === 'linto-config-transcribe')
+                            if (sttService.length > 0 && !!sttService[0].service) {
+                                const lexicalSeeding = await lexSeed.doLexicalSeeding(sttService[0].service, payload.noderedFlowId)
+                                if (lexicalSeeding.status === 'success') {
+                                    res.json({
+                                        status: 'success',
+                                        msg: `The static workflow "${payload.workflowName}" has been updated`
+                                    })
+                                } else {
+                                    throw lexicalSeeding
                                 }
-                            } else {
-                                throw nluLexicalSeeding.data.msg
                             }
                         } else {
                             throw 'Error on updating static workflow'
@@ -313,6 +302,7 @@ module.exports = (webServer) => {
                     console.error(error)
                     res.json({
                         status: 'error',
+                        msg: !!error.msg ? error.msg : 'Error on updating workflow',
                         error
                     })
                 }
