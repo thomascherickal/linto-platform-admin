@@ -7,6 +7,7 @@
         "test": "echo \"Error: no test specified\" && exit 1",
         "start": "NODE_ENV=production node app.js",
         "start-dev": "NODE_ENV=development nodemon app.js",
+        "start-local": "NODE_ENV=local nodemon app.js",
         "start-debug": "DEBUG=* NODE_ENV=development nodemon --inspect app.js "
     },
     "nodemonConfig": {
@@ -22,6 +23,7 @@
     ],
     "license": "GNU AFFERO GPLV3",
     "dependencies": {
+        "atob": "^2.1.2",
         "axios": "^0.19.2",
         "btoa": "^1.2.1",
         "child_process": "^1.0.2",

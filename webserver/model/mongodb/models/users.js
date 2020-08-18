@@ -1,7 +1,7 @@
 const MongoModel = require(`${process.cwd()}/model/mongodb/model.js`)
 const sha1 = require('sha1')
 const randomstring = require('randomstring')
-const usersSchemas = require(`${process.env.LINTO_STACK_MONGODB_SHARED_SCHEMAS}/${process.env.LINTO_STACK_MONGODB_TARGET_VERSION}/schemas/users.json`)
+const usersSchemas = require(`${process.cwd()}/model/mongodb/schemas/${process.env.LINTO_STACK_MONGODB_TARGET_VERSION}/schemas/users.json`)
 
 // This class is a child of 'modelMongoDb' class. It contains all methods and requests to database used on API routes.
 class UsersModel extends MongoModel {

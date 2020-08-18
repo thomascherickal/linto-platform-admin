@@ -26,11 +26,15 @@ module.exports = (webServer) => {
             requireAuth: true,
             controller: async(req, res, next) => {
                 try {
-                    const getServices = await axios(`${process.env.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE}/services`, {
+                    const sttAuthToken = middlewares.basicAuthToken(process.env.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE_LOGIN, process.env.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE_PASSWORD)
+
+                    const getServices = await axios(`${middlewares.useSSL() + process.env.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE}/services`, {
                         method: 'get',
-                        auth: {
-                            username: process.env.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE_LOGIN,
-                            password: process.env.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE_PASSWORD
+                        headers: {
+                            'charset': 'utf-8',
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json',
+                            'Authorization': sttAuthToken
                         }
                     })
                     res.json(getServices.data.data)
@@ -46,11 +50,14 @@ module.exports = (webServer) => {
             requireAuth: true,
             controller: async(req, res, next) => {
                 try {
-                    const getLanguageModels = await axios(`${process.env.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE}/langmodels`, {
+                    const sttAuthToken = middlewares.basicAuthToken(process.env.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE_LOGIN, process.env.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE_PASSWORD)
+                    const getLanguageModels = await axios(`${middlewares.useSSL() + process.env.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE}/langmodels`, {
                         method: 'get',
-                        auth: {
-                            username: process.env.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE_LOGIN,
-                            password: process.env.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE_PASSWORD
+                        headers: {
+                            'charset': 'utf-8',
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json',
+                            'Authorization': sttAuthToken
                         }
                     })
                     res.json(getLanguageModels.data.data)
@@ -65,8 +72,16 @@ module.exports = (webServer) => {
             requireAuth: true,
             controller: async(req, res, next) => {
                 try {
+                    const sttAuthToken = middlewares.basicAuthToken(process.env.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE_LOGIN, process.env.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE_PASSWORD)
+
                     const getACModels = await axios(`${middlewares.useSSL() + process.env.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE}/acmodels`, {
-                        method: 'get'
+                        method: 'get',
+                        headers: {
+                            'charset': 'utf-8',
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json',
+                            'Authorization': sttAuthToken
+                        }
                     })
                     res.json(getACModels.data.data)
                 } catch (e) {
@@ -104,7 +119,9 @@ module.exports = (webServer) => {
             requireAuth: true,
             controller: async(req, res, next) => {
                 try {
-                    await lexSeed.generateGraph()
+                    const serviceName = req.body.serviceName
+                    const lexicalSeeding = await lexSeed.generateGraph(serviceName)
+                    res.json(lexicalSeeding)
                 } catch (error) {
                     console.error(error)
                     res.json({
@@ -120,7 +137,16 @@ module.exports = (webServer) => {
             requireAuth: true,
             controller: async(req, res, next) => {
                 try {
-                    const getSttManager = await axios(middlewares.useSSL() + process.env.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE)
+                    const sttAuthToken = middlewares.basicAuthToken(process.env.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE_LOGIN, process.env.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE_PASSWORD)
+                    const getSttManager = await axios(middlewares.useSSL() + process.env.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE, {
+                        method: 'get',
+                        headers: {
+                            'charset': 'utf-8',
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json',
+                            'Authorization': sttAuthToken
+                        }
+                    })
                     if (getSttManager.status === 200) {
                         res.json({
                             status: 'success',

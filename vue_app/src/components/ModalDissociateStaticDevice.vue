@@ -9,7 +9,7 @@
       </div>
       <div class="modal-body">
         <div class="modal-body__content">
-            Are you sure that you want to <strong>dissociate</strong> the static device with serial number "<strong>{{ sn }}</strong>" from the workflow "<strong>{{workflow.name }}</strong>" ?
+            Are you sure that you want to <strong>dissociate</strong> the static device with serial number "<strong>{{ sn }}</strong>" and remove the workflow "<strong>{{workflow.name }}</strong>" ?
         </div>
       </div>
       <div class="modal-footer flex row">
@@ -72,7 +72,6 @@ export default {
           })
           this.closeModal()
           bus.$emit('dissociate_static_device_success', {})
-          
         } else {
           throw dissociateStaticDevice.data.msg
         }

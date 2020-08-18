@@ -164,6 +164,7 @@ module.exports = (webServer) => {
                     // Get selected nodered flow template object
                     const workflowTemplate = await workflowTemplatesModel.getWorkflowTemplateByName(payload.workflowTemplate)
 
+
                     // Format flow to be posted on BLS
                     const formattedFlow = nodered.generateApplicationWorkflowFromTemplate(workflowTemplate.flow, {
                         workflowName: payload.workflowName,

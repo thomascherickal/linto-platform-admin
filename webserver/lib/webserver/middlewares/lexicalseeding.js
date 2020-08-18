@@ -9,18 +9,21 @@ async function sttLexicalSeeding(flowId, service_name) {
     try {
         // Get stt service data
         const accessToken = await nodered.getBLSAccessToken()
+        const sttAuthToken = middlewares.basicAuthToken(process.env.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE_LOGIN, process.env.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE_PASSWORD)
+
         const getSttService = await axios(`${middlewares.useSSL() + process.env.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE}/service/${service_name}`, {
             method: 'get',
             headers: {
                 'charset': 'utf-8',
                 'Accept': 'application/json',
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': sttAuthToken
             }
         })
         const sttService = getSttService.data.data
 
         // Get lexical seeding data
-        const getSttLexicalSeeding = await axios(`${middlewares.useSSL() + process.env.LINTO_STACK_BLS_SERVICE + process.env.LINTO_STACK_BLS_SERVICE_API_PATH}/${flowId}/dataset/linstt`, {
+        const getSttLexicalSeeding = await axios(`${middlewares.useSSL() + process.env.LINTO_STACK_BLS_SERVICE}/red/${flowId}/dataset/linstt`, {
             method: 'get',
             headers: {
                 'charset': 'utf-8',
@@ -44,7 +47,6 @@ async function sttLexicalSeeding(flowId, service_name) {
             updateInt = await updateLangModel(intentsToSend, sttService.LModelId)
             if (!!updateInt.success && !!updateInt.errors) {
                 intentsUpdated = true
-
             }
         } else {
             intentsUpdated = true
@@ -60,13 +62,13 @@ async function sttLexicalSeeding(flowId, service_name) {
         } else {
             entitiesUpdated = true
         }
-
         const getUpdatedSttLangModel = await axios(`${middlewares.useSSL() + process.env.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE}/langmodel/${sttService.LModelId}`, {
             method: 'get',
             headers: {
                 'charset': 'utf-8',
                 'Accept': 'application/json',
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': sttAuthToken
             }
         })
 
@@ -122,8 +124,18 @@ async function filterLMData(type, modelId, newData) {
     } else if (type === 'entity') {
         getDataroutePath = 'entities'
     }
+
     // Current Values of the langage model
-    const getData = await axios.get(`${middlewares.useSSL() + process.env.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE}/langmodel/${modelId}/${getDataroutePath}`)
+    const sttAuthToken = middlewares.basicAuthToken(process.env.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE_LOGIN, process.env.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE_PASSWORD)
+    const getData = await axios(`${middlewares.useSSL() + process.env.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE}/langmodel/${modelId}/${getDataroutePath}`, {
+        method: 'get',
+        headers: {
+            'charset': 'utf-8',
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': sttAuthToken
+        }
+    })
     const currentData = getData.data.data
     let dataToSend = []
 
@@ -158,13 +170,28 @@ async function filterLMData(type, modelId, newData) {
 
 async function generateGraph(service_name) {
     try {
+        const sttAuthToken = middlewares.basicAuthToken(process.env.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE_LOGIN, process.env.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE_PASSWORD)
         const getSttService = await axios(`${middlewares.useSSL() + process.env.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE}/service/${service_name}`, {
-            method: 'get'
+            method: 'get',
+            headers: {
+                'charset': 'utf-8',
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': sttAuthToken
+            }
         })
+
         const sttService = getSttService.data.data
         const generateGraph = await axios(`${middlewares.useSSL() + process.env.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE}/langmodel/${sttService.LModelId}/generate/graph`, {
-            method: 'get'
+            method: 'get',
+            headers: {
+                'charset': 'utf-8',
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': sttAuthToken
+            }
         })
+
         return ({
             status: 'success',
             msg: generateGraph.data.data
@@ -188,9 +215,16 @@ async function updateLangModel(payload, modelId) {
             const name = payload.data[i].name
             const items = payload.data[i].items
             const method = payload.data[i].method
-            const url = `${middlewares.useSSL() + process.env.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE}/langmodel/${modelId}/${type}/${name}`
-            const req = await axios(url, {
+            const sttAuthToken = middlewares.basicAuthToken(process.env.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE_LOGIN, process.env.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE_PASSWORD)
+
+            const req = await axios(`${middlewares.useSSL() + process.env.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE}/langmodel/${modelId}/${type}/${name}`, {
                 method,
+                headers: {
+                    'charset': 'utf-8',
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': sttAuthToken
+                },
                 data: items
             })
             if (req.status === 200 || req.status === '200') {
@@ -212,12 +246,11 @@ async function updateLangModel(payload, modelId) {
 }
 
 async function nluLexicalSeeding(flowId) {
-    let getNluLexicalSeeding = ''
     try {
         const accessToken = await nodered.getBLSAccessToken()
 
         // Get lexical seeding object to send to TOCK
-        getNluLexicalSeeding = await axios(`${middlewares.useSSL() + process.env.LINTO_STACK_BLS_SERVICE + process.env.LINTO_STACK_BLS_SERVICE_API_PATH}/${flowId}/dataset/tock`, {
+        const getNluLexicalSeeding = await axios(`${middlewares.useSSL() + process.env.LINTO_STACK_BLS_SERVICE}/red/${flowId}/dataset/tock`, {
             method: 'get',
             headers: {
                 'charset': 'utf-8',
@@ -227,6 +260,7 @@ async function nluLexicalSeeding(flowId) {
                 'Authorization': accessToken
             }
         })
+
         const jsonContent = JSON.stringify(getNluLexicalSeeding.data.application)
             // get Tock auth token
         const token = middlewares.basicAuthToken(process.env.LINTO_STACK_TOCK_USER, process.env.LINTO_STACK_TOCK_PASSWORD)
@@ -251,10 +285,10 @@ async function nluLexicalSeeding(flowId) {
                             'Content-Type': formData.getHeaders()['content-type']
                         }
                     }).then((res) => {
-                        //fs.unlinkSync(filePath)
+                        fs.unlinkSync(filePath)
                         resolve(res)
                     }).catch((err) => {
-                        //console.error('HERE', err)
+                        console.error('HERE', err)
                         reject(err)
                     })
                 }

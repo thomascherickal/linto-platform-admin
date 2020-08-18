@@ -31,7 +31,6 @@ function generateStaticWorkflowFromTemplate(flow, payload) {
 
     let idMap = [] // ID correlation array
     let nodesArray = []
-    let configsArray = []
     flow.filter(node => node.type === 'linto-config').map(f => {
         // Update language
         f.language = payload.language
@@ -59,8 +58,9 @@ function generateStaticWorkflowFromTemplate(flow, payload) {
         // uppdate STT node
         if (f.type === 'linto-config-transcribe') {
             f.id = sttId
-            f.host = `${process.env.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE}/${payload.stt.service_name}`
+            f.host = process.env.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE
             f.api = 'linstt'
+            f.service = payload.stt.service_name
         }
         // uppdate NLU node
         else if (f.type === 'linto-config-evaluate') {
@@ -163,8 +163,9 @@ function generateApplicationWorkflowFromTemplate(flow, payload) {
         // uppdate STT node
         if (f.type === 'linto-config-transcribe') {
             f.id = sttId
-            f.host = `${process.env.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE}/${payload.stt.service_name}`
+            f.host = process.env.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE
             f.api = 'linstt'
+            f.service = payload.stt.service_name
         }
         // uppdate NLU node
         else if (f.type === 'linto-config-evaluate') {

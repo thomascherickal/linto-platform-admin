@@ -198,10 +198,10 @@ export default {
               if (updateStaticDevice === 'success' ) {
                 // STEP 4 : NLU lexical seeding
                 const nluLexicalSeeding = await this.nluLexicalSeeding(payload)
-                /*if (nluLexicalSeeding === 'success') {
+                if (nluLexicalSeeding === 'success') {
                   // STEP 5 : STT lexical seeding
                   const sttLexicalSeeding = await this.sttLexicalSeeding(payload)
-                }*/
+                }
               }
             }
           }
@@ -309,7 +309,7 @@ export default {
       } catch (error) {
         bus.$emit('app_notif', {
           status: 'error',
-          msg: error,
+          msg: !!error.msg ? error.msg : error,
           timeout: false,
           redirect: false
         })

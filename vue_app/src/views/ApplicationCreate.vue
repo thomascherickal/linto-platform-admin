@@ -185,6 +185,7 @@ export default {
 
         // STEP 1 : Post workflow template on BLS
         const postBls = await this.postFlowOnBLS(payload)
+        
         if(postBls === 'success') {
           if (this.flowId !== null) {
             payload.flowId = this.flowId
@@ -217,7 +218,7 @@ export default {
         })
         if(postBls.data.status === 'success' && !!postBls.data.flowId) {
           this.blsFlowUpdate = true
-           this.blsFlowStatus = 'The workflow template has been posted on Business Logic Server' 
+          this.blsFlowStatus = 'The workflow template has been posted on Business Logic Server' 
           this.flowId = postBls.data.flowId
           return 'success'
         } else {

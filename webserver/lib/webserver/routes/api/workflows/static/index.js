@@ -3,6 +3,7 @@ const workflowsApplicationModel = require(`${process.cwd()}/model/mongodb/models
 const clientsStaticModel = require(`${process.cwd()}/model/mongodb/models/clients-static.js`)
 const tmpFlowModel = require(`${process.cwd()}/model/mongodb/models/flow-tmp.js`)
 const nodered = require(`${process.cwd()}/lib/webserver/middlewares/nodered.js`)
+const lexSeed = require(`${process.cwd()}/lib/webserver/middlewares/lexicalseeding.js`)
 const moment = require('moment')
 
 module.exports = (webServer) => {
@@ -136,11 +137,7 @@ module.exports = (webServer) => {
                     // set STT service 
                     const nodeSttConfig = workflowPayload.flow.configs.filter(node => node.type === 'linto-config-transcribe')
                     if (nodeSttConfig.length > 0) {
-                        const host = nodeSttConfig[0].host
-                        let splitHost = host.split('/')
-                        splitHost[splitHost.length - 1] = payload.sttService
-                        nodeSttConfig[0].host = splitHost.join('/')
-
+                        nodeSttConfig[0].service = payload.sttService
                     }
 
                     // set Tock application
@@ -284,10 +281,28 @@ module.exports = (webServer) => {
                             updated_date: moment().format()
                         })
                         if (updateStaticWorkflow === 'success') {
-                            res.json({
-                                status: 'success',
-                                msg: `The static workflow "${payload.workflowName}" has been updated`
-                            })
+
+                            // NLU Lexical Seeding
+                            const nluLexicalSeeding = await lexSeed.nluLexicalSeeding(payload.noderedFlowId)
+                            if (nluLexicalSeeding.status === 200) {
+
+                                // STT Lexical Seeding
+                                const sttService = formattedFlow.nodes.filter(f => f.type === 'linto-config-transcribe')
+                                if (sttService.length > 0) {
+                                    const sttServiceName = sttService[0].service
+                                    const sttLexicalSeeding = await lexSeed.sttLexicalSeeding(payload.noderedFlowId, sttServiceName)
+                                    if (sttLexicalSeeding.status === 'success') {
+                                        res.json({
+                                            status: 'success',
+                                            msg: `The static workflow "${payload.workflowName}" has been updated`
+                                        })
+                                    } else {
+                                        throw sttLexicalSeeding.data.msg
+                                    }
+                                }
+                            } else {
+                                throw nluLexicalSeeding.data.msg
+                            }
                         } else {
                             throw 'Error on updating static workflow'
                         }

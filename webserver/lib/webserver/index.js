@@ -19,7 +19,6 @@ if (process.env.LINTO_STACK_ADMIN_API_WHITELIST_DOMAINS.length > 0) {
             if (!origin || whitelistDomains.indexOf(origin) !== -1 || origin === 'undefined') {
                 callback(null, true)
             } else {
-                console.log('whitelist: ', whitelistDomains)
                 callback(new Error('Not allowed by CORS'))
             }
         }
