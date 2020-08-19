@@ -107,8 +107,12 @@ export default {
     },
     async saveAndPublish () {
       try {
-        if (this.payload.contextFrame === 'statciWorkflow') {
-          const saveAndPublish = await axios(`${process.env.VUE_APP_URL}/api/workflows/static/saveandpublish`, {
+        if (this.payload.contextFrame === 'staticWorkflow') {
+          this.payload.type = 'static'
+        } else if  (this.payload.contextFrame === 'applicationWorkflow') {
+          this.payload.type = 'application'
+        }
+        const saveAndPublish = await axios(`${process.env.VUE_APP_URL}/api/workflows/saveandpublish`, {
             method: 'post',
             data: { payload: this.payload }
           })
@@ -121,10 +125,8 @@ export default {
               redirect: false
             })
             bus.$emit('iframe_reload', {})
-
           } else {
             throw saveAndPublish
-          }
         }
       } catch (error) {
         console.error(error)

@@ -27,7 +27,8 @@ module.exports = (webServer) => {
         "/healthcheck": require('./healthcheck')(webServer),
         "/api": require('./api')(webServer),
         "/api/clients": require('./api/clients')(webServer),
-        // Workflows
+
+        "/api/workflows": require('./api/workflows')(webServer),
         "/api/workflows/application": require('./api/workflows/application')(webServer),
         "/api/workflows/static": require('./api/workflows/static')(webServer),
         "/api/workflows/template": require('./api/workflows/template')(webServer),

@@ -171,10 +171,8 @@ export default {
           
           // get STT service 
           const nodeSttConfig = this.currentWorkflow.flow.configs.filter(node => node.type === 'linto-config-transcribe')
-          if (nodeSttConfig.length > 0) {
-            const host = nodeSttConfig[0].host
-            const splitHost = host.split('/')
-            this.sttService.value = splitHost[splitHost.length - 1]
+          if (nodeSttConfig.length > 0 && !!nodeSttConfig[0].service) {
+            this.sttService.value = nodeSttConfig[0].service
             this.sttService.valid = true
           }
           
@@ -223,7 +221,7 @@ export default {
         type: this.workflowType
       }
       try {
-        const updateWorkflow = await axios(`${process.env.VUE_APP_URL}/api/workflows/static/${this.workflow._id}/services`, {
+        const updateWorkflow = await axios(`${process.env.VUE_APP_URL}/api/workflows/${this.workflow._id}/services`, {
           method: 'patch',
           data: { payload }
         })

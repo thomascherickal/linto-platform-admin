@@ -2,6 +2,8 @@ const nodered = require(`${process.cwd()}/lib/webserver/middlewares/nodered.js`)
 const moment = require('moment')
 const applicationWorkflowsModel = require(`${process.cwd()}/model/mongodb/models/workflows-application.js`)
 const androidUsersModel = require(`${process.cwd()}/model/mongodb/models/android-users.js`)
+const tmpFlowModel = require(`${process.cwd()}/model/mongodb/models/flow-tmp.js`)
+
 module.exports = (webServer) => {
     return [{
             // Get all application workflows from database
@@ -120,6 +122,6 @@ module.exports = (webServer) => {
                     })
                 }
             }
-        }
+        },
     ]
 }
