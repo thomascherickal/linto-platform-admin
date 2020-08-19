@@ -47,5 +47,36 @@ module.exports = (webServer) => {
                 })
             }
         }
+    }, {
+        path: '/:templateId',
+        method: 'delete',
+        requireAuth: true,
+        controller: async(req, res, next) => {
+            try {
+                // Set variables & values
+                const templateId = req.params.templateId
+                const payload = req.body.payload
+
+                // Request
+                const deleteTemplate = await workflowsTemplatesModel.deleteWorkflowTemplate(templateId)
+
+                // Response
+                if (deleteTemplate === 'success') {
+                    res.json({
+                        status: 'success',
+                        msg: `the workflow template "${payload.name}" has been removed`
+                    })
+                } else {
+                    throw deleteTemplate
+                }
+            } catch (error) {
+                console.error(error)
+                res.json({
+                    status: 'error',
+                    msg: !!error.msg ? error.msg : 'Error on deleting a workflow template',
+                    error
+                })
+            }
+        }
     }]
 }

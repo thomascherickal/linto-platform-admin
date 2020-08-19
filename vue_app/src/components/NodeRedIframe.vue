@@ -11,24 +11,30 @@
           :class="fullScreen ? 'enabled' : 'disabled'"
           @click="toggleFullScreen()"
           :data-desc="fullScreen ? 'Leave full screen' : 'Full screen'"
+          style="margin-right: 10px;"
         ><span class="button__icon" :class="fullScreen ? 'button__icon--leave-fullscreen' : 'button__icon--fullscreen'"></span></button>
+
+        <button
+          class="button button-icon-txt button--green"
+          @click="showTemplateList()"
+          v-if="contextFrame === 'sandbox'"
+        >
+          <span class="button__icon button__icon--settings"></span>
+          <span class="button__label">Manage workflow templates</span>
+        </button>
+        
       </div>
       <div class="flex1 flex row iframe__controls-right">
+
+        <!-- Save and publish -->
         <button
           class="button button-icon-txt button--bluemid"
           @click="SaveAsWorkflowTemplate()"
         >
           <span class="button__icon button__icon--save"></span>
-          <span class="button__label">Save as new flow pattern</span></button>
-        <!-- WIP 
-        <button
-          class="button button-icon-txt button--bluemid"
-          @click="LoadFromWorkflowTemplate()"
-        >
-          <span class="button__icon button__icon--load"></span>
-          <span class="button__label">Load from flow pattern</span>
+          <span class="button__label">Save as new flow pattern</span>
         </button>
-        -->
+        
         <button
           class="button button-icon-txt button--valid"
           @click="saveAndPublish()"
@@ -104,6 +110,9 @@ export default {
     },
     SaveAsWorkflowTemplate () {
       bus.$emit('save_as_workflow_template', {payload: this.payload})
+    },
+    showTemplateList () {
+      bus.$emit('manage_workflow_templates', {})
     },
     async saveAndPublish () {
       try {

@@ -86,5 +86,37 @@ module.exports = (webServer) => {
                 }
             }
         },
+        {
+            path: '/load/:flowId',
+            method: 'put',
+            requireAuth: true,
+            controller: async(req, res, next) => {
+                try {
+                    const flowId = req.params.flowId
+                    const flow = req.body.payload.flow
+                    let formattedFlow = nodered.formatFlowGroupedNodes(flow)
+                    formattedFlow.label = 'SandBox'
+                    formattedFlow.id = flowId
+
+                    const updateSandBox = await nodered.putBLSFlow(flowId, formattedFlow)
+
+                    if (updateSandBox.status === 'success') {
+                        res.json({
+                            status: 'success'
+                        })
+                    } else {
+                        throw 'Cannot read the flow object'
+                    }
+
+                } catch (error) {
+                    console.error(error)
+                    res.json({
+                        status: 'error',
+                        msg: !error.msg ? error.msg : 'Error on loading the flow',
+                        error
+                    })
+                }
+            }
+        }
     ]
 }

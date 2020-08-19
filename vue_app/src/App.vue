@@ -28,6 +28,9 @@
     
     <!-- Worflows templates -->
     <ModalSaveAsWorkflowTemplate v-if="path.indexOf('/admin/workflows') >= 0 || path.indexOf('/clients/static/workflow') "></ModalSaveAsWorkflowTemplate>
+
+    <ModalManageWorkflowTemplates v-if="path.indexOf('admin/workflow-editor') >= 0"></ModalManageWorkflowTemplates>
+
   </div>
 </template>
 <script>
@@ -49,6 +52,7 @@
   import ModalEditAndroidUser from '@/components/ModalEditAndroidUser.vue'
   import ModalDeleteAndroidUser from '@/components/ModalDeleteAndroidUser.vue'
   import ModalDeleteApplication from '@/components/ModalDeleteApplication.vue'
+  import ModalManageWorkflowTemplates from '@/components/ModalManageWorkflowTemplates.vue'
   import { bus } from './main.js'
   export default {
     data () {
@@ -70,14 +74,19 @@
       ModalUpdateClientStatic,
       ModalUpdateWorkflowServices,
       ModalDissociateStaticDevice,
+      // Workflow editor
       ModalSaveAsWorkflowTemplate,
+      ModalManageWorkflowTemplates,
       // Applications
       ModalDeleteApplication,
       // Android users Modal
       ModalAddAndroidUsers,
       ModalManageAndroidUsers,
       ModalEditAndroidUser,
-      ModalDeleteAndroidUser
+      ModalDeleteAndroidUser,
+
+      
+
     },
     mounted () {
       bus.$on('iframe-set-fullscreen', () => {

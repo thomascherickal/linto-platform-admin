@@ -52,5 +52,16 @@ class WorkflowsTemplates extends MongoModel {
             return err
         }
     }
+
+    // Delete a workflow template
+    async deleteWorkflowTemplate(id) {
+        try {
+            const query = { _id: this.getObjectId(id) }
+            return await this.mongoDelete(query)
+        } catch (err) {
+            console.error(err)
+            return err
+        }
+    }
 }
 module.exports = new WorkflowsTemplates()

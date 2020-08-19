@@ -58,6 +58,20 @@
                 font-weight: 600;
                 color: $error;
             }
+            table {
+                tr {
+                    td {
+                        strong {
+                            display: inline-block;
+                            vertical-align: top;
+                            color: $blueMid;
+                            font-weight: 600;
+                            padding-right: 5px;
+                            line-height: 32px;
+                        }
+                    }
+                }
+            }
         }
     }
     .modal-footer {
