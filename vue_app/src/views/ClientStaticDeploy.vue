@@ -1,6 +1,7 @@
 <template>
-     <div class="flex col" v-if="dataLoaded">
-      <h1>Static devices - {{ sn }} - Deployment</h1>
+  <div v-if="dataLoaded">
+    <h1>Static devices - {{ sn }} - Deployment</h1>
+    <div class="flex col">
       <!-- Workflow name -->
       <AppInput :label="'Workflow name'" :obj="workflowName" :test="'testWorkflowName'"></AppInput>
 
@@ -18,7 +19,7 @@
 
       <!-- Submit -->
       <div class="flex row">
-         <a href="/admin/clients/static" class="button button-icon-txt button--grey">
+        <a href="/admin/clients/static" class="button button-icon-txt button--grey">
           <span class="button__icon button__icon--cancel"></span>
           <span class="button__label">Cancel</span>
         </a>
@@ -29,17 +30,15 @@
       </div>
 
       <div v-if="submitting">
-         BLS : {{ blsFlowStatus }} <br/>
-         Workflow : {{ workflowStatus }} <br/>
-         Static device : {{ staticDeviceStatus }} <br/>
-         NLU : {{ nluLexSeedStatus }} <br/>
-         STT : {{ sttLexSeedStatus }} <br/>
+        BLS : {{ blsFlowStatus }} <br/>
+        Workflow : {{ workflowStatus }} <br/>
+        Static device : {{ staticDeviceStatus }} <br/>
+        NLU : {{ nluLexSeedStatus }} <br/>
+        STT : {{ sttLexSeedStatus }} <br/>
       </div>
-
     </div>
-    <div v-else>
-      Loading
-    </div>
+  </div>
+  <div v-else>Loading...</div>
 </template>
 <script>
 import AppInput from '@/components/AppInput.vue'
@@ -201,6 +200,9 @@ export default {
                 if (nluLexicalSeeding === 'success') {
                   // STEP 5 : STT lexical seeding
                   const sttLexicalSeeding = await this.sttLexicalSeeding(payload)
+                  if (sttLexicalSeeding === 'success') {
+                    window.location.href = '/admin/clients/static'
+                  }
                 }
               }
             }
@@ -226,7 +228,9 @@ export default {
            this.blsFlowStatus = 'The workflow template has been posted on Business Logic Server' 
           this.flowId = postBls.data.flowId
           return 'success'
-        } else {
+        } else if (postBls.data.status === 'error'){
+          this.blsFlowUpdate = false
+          this.blsFlowStatus = postBls.data.msg
           throw postBls.data.msg
         }
       } catch (error) {
@@ -241,16 +245,20 @@ export default {
     async postWorkflow (payload) {
       try {
         const postWorkflow = await axios(`${process.env.VUE_APP_URL}/api/workflows/static`, {
-            method: 'post', 
-            data: { payload }
-          })
-          if (postWorkflow.data.status === 'success') {
-            this.workflowUpdate = true
-            this.workflowStatus = `The workflow "${payload.workflowName}" has been registered`
-            return 'success'
-          }  
+          method: 'post', 
+          data: { payload }
+        })
+        if (postWorkflow.data.status === 'success') {
+          this.workflowUpdate = true
+          this.workflowStatus = `The workflow "${payload.workflowName}" has been registered`
+          return 'success'
+        } else if (postWorkflow.data.status === 'error') {
+          this.workflowUpdate = false
+          this.workflowStatus = postWorkflow.data.msg
+          throw postWorkflow.data.msg
+        }
       } catch (error) {
-         bus.$emit('app_notif', {
+        bus.$emit('app_notif', {
           status: 'error',
           msg: error,
           timeout: false,
@@ -279,6 +287,10 @@ export default {
             this.staticDeviceUpdate = true
             this.staticDeviceStatus = `The static device "${this.sn}" has been attached to "${payload.workflowName}" workflow`
             return 'success'
+          } else if (updateStaticDevice.data.status === 'error') {
+            this.staticDeviceUpdate = false
+            this.staticDeviceStatus = updateStaticDevice.data.msg
+            throw updateStaticDevice.data.msg
           }
         }
       } catch (error) {
@@ -302,10 +314,11 @@ export default {
           this.nluLexSeedUpdate = true
           this.nluLexSeedStatus = 'Natural language understanding dictionnaries have been updated'
           return 'success'
-        } else {
-          throw nluLexSeed
+        } else if(nluLexSeed.data.status === 'error') {
+          this.nluLexSeedUpdate = false
+          this.nluLexSeedStatus = nluLexSeed.data.msg
+          throw nluLexSeed.data
         }
-          
       } catch (error) {
         bus.$emit('app_notif', {
           status: 'error',
@@ -328,14 +341,16 @@ export default {
           this.sttLexSeedUpdate = true
           this.sttLexSeedStatus = 'STT service dictionnaries have been updated'
           return 'success'
-        } else {
-          throw sttLexSeed
+        } else if(sttLexSeed.data.status === 'error') {
+          this.sttLexSeedUpdate = false
+          this.sttLexSeedStatus = sttLexSeed.data.msg
+          throw sttLexSeed.data
         }
       } catch (error) {
         this.sttLexSeedStatus = error.data.msg
         bus.$emit('app_notif', {
           status: 'error',
-          msg: error.data.msg,
+          msg: !!error.msg ? error.msg : error,
           timeout: false,
           redirect: false
         })
@@ -361,7 +376,6 @@ export default {
           case 'getSttLanguageModels':
               this.sttLanguageModelsLoaded = dispatchSuccess
               break
-          
           default:
             return
         }  

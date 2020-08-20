@@ -62,22 +62,20 @@ export default {
         // Step 1: remove application from android users in DB
         const removeUsers = await this.removeUserFromApplication()
         if (removeUsers === 'success') {
-          // Step 2: remove BLS flow
+          // Step 2: remove BLS flow > "Success" NOT REQUIRED
           const removeFlow = await this.removeBLSFlow(this.flowId)
-          if (removeFlow === 'success') {
-            // Step 3: Remove application workflow from DB
-            const removeApplication = await this.removeApplication(this.applicationWorkflowId)
-              // success
-              if(removeApplication === 'success') {
-              bus.$emit('app_notif', {
-                status: 'success',
-                msg: `The application workflow "${this.applicationWorkflowName}" has been removed`,
-                timeout: 3000,
-                redirect: false
-              })
-              bus.$emit('delete_application_workflow_success', {})
-              this.closeModal()
-            }
+          // Step 3: Remove application workflow from DB 
+          const removeApplication = await this.removeApplication(this.applicationWorkflowId)
+            // success
+            if(removeApplication === 'success') {
+            bus.$emit('app_notif', {
+              status: 'success',
+              msg: `The application workflow "${this.applicationWorkflowName}" has been removed`,
+              timeout: 3000,
+              redirect: false
+            })
+            bus.$emit('delete_application_workflow_success', {})
+            this.closeModal()
           }
         }
       } catch (error) {

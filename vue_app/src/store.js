@@ -54,9 +54,7 @@ export default new Vuex.Store({
                 commit('SET_STATIC_CLIENTS', getStaticClients.data)
                 return state.staticClients
             } catch (error) {
-                return ({
-                    error: 'Error on getting Linto(s) static devices'
-                })
+                return { error: 'Error on getting Linto(s) static devices' }
             }
         },
         // Static workflows
@@ -66,9 +64,7 @@ export default new Vuex.Store({
                 commit('SET_STATIC_WORKFLOWS', getStaticWorkflows.data)
                 return state.staticWorkflows
             } catch (error) {
-                return ({
-                    error: 'Error on getting static workflows'
-                })
+                return { error: 'Error on getting static workflows' }
             }
         },
         // Application workflows
@@ -78,20 +74,17 @@ export default new Vuex.Store({
                 commit('SET_APPLICATION_WORKFLOWS', getApplicationWorkflows.data)
                 return state.applicationWorkflows
             } catch (error) {
-                return ({
-                    error: 'Error on getting Linto(s) static devices'
-                })
+                return { error: 'Error on getting Linto(s) static devices' }
             }
         },
+        // Workflow templates
         getWorkflowsTemplates: async({ commit, state }) => {
             try {
                 const getWorkflowsTemplates = await axios.get(`${process.env.VUE_APP_URL}/api/workflows/templates`)
                 commit('SET_WORKFLOWS_TEMPLATES', getWorkflowsTemplates.data)
                 return state.workflowsTemplates
             } catch (error) {
-                return ({
-                    error: 'Error on getting workflow templates'
-                })
+                return { error: 'Error on getting workflow templates' }
             }
         },
         // Android users 
@@ -109,9 +102,7 @@ export default new Vuex.Store({
                 commit('SET_ANDROID_USERS', nestedObj)
                 return state.androidUsers
             } catch (error) {
-                return ({
-                    error: 'Error on getting android applications users'
-                })
+                return { error: 'Error on getting android applications users' }
             }
         },
         // Stt services
@@ -121,35 +112,30 @@ export default new Vuex.Store({
                 commit('SET_STT_SERVICES', getServices.data)
                 return state.sttServices
             } catch (error) {
-                return ({
-                    error: 'Error on getting STT services'
-                })
+                return { error: 'Error on getting STT services' }
             }
         },
+        // Stt language models
         getSttLanguageModels: async({ commit, state }) => {
             try {
                 const getSttLanguageModels = await axios.get(`${process.env.VUE_APP_URL}/api/stt/langmodels`)
                 commit('SET_STT_LANG_MODELS', getSttLanguageModels.data)
                 return state.sttLanguageModels
             } catch (error) {
-                return ({
-                    error: 'Error on getting language models'
-                })
+                return { error: 'Error on getting language models' }
             }
         },
+        // Stt acoustic models
         getSttAcousticModels: async({ commit, state }) => {
             try {
                 const getSttAcousticModels = await axios.get(`${process.env.VUE_APP_URL}/api/stt/acmodels`)
-
                 commit('SET_STT_AC_MODELS', getSttAcousticModels.data)
                 return state.sttAcousticModels
             } catch (error) {
-                return ({
-                    error: 'Error on getting acoustic models'
-                })
+                return { error: 'Error on getting acoustic models' }
             }
         },
-        // Tock
+        // Tock applications
         getTockApplications: async({ commit, state }) => {
             try {
                 const getApps = await axios.get(`${process.env.VUE_APP_URL}/api/tock/applications`)
@@ -213,7 +199,15 @@ export default new Vuex.Store({
         },
         STATIC_WORKFLOW_BY_ID: (state) => (id) => {
             try {
-                return state.staticWorkflows.filter(sw => sw._id === id)[0]
+                if (state.staticWorkflows.length > 0) {
+                    const staticWorkflow = state.staticWorkflows.filter(sw => sw._id === id)
+                    if (staticWorkflow.length > 0) {
+                        return staticWorkflow[0]
+                    } else {
+                        throw 'Static workflow not found'
+                    }
+                }
+                throw 'Static workflow not found'
             } catch (error) {
                 return { error }
             }
@@ -235,7 +229,6 @@ export default new Vuex.Store({
                     })
                 }
                 return usersByApp
-
             } catch (error) {
                 return { error }
             }
@@ -267,88 +260,18 @@ export default new Vuex.Store({
             }
         },
         APP_WORKFLOWS_NAME_BY_ID: (state) => {
-            const workflows = state.applicationWorkflows
-            let workflowNames = []
-            if (workflows.length > 0) {
-                workflows.map(wf => {
-                    workflowNames[wf._id] = wf.name
-                })
+            try {
+                const workflows = state.applicationWorkflows
+                let workflowNames = []
+                if (workflows.length > 0) {
+                    workflows.map(wf => {
+                        workflowNames[wf._id] = wf.name
+                    })
+                }
+                return workflowNames
+            } catch (error) {
+                return { error }
             }
-
-            return workflowNames
         }
-
-        /*
-        STT_SERVICES_AVAILABLE: (state) => {
-            try {
-                let services = state.sttServices || []
-                let languageModels = state.sttLanguageModels || []
-                let availableServices = []
-                if (services.length > 0) {
-                    services.map(s => {
-                        let lm = languageModels.filter(l => l.modelId === s.LModelId)
-                        if (lm.length > 0) {
-                            if (lm[0].isGenerated === 1 || lm[0].isDirty === 1 && lm[0].isGenerated === 0 && lm[0].updateState >= 0) {
-                                availableServices.push(s)
-                            }
-                        }
-                    })
-                    return availableServices
-                } else {
-                    throw 'No service found.'
-                }
-            } catch (error) {
-                return error.toString()
-            }
-        },
-        STT_SERVICES_LANGUAGES: (state) => {
-            try {
-                let lang = []
-                let resp = []
-                state.sttServices.map(s => {
-                    if (lang.indexOf(s.lang) < 0) {
-                        lang.push(s.lang)
-                        resp.push({
-                            value: s.lang
-                        })
-                    }
-                })
-                return resp
-            } catch (error) {
-                return error.toString()
-            }
-        },
-        STT_LM_ERRORS: (state) => {
-            try {
-                const langModels = state.sttLanguageModels
-                const brokenModel = []
-                if (!!langModels) {
-                    langModels.map(lm => {
-                        if (lm.updateState < 0 && lm.isDirty === 1) {
-                            brokenModel.push(lm)
-                        }
-                    })
-                    return brokenModel
-                }
-            } catch (error) {
-                return error.toString
-            }
-        },
-        STT_GRAPH_GENERATION: (state) => {
-            try {
-                const langModels = state.sttLanguageModels
-                let generating = []
-                if (!!langModels) {
-                    langModels.map(lm => {
-                        if (lm.updateState > 0 && lm.isDirty === 1) {
-                            generating.push(lm)
-                        }
-                    })
-                    return generating
-                }
-            } catch (error) {
-                return error.toString
-            }
-        }*/
     }
 })

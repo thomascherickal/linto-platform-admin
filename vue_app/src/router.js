@@ -52,7 +52,23 @@ const router = new Router({
                     name: 'robots',
                     content: 'noindex, nofollow'
                 }
-            ]
+            ],
+            beforeEnter: async(to, from, next) => {
+                try {
+                    // Check if the targeted static workflow exists
+                    const workflowId = to.params.workflowId
+                    const getWorkflow = await axios(`${process.env.VUE_APP_URL}/api/workflows/static/${workflowId}`)
+                    if (!!getWorkflow.data.error) {
+                        next('/admin/clients/static')
+                    } else {
+                        next()
+                    }
+                } catch (error) {
+                    console.error(error)
+                    next('/admin/clients/static')
+
+                }
+            }
         },
         {
             path: '/admin/clients/static/:sn/deploy',
@@ -68,13 +84,18 @@ const router = new Router({
                 }
             ],
             beforeEnter: async(to, from, next) => {
-                // Verify that the target device is not associated
-                const sn = to.params.sn
-                const getStaticDevice = await axios(`${process.env.VUE_APP_URL}/api/clients/static/${sn}`)
-                if (getStaticDevice.data.associated_workflow !== null) {
+                try {
+                    // Check if the targeted static device exists
+                    const sn = to.params.sn
+                    const getStaticDevice = await axios(`${process.env.VUE_APP_URL}/api/clients/static/${sn}`)
+                    if (getStaticDevice.data.associated_workflow !== null) {
+                        next('/admin/clients/static')
+                    } else {
+                        next()
+                    }
+                } catch (error) {
+                    console.error(error)
                     next('/admin/clients/static')
-                } else {
-                    next()
                 }
             }
         },
@@ -117,7 +138,22 @@ const router = new Router({
                     name: 'robots',
                     content: 'noindex, nofollow'
                 }
-            ]
+            ],
+            beforeEnter: async(to, from, next) => {
+                try {
+                    // Check if the targeted application workflow exists
+                    const workflowId = to.params.workflowId
+                    const getWorkflow = await axios(`${process.env.VUE_APP_URL}/api/workflows/application/${workflowId}`)
+                    if (!!getWorkflow.data.error) {
+                        next('/admin/clients/application')
+                    } else {
+                        next()
+                    }
+                } catch (error) {
+                    console.error(error)
+                    next('/admin/clients/application')
+                }
+            }
         },
         {
             path: '/admin/workflow-editor',

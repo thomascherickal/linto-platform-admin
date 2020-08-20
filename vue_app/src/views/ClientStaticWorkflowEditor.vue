@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div v-if="dataLoaded">
+    <h1>Workflow editor - {{ currentWorkflow.name }}</h1>
     <div class="flex col flex1">
-      <h1>Workflow editor - {{ currentWorkflow.name }}</h1>
       <details open class="description">
         <summary>Infos</summary>
         <span>The workflow editor uses an embedded application called node-red. You will have to log in to the node-red application to be able to edit workflows.<br/>
@@ -18,6 +18,7 @@
       </div>
     </div>
   </div>
+  <div v-else>Loading...</div>
 </template>
 <script>
 import { bus } from '../main.js'
@@ -26,7 +27,6 @@ import NodeRedIframe from '@/components/NodeRedIframe.vue'
 export default {
   data () {
     return {
-      loading: true,
       blsUp: false,
       blsUrl: '',
       noderedUser: process.env.VUE_APP_NODERED_USER,
@@ -49,7 +49,7 @@ export default {
   },
   computed: {
     dataLoaded () {
-      return this.staticWorkflowsLoaded && this.blsUp
+      return this.staticWorkflowsLoaded && this.blsUp && !this.currentWorkflow.error
     },
     currentWorkflow () {
       return this.$store.getters.STATIC_WORKFLOW_BY_ID(this.staticWorkflowId)

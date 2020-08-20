@@ -111,7 +111,9 @@ export default {
       return (this.staticClientsLoaded && this.staticWorkflowsLoaded && this.sttServicesLoaded && this.applicationWorkflowsLoaded && this.tockApplicationsLoaded && this.sttLanguageModelsLoaded)
     },
     currentWorkflow () {
-      if (this.workflowType === 'static') {
+      if (this.workflowType === 'static' && this.dataLoaded)  {
+        // TODO 
+        console.log(this.workflow, this.$store.getters.STATIC_WORKFLOW_BY_ID(this.workflow._id) )
         return this.$store.getters.STATIC_WORKFLOW_BY_ID(this.workflow._id) 
       } else if (this.workflowType === 'application') {
         return this.$store.getters.APP_WORKFLOW_BY_ID(this.workflow._id) 
@@ -157,32 +159,31 @@ export default {
   watch: {
     dataLoaded (data) {
       if (data) {
-        if (!this.workflowInit && this.currentWorkflow !== null && !this.currentWorkflow.error) {
-          // get worlflow name
-          this.workflowName.value = this.currentWorkflow.name
-          this.workflowName.valid = true 
+        if (!this.workflowInit && this.currentWorkflow !== null) {
+            // get worlflow name
+            this.workflowName.value = this.currentWorkflow.name
+            this.workflowName.valid = true 
 
-          // get worlflow language
-          const nodeConfig = this.currentWorkflow.flow.nodes.filter(node => node.type === 'linto-config')
-          if (nodeConfig.length > 0) {
-            this.sttServiceLanguage.value = nodeConfig[0].language
-            this.sttServiceLanguage.valid = true
-          }
-          
-          // get STT service 
-          const nodeSttConfig = this.currentWorkflow.flow.configs.filter(node => node.type === 'linto-config-transcribe')
-          if (nodeSttConfig.length > 0 && !!nodeSttConfig[0].service) {
-            this.sttService.value = nodeSttConfig[0].service
-            this.sttService.valid = true
-          }
-          
-          // get Tock application
-          const nodeNluConfig = this.currentWorkflow.flow.configs.filter(node => node.type === 'linto-config-evaluate')
-          if (nodeNluConfig.length > 0) {
-            this.tockApplicationName.value = nodeNluConfig[0].appname
-            this.tockApplicationName.valid = true
-          }
-
+            // get worlflow language
+            const nodeConfig = this.currentWorkflow.flow.nodes.filter(node => node.type === 'linto-config')
+            if (nodeConfig.length > 0) {
+              this.sttServiceLanguage.value = nodeConfig[0].language
+              this.sttServiceLanguage.valid = true
+            }
+            
+            // get STT service 
+            const nodeSttConfig = this.currentWorkflow.flow.configs.filter(node => node.type === 'linto-config-transcribe')
+            if (nodeSttConfig.length > 0 && !!nodeSttConfig[0].service) {
+              this.sttService.value = nodeSttConfig[0].service
+              this.sttService.valid = true
+            }
+            
+            // get Tock application
+            const nodeNluConfig = this.currentWorkflow.flow.configs.filter(node => node.type === 'linto-config-evaluate')
+            if (nodeNluConfig.length > 0) {
+              this.tockApplicationName.value = nodeNluConfig[0].appname
+              this.tockApplicationName.valid = true
+            }
           this.workflowInit = true
         }
       }
@@ -254,6 +255,7 @@ export default {
         if (dispatch.status === 'error') {
           throw dispatch.msg
         }
+        console.log(topic, dispatchSuccess)
         switch(topic) {
           case 'getStaticWorkflows':
             this.staticWorkflowsLoaded = dispatchSuccess
@@ -277,6 +279,7 @@ export default {
             return
         }  
       } catch (error) {
+        console.error(error)
         bus.$emit('app_notif', {
           status: 'error',
           msg: error,

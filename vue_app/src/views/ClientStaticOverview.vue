@@ -1,11 +1,7 @@
 <template>
-  <div class="flex col">
-    <div class="flex col" v-if="loading">
-      Loading
-    </div>
-    <div class="flex col" v-if="dataLoaded">
-      <h1>Clients - Static devices</h1>
-
+  <div v-if="dataLoaded">
+    <h1>Clients - Static devices</h1>
+    <div class="flex col" >
       <!-- Associated devices --> 
       <h2>Associated devices</h2>
       <details open class="description">
@@ -20,8 +16,7 @@
               <th>Serial number</th>
               <th>Deployed workflow</th>
               <th>Services parameters</th>
-              <th></th>
-              
+              <th>Dissociate</th>
             </tr>
           </thead>
           <tbody>
@@ -106,6 +101,7 @@
       </div>
     </div>
   </div>
+  <div v-else>Loading...</div>
 </template>
 <script>
 import { bus } from '../main.js'
@@ -116,14 +112,17 @@ export default {
       staticClientsLoaded: false 
     }
   },
-  async mounted () {
+  async created () {
+    // Request store
     await this.dispatchStaticClients()
-
+  },
+  async mounted () {
+    // Events
     bus.$on('delete_static_device_success', async (data) => {
-        await this.dispatchStaticClients()
+      await this.dispatchStaticClients()
     })
     bus.$on('update_enrolled_static_device_success', async (data) => {
-        await this.dispatchStaticClients()
+      await this.dispatchStaticClients()
     })
     bus.$on('update_workflow_services_success', async (data) => {
       await this.dispatchStaticClients()
@@ -146,13 +145,11 @@ export default {
       return this.staticClients.filter(sc => sc.associated_workflow === null)
     },
     dataLoaded () {
-      return this.staticClientsLoaded === true
-    },
-    loading () {
-      return this.dataLoaded === false
+      return this.staticClientsLoaded
     }
   },
   methods: {
+    // Update serial number static device associated to a workflow
     updateEnrolledStaticDevice (sn, workflow) {
       bus.$emit('update_enrolled_static_device', {sn, workflow})
     },
@@ -160,6 +157,7 @@ export default {
     deployDevice (sn) {
       bus.$emit('deploy_static_device', {sn})
     },
+    // Updat a static workflow settings (mqtt, stt, nlu...)
     updateWorkflowServicesSettings (sn, workflow) {
       bus.$emit('update_workflow_services', {sn, workflow, type: 'static'})
     },
@@ -177,17 +175,14 @@ export default {
     },
     // Get static clients from store
     async dispatchStaticClients () {
-      const dispatchStaticClients = await this.dispatchStore('getStaticClients')
-      if (dispatchStaticClients.status === 'success') {
-        this.staticClientsLoaded = true
-      }
-    },
-    // Execute actions from store by topic
-    async dispatchStore (topic) {
       try {
-        return await this.$options.filters.dispatchStore(topic)
+        const dispatchStaticClients = await this.$options.filters.dispatchStore('getStaticClients')
+        if (dispatchStaticClients.status === 'success') {
+          this.staticClientsLoaded = true
+        } else if (dispatchStaticClients.status === 'error'){
+          throw dispatchStaticClients.msg
+        }
       } catch (error) {
-        console.error(error)
         bus.$emit('app_notif', {
           status: 'error',
           msg: error,

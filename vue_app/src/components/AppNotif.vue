@@ -24,6 +24,7 @@ export default {
   mounted () {
     this.animIcon = document.getElementById('notif-icon')
     bus.$on('app_notif', (data) => {
+      console.log('NOTIF', data)
       this.showNotif = true
       this.msg = data.msg
       this.status = data.status

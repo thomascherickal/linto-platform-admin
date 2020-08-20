@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div v-if="dataLoaded">
+    <h1>Workflow editor - {{ currentWorkflow.name }}</h1>
     <div class="flex col flex1">
-      <h1>Workflow editor - {{ currentWorkflow.name }}</h1>
       <details open class="description">
         <summary>Infos</summary>
         <span>The workflow editor uses an embedded application called node-red. You will have to log in to the node-red application to be able to edit workflows.<br/>
@@ -18,6 +18,7 @@
       </div>
     </div>
   </div>
+  <div v-else>Loading...</div>
 </template>
 <script>
 import { bus } from '../main.js'

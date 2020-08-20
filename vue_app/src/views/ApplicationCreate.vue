@@ -1,6 +1,7 @@
 <template>
-     <div class="flex col" v-if="dataLoaded">
-      <h1>Create a new application</h1>
+  <div v-if="dataLoaded">
+    <h1>Create a new application</h1>
+    <div class="flex col">
       <!-- Workflow name -->
       <AppInput :label="'Workflow name'" :obj="workflowName" :test="'testWorkflowName'"></AppInput>
 
@@ -18,7 +19,7 @@
 
       <!-- Submit -->
       <div class="flex row">
-         <a href="/admin/clients/application" class="button button-icon-txt button--grey">
+        <a href="/admin/clients/application" class="button button-icon-txt button--grey">
           <span class="button__icon button__icon--cancel"></span>
           <span class="button__label">Cancel</span>
         </a>
@@ -29,17 +30,15 @@
       </div>
 
       <div v-if="submitting">
-         BLS : {{ blsFlowStatus }} <br/>
-         Workflow : {{ workflowStatus }} <br/>
-         Static device : {{ staticDeviceStatus }} <br/>
-         NLU : {{ nluLexSeedStatus }} <br/>
-         STT : {{ sttLexSeedStatus }} <br/>
+        BLS : {{ blsFlowStatus }} <br/>
+        Workflow : {{ workflowStatus }} <br/>
+        Static device : {{ staticDeviceStatus }} <br/>
+        NLU : {{ nluLexSeedStatus }} <br/>
+        STT : {{ sttLexSeedStatus }} <br/>
       </div>
-
     </div>
-    <div v-else>
-      Loading
-    </div>
+  </div>
+  <div v-else>Loading...</div>
 </template>
 <script>
 import AppInput from '@/components/AppInput.vue'
@@ -136,8 +135,7 @@ export default {
       return (this.workflowName.valid && this.workflowTemplate.valid && this.sttServiceLanguage.valid && this.sttService.valid && this.tockApplicationName.valid)
     }
   },
-  async mounted () {
-    
+  async created () {
     await this.dispatchStore('getWorkflowsTemplates')
     await this.dispatchStore('getSttServices')
     await this.dispatchStore('getSttLanguageModels')
@@ -185,7 +183,6 @@ export default {
 
         // STEP 1 : Post workflow template on BLS
         const postBls = await this.postFlowOnBLS(payload)
-        
         if(postBls === 'success') {
           if (this.flowId !== null) {
             payload.flowId = this.flowId
@@ -196,7 +193,10 @@ export default {
               const nluLexicalSeeding = await this.nluLexicalSeeding(payload)
               if (nluLexicalSeeding === 'success') {
                 // STEP 4 : STT lexical seeding
-                // const sttLexicalSeeding = await this.sttLexicalSeeding(payload)
+                const sttLexicalSeeding = await this.sttLexicalSeeding(payload)
+                if (sttLexicalSeeding === 'success') {
+                  window.location.href = '/admin/clients/application'
+                }
               }
             }
           }

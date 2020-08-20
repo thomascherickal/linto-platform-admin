@@ -98,12 +98,13 @@ export default {
     }
   },
   async mounted () {
-    bus.$on('manage_android_users', (data) => {
+    bus.$on('manage_android_users', async (data) => {
       this.showModal()
       this.workflowId = data.workflowId
       this.appName = data.appName
+      await this.dispatchStore('getAndroidUsers')
+
     })
-    await this.dispatchStore('getAndroidUsers')    
   },
   computed: {
     androidNotRegisteredUsers () {

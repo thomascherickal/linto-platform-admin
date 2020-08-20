@@ -1,55 +1,58 @@
 <template>
-  <div>
+  <div v-if="dataLoaded">
     <h1>Android Users</h1>
-    <h2>Registered android users</h2>
-    <details open class="description">
-      <summary>Infos</summary>
-      <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam laoreet nulla lacus, vel pellentesque augue ullamcorper sed. Curabitur scelerisque suscipit gravida. Morbi risus libero, viverra ac ipsum ornare, molestie aliquam leo. Donec quis arcu risus. Nam sit amet orci id sapien varius condimentum vitae non dolor.</span>
-    </details>
-    <div class="flex row">
-      <table class="table">
-        <thead>
-          <tr>
-            <th>User</th>
-            <th>Applications</th>
-            <th>Manage applications</th>
-            <th>Delete</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="user in androidRegisteredUsers" :key="user._id">
-            <td>{{ user.email }}</td>
-            <td>
-              <ul class="checkbox-list no-borders" v-if="user.applications.length > 0">
-                <li v-for="app in user.applications" :key="app">
-                  {{ workflowByName[app] }}
-                </li>
-              </ul>
-              <span class="none" v-else>none</span>
-            </td>
-            <td class="center">
-              <button class="button button-icon-txt button--green" @click="editAndroidUser(user)">
-                <span class="button__icon button__icon--user-settings"></span>
-                <span class="button__label">Settings</span>
-              </button>
-            </td>
-            <td class="center">
-              <button class="button button-icon button--red" @click="deleteAndroidUser(user)">
-                <span class="button__icon button__icon--trash"></span>
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <div class="divider"></div>
-    <div class="flex row">
-      <button class="button button-icon-txt button--green" @click="addAndroidUser()">
-        <span class="button__icon button__icon--add"></span>
-        <span class="button__label">Add an user</span>
-      </button>
+    <div class="flex col">
+      <h2>Registered android users</h2>
+      <details open class="description">
+        <summary>Infos</summary>
+        <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam laoreet nulla lacus, vel pellentesque augue ullamcorper sed. Curabitur scelerisque suscipit gravida. Morbi risus libero, viverra ac ipsum ornare, molestie aliquam leo. Donec quis arcu risus. Nam sit amet orci id sapien varius condimentum vitae non dolor.</span>
+      </details>
+      <div class="flex row">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>User</th>
+              <th>Applications</th>
+              <th>Manage applications</th>
+              <th>Delete</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="user in androidRegisteredUsers" :key="user._id">
+              <td>{{ user.email }}</td>
+              <td>
+                <ul class="checkbox-list no-borders" v-if="user.applications.length > 0">
+                  <li v-for="app in user.applications" :key="app">
+                    {{ workflowByName[app] }}
+                  </li>
+                </ul>
+                <span class="none" v-else>none</span>
+              </td>
+              <td class="center">
+                <button class="button button-icon-txt button--green" @click="editAndroidUser(user)">
+                  <span class="button__icon button__icon--user-settings"></span>
+                  <span class="button__label">Settings</span>
+                </button>
+              </td>
+              <td class="center">
+                <button class="button button-icon button--red" @click="deleteAndroidUser(user)">
+                  <span class="button__icon button__icon--trash"></span>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="divider"></div>
+      <div class="flex row">
+        <button class="button button-icon-txt button--green" @click="addAndroidUser()">
+          <span class="button__icon button__icon--add"></span>
+          <span class="button__label">Add an user</span>
+        </button>
+      </div>
     </div>
   </div>
+  <div v-else>Loading...</div>
 </template>
 <script>
 import { bus } from '../main.js'
@@ -61,18 +64,19 @@ export default {
       applicationWorkflowsLoaded: false
     }
   },
-  async mounted () {
+  async created () {
+    // Request store
     await this.dispatchStore('getAndroidUsers')
     await this.dispatchStore('getApplicationWorkflows')
-
+  },
+  async mounted () {
+    // Events
     bus.$on('add_android_user_success', async () => {
       await this.dispatchStore('getAndroidUsers')
     })
-
     bus.$on('delete_android_user_success', async () => {
       await this.dispatchStore('getAndroidUsers')
     })
-    
   },
   computed: {
     dataLoaded () {

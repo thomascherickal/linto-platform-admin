@@ -77,11 +77,11 @@ export default {
     }
   },
   async mounted () {
-    bus.$on('add_android_user', (data) => {
+    bus.$on('add_android_user', async (data) => {
       this.showModal()
+      await this.dispatchStore('getAndroidUsers')
+      await this.dispatchStore('getApplicationWorkflows')
     })
-    await this.dispatchStore('getAndroidUsers')
-    await this.dispatchStore('getApplicationWorkflows')
   },
   computed: {
     androidUsers () {

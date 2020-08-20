@@ -1,6 +1,6 @@
 <template>
   <div id="app" class="flex col">
-    <AppNotifTop></AppNotifTop>
+    <!-- <AppNotifTop></AppNotifTop> -->
     <!-- <AppNotifTopErrors></AppNotifTopErrors> -->
     <AppHeader :extraClass="fullScreenFrame ? 'fullscreen-child' : ''"></AppHeader>
     <div id="page-view" class="flex1 flex row">
@@ -18,19 +18,19 @@
 
     <!-- Android users -->
     <ModalManageAndroidUsers v-if="path.indexOf('/clients/application') >= 0"></ModalManageAndroidUsers>
-    <ModalAddAndroidUsers v-if="path.indexOf('/users/android')"></ModalAddAndroidUsers
+
+    <ModalAddAndroidUsers v-if="path.indexOf('/users/android') >= 0"></ModalAddAndroidUsers
     >
-    <ModalEditAndroidUser v-if="path.indexOf('/users/android')"></ModalEditAndroidUser>
-    <ModalDeleteAndroidUser v-if="path.indexOf('/users/android')"></ModalDeleteAndroidUser>
+    <ModalEditAndroidUser v-if="path.indexOf('/users/android') >= 0"></ModalEditAndroidUser>
+
+    <ModalDeleteAndroidUser v-if="path.indexOf('/users/android') >= 0"></ModalDeleteAndroidUser>
       
-      
-    <ModalDeleteApplication v-if="path.indexOf('admin/clients/application')"></ModalDeleteApplication>
+    <ModalDeleteApplication v-if="path.indexOf('admin/clients/application') >= 0"></ModalDeleteApplication>
     
     <!-- Worflows templates -->
     <ModalSaveAsWorkflowTemplate v-if="path.indexOf('/admin/workflows') >= 0 || path.indexOf('/clients/static/workflow') "></ModalSaveAsWorkflowTemplate>
 
     <ModalManageWorkflowTemplates v-if="path.indexOf('admin/workflow-editor') >= 0"></ModalManageWorkflowTemplates>
-
   </div>
 </template>
 <script>
@@ -84,9 +84,6 @@
       ModalManageAndroidUsers,
       ModalEditAndroidUser,
       ModalDeleteAndroidUser,
-
-      
-
     },
     mounted () {
       bus.$on('iframe-set-fullscreen', () => {

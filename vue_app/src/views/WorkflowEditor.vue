@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="dataLoaded">
     <h1>Workflow editor</h1>
     <details open class="description">
       <summary>Infos</summary>
@@ -16,6 +16,7 @@
       <NodeRedIframe :contextFrame="'sandbox'" v-if="sandBoxFound" :blsurl="sandBoxUrl"></NodeRedIframe>
     </div>
   </div>
+  <div v-else>Loading...</div>
 </template>
 <script>
 import axios from 'axios'
@@ -38,6 +39,11 @@ export default {
    beforeRouteEnter (to, form, next) {
     // Check if Business logic server is UP before enter route
     next(vm => vm.isBlsUp())
+  },
+  computed: {
+    dataLoaded () {
+      return this.sandBoxFound && this.blsUp
+    }
   },
   methods: {
     async isBlsUp () {
