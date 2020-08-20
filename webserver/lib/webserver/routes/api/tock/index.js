@@ -76,6 +76,7 @@ module.exports = (webServer) => {
                     console.error(error)
                     res.json({
                         status: 'error',
+                        msg: error,
                         error
                     })
                 }

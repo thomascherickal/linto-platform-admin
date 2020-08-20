@@ -27,17 +27,19 @@ class WorkflowsStaticModel extends MongoModel {
         try {
             const query = { name }
             const getWorkflow = await this.mongoRequest(query)
-
-            // compare object with schema
-            if (this.testSchema(getWorkflow[0], workflowsStaticSchema)) {
-                return getWorkflow[0]
+            if (getWorkflow.length > 0) {
+                // compare object with schema
+                if (this.testSchema(getWorkflow[0], workflowsStaticSchema)) {
+                    return getWorkflow[0]
+                } else {
+                    throw 'Invalid document format'
+                }
             } else {
-                throw 'Invalid document format'
+                throw 'Static workflow not found'
             }
-
         } catch (error) {
             console.error(error)
-            return error
+            return { error }
         }
 
     }
@@ -45,17 +47,19 @@ class WorkflowsStaticModel extends MongoModel {
         try {
             const query = { _id: this.getObjectId(id) }
             const getWorkflow = await this.mongoRequest(query)
-
-            // compare object with schema
-            if (this.testSchema(getWorkflow[0], workflowsStaticSchema)) {
-                return getWorkflow[0]
+            if (getWorkflow.length > 0) {
+                // compare object with schema
+                if (this.testSchema(getWorkflow[0], workflowsStaticSchema)) {
+                    return getWorkflow[0]
+                } else {
+                    throw 'Invalid document format'
+                }
             } else {
-                throw 'Invalid document format'
+                throw 'Static workflow not found'
             }
-
         } catch (error) {
             console.error(error)
-            return error
+            return { error }
         }
     }
 

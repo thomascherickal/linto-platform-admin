@@ -13,7 +13,8 @@ class AndroidUsersModel extends MongoModel {
     async getAllAndroidUsers() {
         try {
             const getAllAndroidUsers = await this.mongoRequest({})
-                // compare object with schema
+
+            // compare object with schema
             if (this.testSchema(getAllAndroidUsers, AndroidUsersSchema)) {
                 return getAllAndroidUsers
             } else {
@@ -27,17 +28,38 @@ class AndroidUsersModel extends MongoModel {
 
     async getUserByEmail(email) {
         try {
-            return await this.mongoRequest({ email })
+            const getUser = await this.mongoRequest({ email })
+            if (getUser.length > 0) {
+                // compare object with schema
+                if (this.testSchema(getUser[0], AndroidUsersSchema)) {
+                    return getUser[0]
+                } else {
+                    throw 'Invalid document format'
+                }
+            } else {
+                throw 'User not found'
+            }
+
         } catch (error) {
-            return error
+            return { error }
         }
     }
     async getUserById(userId) {
         try {
             const query = { _id: this.getObjectId(userId) }
-            return await this.mongoRequest(query)
+            const getUser = await this.mongoRequest(query)
+            if (getUser.length > 0) {
+                // compare object with schema
+                if (this.testSchema(getUser[0], AndroidUsersSchema)) {
+                    return getUser[0]
+                } else {
+                    throw 'Invalid document format'
+                }
+            } else {
+                throw 'User not found'
+            }
         } catch (error) {
-            return error
+            return { error }
         }
     }
 

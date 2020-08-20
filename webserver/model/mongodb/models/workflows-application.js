@@ -28,9 +28,18 @@ class workflowsApplication extends MongoModel {
         try {
             const query = { _id: this.getObjectId(workflowId) }
             const getApplicationWorkflow = await this.mongoRequest(query)
-            return getApplicationWorkflow[0]
+            if (getApplicationWorkflow.length > 0) {
+                // compare object with schema
+                if (this.testSchema(getApplicationWorkflow[0], applicationWorkflowsSchema)) {
+                    return getApplicationWorkflow[0]
+                } else {
+                    throw 'Invalid document format'
+                }
+            } else  {
+                throw 'Application workflow not found'
+            }
         } catch (error) {
-            return error
+            return { error }
         }
     }
     async deleteApplicationWorkflow(workflowId) { 

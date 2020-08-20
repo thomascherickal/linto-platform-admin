@@ -109,7 +109,8 @@ module.exports = (webServer) => {
             requireAuth: true,
             controller: async(req, res, next) => {
                 try {
-                    // Set variables & values
+                    console.log('LA')
+                        // Set variables & values
                     const payload = req.body.payload
                     const userId = req.params.userId
                     const applicationsToAdd = payload.applications
@@ -118,7 +119,7 @@ module.exports = (webServer) => {
                     const getAndroidUser = await androidUsersModel.getUserById(userId)
 
                     // Format data for update
-                    let user = getAndroidUser[0]
+                    let user = getAndroidUser
                     user.applications.push(...applicationsToAdd)
 
                     // Request
@@ -160,7 +161,7 @@ module.exports = (webServer) => {
                     const applicationWorkflow = await applicationWorkflowsModel.getApplicationWorkflowById(applicationId)
 
                     // Format data for update
-                    let applications = user[0].applications
+                    let applications = user.applications
                     applications.pop(applicationId)
 
                     // Request
@@ -173,7 +174,7 @@ module.exports = (webServer) => {
                     if (updateUser === 'success') {
                         res.json({
                             status: 'success',
-                            msg: `The user "${user[0].email}" has been dissociated from android application "${applicationWorkflow.name}"`
+                            msg: `The user "${user.email}" has been dissociated from android application "${applicationWorkflow.name}"`
                         })
                     } else {
                         throw 'Error on updating android application user'
@@ -201,7 +202,7 @@ module.exports = (webServer) => {
                     const getAndroidUser = await androidUsersModel.getUserById(userId)
 
                     // Response
-                    res.json(getAndroidUser[0])
+                    res.json(getAndroidUser)
                 } catch (error) {
                     console.error(error)
                     res.json({

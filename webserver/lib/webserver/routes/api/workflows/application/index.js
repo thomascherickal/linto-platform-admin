@@ -24,6 +24,30 @@ module.exports = (webServer) => {
             }
         },
         {
+            // Get an application workflow by its id
+            path: '/:id',
+            method: 'get',
+            requireAuth: true,
+            controller: async(req, res, next) => {
+                try {
+                    const workflowId = req.params.id
+
+                    // Request
+                    const getApplicationWorkflow = await applicationWorkflowsModel.getApplicationWorkflowById(workflowId)
+
+                    // Response 
+                    if (!!getApplicationWorkflow.error) {
+                        throw getApplicationWorkflow.error
+                    } else {
+                        res.json(getApplicationWorkflow)
+                    }
+                } catch (error) {
+                    console.error(error)
+                    res.json({ error })
+                }
+            }
+        },
+        {
             // Create a new application workflow
             /*
               payload : {

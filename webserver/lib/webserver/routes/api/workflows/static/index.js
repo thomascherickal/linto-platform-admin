@@ -24,17 +24,46 @@ module.exports = (webServer) => {
         },
         {
             // Get a static workflow by its name
+            path: '/:id',
+            method: 'get',
+            requireAuth: true,
+            controller: async(req, res, next) => {
+                try {
+                    const workflowId = req.params.id
+
+                    // Request
+                    const getStaticWorkflow = await workflowsStaticModel.getStaticWorkflowById(workflowId)
+
+                    // Response 
+                    if (!!getStaticWorkflow.error) {
+                        throw getStaticWorkflow.error
+                    } else {
+                        res.json(getStaticWorkflow)
+                    }
+                } catch (error) {
+                    console.error(error)
+                    res.json({ error: error.toString() })
+                }
+            }
+        },
+        {
+            // Get a static workflow by its name
             path: '/name/:name',
             method: 'get',
             requireAuth: true,
             controller: async(req, res, next) => {
                 try {
                     const name = req.params.name
-                        // Request
+
+                    // Request
                     const getStaticWorkflow = await workflowsStaticModel.getStaticWorkflowByName(name)
 
                     // Response
-                    res.json(getStaticWorkflow)
+                    if (!!getStaticWorkflow.error) {
+                        throw getStaticWorkflow.error
+                    } else {
+                        res.json(getStaticWorkflow)
+                    }
                 } catch (error) {
                     console.error(error)
                     res.json({ error: error.toString() })
@@ -111,12 +140,12 @@ module.exports = (webServer) => {
                     // "Success" is not required (if the workflow has been removed manually for exemple)
                     await nodered.deleteBLSFlow(getWorkflow.flowId)
 
-                    // Delete Static workflow from DB
-                    const deleteStaticWorkflow = await workflowsStaticModel.deleteStaticWorkflowById({ _id: workflowId })
-                    if (deleteStaticWorkflow === 'success') {
-                        // Update static client in DB 
-                        const updateStaticDevice = await clientsStaticModel.updateStaticClient({ sn: staticDeviceSn, associated_workflow: null })
-                        if (updateStaticDevice === 'success') {
+                    // Update static client in DB 
+                    const updateStaticDevice = await clientsStaticModel.updateStaticClient({ sn: staticDeviceSn, associated_workflow: null })
+                    if (updateStaticDevice === 'success') {
+                        // Delete Static workflow from DB
+                        const deleteStaticWorkflow = await workflowsStaticModel.deleteStaticWorkflowById({ _id: workflowId })
+                        if (deleteStaticWorkflow === 'success') {
                             res.json({
                                 status: 'success',
                                 msg: `The static device "${staticDeviceSn}" has been dissocaited from workflow "${getWorkflow.name}"`
