@@ -79,6 +79,7 @@ function configureDefaults() {
 
         // NLU - TOCK
         process.env.LINTO_STACK_TOCK_SERVICE = ifHas(process.env.LINTO_STACK_TOCK_SERVICE, envdefault.LINTO_STACK_TOCK_SERVICE)
+        process.env.LINTO_STACK_TOCK_NLP_API = ifHas(process.env.LINTO_STACK_TOCK_NLP_API, envdefault.LINTO_STACK_TOCK_NLP_API)
         process.env.LINTO_STACK_TOCK_SERVICE_PORT = ifHas(process.env.LINTO_STACK_TOCK_SERVICE_PORT, envdefault.LINTO_STACK_TOCK_SERVICE_PORT)
         process.env.LINTO_STACK_TOCK_LOGIN = ifHas(process.env.LINTO_STACK_TOCK_LOGIN, envdefault.LINTO_STACK_TOCK_LOGIN)
         process.env.LINTO_STACK_TOCK_PASSWORD = ifHas(process.env.LINTO_STACK_TOCK_PASSWORD, envdefault.LINTO_STACK_TOCK_PASSWORD)
