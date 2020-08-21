@@ -24,17 +24,9 @@
           <span class="button__label">Cancel</span>
         </a>
         <button class="button button-icon-txt button--green" @click="handleForm()">
-          <span class="button__icon button__icon--deploy"></span>
-          <span class="button__label">Deploy</span>
+          <span class="button__icon" :class="submitting ? 'button__icon--loading' : 'button__icon--deploy'"></span>
+          <span class="button__label">{{ deployLabel }}</span>
         </button> 
-      </div>
-
-      <div v-if="submitting">
-        BLS : {{ blsFlowStatus }} <br/>
-        Workflow : {{ workflowStatus }} <br/>
-        Static device : {{ staticDeviceStatus }} <br/>
-        NLU : {{ nluLexSeedStatus }} <br/>
-        STT : {{ sttLexSeedStatus }} <br/>
       </div>
     </div>
   </div>
@@ -133,6 +125,13 @@ export default {
     },
     formValid () {
       return (this.workflowName.valid && this.workflowTemplate.valid && this.sttServiceLanguage.valid && this.sttService.valid && this.tockApplicationName.valid)
+    },
+    deployLabel () {
+      if (this.submitting) {
+        return 'Creating application'
+      } else {
+        return 'Create application'
+      }
     }
   },
   async created () {
@@ -195,13 +194,20 @@ export default {
                 // STEP 4 : STT lexical seeding
                 const sttLexicalSeeding = await this.sttLexicalSeeding(payload)
                 if (sttLexicalSeeding === 'success') {
-                  window.location.href = '/admin/clients/application'
+                  this.submitting = false
+                  bus.$emit('app_notif', {
+                    status: 'success',
+                    msg: `Application ${this.workflowName.value} has been created`,
+                    timeout: 3000,
+                    redirect: 'http://localhost:9000/admin/clients/application'
+                  })
                 }
               }
             }
           }
         }
       } catch (error) {
+        this.submitting = false
         bus.$emit('app_notif', {
           status: 'error',
           msg: error,

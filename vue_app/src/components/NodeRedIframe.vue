@@ -32,7 +32,7 @@
           @click="SaveAsWorkflowTemplate()"
         >
           <span class="button__icon button__icon--save"></span>
-          <span class="button__label">Save as new flow pattern</span>
+          <span class="button__label">Save as new template</span>
         </button>
         
         <button

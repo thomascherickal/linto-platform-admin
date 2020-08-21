@@ -1,57 +1,52 @@
 <template>
   <div id="vertical-nav" class="flex col" :class="extraClass">
-    <!-- Clients -->
-    <div class="vertical-nav-item flex col">
-      <a
-        class="vertical-nav-item__link vertical-nav-item__link--parent flex1"
-        :class="routePath.indexOf(clientsUrl) >= 0 ? 'opened' : 'closed'"
-        @click="toggleChildren($event, 'clients-links')"
-        href="javascript:;"
-      >Clients</a>
-      <div
-        class="vertical-nav-item--children flex col"
-        :class="routePath.indexOf(clientsUrl) >= 0 ? 'visible' : 'hidden'"
-        id="clients-links"
-      >
-        <a
-          class="vertical-nav-item__link vertical-nav-item__link--children flex1"
-          href="/admin/clients/static"
-          :class="routePath.indexOf('/admin/clients/static') >= 0 ? 'active' : ''"
-        >
-          Static devices
-        </a>
-        <a
-          class="vertical-nav-item__link vertical-nav-item__link--children flex1"
-          href="/admin/clients/application"
-          :class="routePath.indexOf('admin/clients/application') >= 0 ? 'active' : ''">
-            Applications
-        </a>
-      </div>
+
+    <!-- Static clients -->
+    <div class="vertical-nav-item flex col" :class="routePath.indexOf(staticClientsUrl) >= 0 ? 'active' : ''">
+      <a  class="vertical-nav-item__link vertical-nav-item__link" :href="staticClientsUrl" >
+        <span class="nav-link--icon nav-link--icon__static "></span>
+        <span class="nav-link--label">Static clients</span>
+      </a>
     </div>
     
+    <!-- Applications -->
+    <div class="vertical-nav-item flex col" :class="routePath.indexOf(applicationsUrl) >= 0 ? 'active' : ''">
+      <a class="vertical-nav-item__link vertical-nav-item__link" :href="applicationsUrl">
+        <span class="nav-link--icon nav-link--icon__app "></span>
+        <span class="nav-link--label">Applications</span>
+      </a>
+    </div>
+    
+    <div class="nav-divider"></div>
+
     <!-- Android users -->
     <div class="vertical-nav-item flex col" :class="routePath.indexOf(androidUsersUrl) >= 0 ? 'active' : ''">
-      <a
-        class="vertical-nav-item__link vertical-nav-item__link"
-        :href="androidUsersUrl"
-      >Android users</a>
+      <a class="vertical-nav-item__link vertical-nav-item__link" :href="androidUsersUrl">
+        <span class="nav-link--icon nav-link--icon__android-users "></span>
+        <span class="nav-link--label">Android users</span>
+      </a>
     </div>
+    
+    <div class="nav-divider"></div>
 
     <!-- Workflow editor -->
     <div class="vertical-nav-item flex col" :class="routePath.indexOf(workflowEditorUrl) >= 0 ? 'active' : ''">
-      <a
-        class="vertical-nav-item__link vertical-nav-item__link"
-        :href="workflowEditorUrl"
-      >Workflow templates</a>
+      <a class="vertical-nav-item__link vertical-nav-item__link" :href="workflowEditorUrl">
+        <span class="nav-link--icon nav-link--icon__workflow "></span>
+        <span class="nav-link--label">Workflow templates</span>
+      </a>
     </div>
+    
+    <div class="nav-divider"></div>
     
     <!-- NLU interface -->
     <div class="vertical-nav-item flex col" :class="routePath.indexOf(nluUrl) >= 0 ? 'active' : ''">
-      <a
-        class="vertical-nav-item__link vertical-nav-item__link"
-        :href="nluUrl"
-      >Tock interface</a>
+      <a class="vertical-nav-item__link vertical-nav-item__link" :href="nluUrl">
+        <span class="nav-link--icon nav-link--icon__nlu "></span>
+        <span class="nav-link--label">Tock interface</span>
+      </a>
     </div>
+
   </div>
 </template>
 <script>
@@ -60,6 +55,8 @@ export default {
   data () {
     return {
       clientsUrl: '/admin/clients',
+      staticClientsUrl: '/admin/clients/static',
+      applicationsUrl:  '/admin/clients/application',
       workflowEditorUrl: '/admin/workflow-editor',
       nluUrl: '/admin/nlu',
       androidUsersUrl: '/admin/users/android',

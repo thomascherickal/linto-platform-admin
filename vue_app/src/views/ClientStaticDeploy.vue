@@ -24,17 +24,9 @@
           <span class="button__label">Cancel</span>
         </a>
         <button class="button button-icon-txt button--green" @click="handleForm()">
-          <span class="button__icon button__icon--deploy"></span>
-          <span class="button__label">Deploy</span>
-        </button> 
-      </div>
-
-      <div v-if="submitting">
-        BLS : {{ blsFlowStatus }} <br/>
-        Workflow : {{ workflowStatus }} <br/>
-        Static device : {{ staticDeviceStatus }} <br/>
-        NLU : {{ nluLexSeedStatus }} <br/>
-        STT : {{ sttLexSeedStatus }} <br/>
+          <span class="button__icon" :class="submitting ? 'button__icon--loading' : 'button__icon--deploy'"></span>
+          <span class="button__label">{{ deployLabel }}</span>
+        </button>
       </div>
     </div>
   </div>
@@ -134,6 +126,13 @@ export default {
     },
     formValid () {
       return (this.workflowName.valid && this.workflowTemplate.valid && this.sttServiceLanguage.valid && this.sttService.valid && this.tockApplicationName.valid)
+    },
+    deployLabel () {
+      if (this.submitting) {
+        return 'Deploying...'
+      } else {
+        return 'Deploy'
+      }
     }
   },
   async mounted () {
@@ -201,7 +200,13 @@ export default {
                   // STEP 5 : STT lexical seeding
                   const sttLexicalSeeding = await this.sttLexicalSeeding(payload)
                   if (sttLexicalSeeding === 'success') {
-                    window.location.href = '/admin/clients/static'
+                    this.submitting = false
+                    bus.$emit('app_notif', {
+                      status: 'success',
+                      msg: `Static client ${this.sn} has been deployed`,
+                      timeout: 3000,
+                      redirect: 'http://localhost:9000/admin/clients/static'
+                    })
                   }
                 }
               }
@@ -209,6 +214,7 @@ export default {
           }
         }
       } catch (error) {
+        this.submitting = false
         bus.$emit('app_notif', {
           status: 'error',
           msg: error,
