@@ -112,8 +112,6 @@ export default {
     },
     currentWorkflow () {
       if (this.workflowType === 'static' && this.dataLoaded)  {
-        // TODO 
-        console.log(this.workflow, this.$store.getters.STATIC_WORKFLOW_BY_ID(this.workflow._id) )
         return this.$store.getters.STATIC_WORKFLOW_BY_ID(this.workflow._id) 
       } else if (this.workflowType === 'application') {
         return this.$store.getters.APP_WORKFLOW_BY_ID(this.workflow._id) 
@@ -255,7 +253,6 @@ export default {
         if (dispatch.status === 'error') {
           throw dispatch.msg
         }
-        console.log(topic, dispatchSuccess)
         switch(topic) {
           case 'getStaticWorkflows':
             this.staticWorkflowsLoaded = dispatchSuccess

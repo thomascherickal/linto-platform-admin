@@ -289,8 +289,10 @@ export default {
         const sttLexSeed = await axios(`${process.env.VUE_APP_URL}/api/stt/lexicalseeding`, {
           method: 'post', 
           data: { 
-            flowId: payload.flowId,
-            service_name: payload.sttService
+            payload : {
+              flowId: payload.flowId,
+              service_name: payload.sttService
+            }
           }
         })
         if(sttLexSeed.data.status === 'success') {

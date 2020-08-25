@@ -279,13 +279,12 @@ export default {
         })
         if (!!getWorkflowByName.data._id && !!getWorkflowByName.data.name) {
           const clientPayload = {
-            sn: payload.sn,
             associated_workflow: {
               _id: getWorkflowByName.data._id,
               name: getWorkflowByName.data.name
             }
           }
-          const updateStaticDevice = await axios(`${process.env.VUE_APP_URL}/api/clients/static`, {
+          const updateStaticDevice = await axios(`${process.env.VUE_APP_URL}/api/clients/static/${payload.sn}`, {
             method: 'patch', 
             data: { payload: clientPayload }
           })

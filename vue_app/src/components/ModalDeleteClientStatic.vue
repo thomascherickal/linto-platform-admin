@@ -54,9 +54,8 @@ export default {
     },
     async deleteStaticDevice (sn) {
       try { 
-        const deleteDevice = await axios(`${process.env.VUE_APP_URL}/api/clients/static`, {
-          method: 'delete', 
-          data: { sn }
+        const deleteDevice = await axios(`${process.env.VUE_APP_URL}/api/clients/static/${sn}`, {
+          method: 'delete'
         })
 
         if (deleteDevice.data.status === 'success') {

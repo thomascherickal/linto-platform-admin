@@ -34,7 +34,6 @@ const testEmail = (obj) => {
 // DISPATCH STORE
 Vue.filter('dispatchStore', async function(label) {
     try {
-        console.log(label)
         const req = await store.dispatch(label)
         if (!!req.error) {
             throw req.error

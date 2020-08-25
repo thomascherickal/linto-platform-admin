@@ -119,9 +119,10 @@ export default {
 
         const sandBoxId = getSandBoxId.data.sandBoxId 
         const payload = {
+          flowId: sandBoxId,
           flow: workflow.flow
         }
-        const loadflow = await axios(`${process.env.VUE_APP_URL}/api/flow/sandbox/load/${sandBoxId}`, {
+        const loadflow = await axios(`${process.env.VUE_APP_URL}/api/flow/sandbox/load`, {
           method: 'put',
           data : { payload }
         })
