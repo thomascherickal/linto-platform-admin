@@ -6,6 +6,7 @@ const nodered = require(`${process.cwd()}/lib/webserver/middlewares/nodered.js`)
 module.exports = (webServer) => {
     return [{
             // Get sandbox workflow ID from BLS
+            // Link : /api-docs/#/flow/GetBLSSandboxId
             path: '/',
             method: 'get',
             requireAuth: true,
@@ -45,6 +46,7 @@ module.exports = (webServer) => {
         },
         {
             // Create sandbox workflow if it doesn't exist
+            // Link : /api-docs/#/flow/CreateBLSSandboxId
             path: '/',
             method: 'post',
             requireAuth: true,
@@ -56,6 +58,8 @@ module.exports = (webServer) => {
                         nodes: [],
                         configs: []
                     }
+
+                    // TODO: Check if SandBox flow doesnt exist before
 
                     // Get nodered access token
                     const accessToken = await nodered.getBLSAccessToken()
@@ -75,7 +79,8 @@ module.exports = (webServer) => {
                     // Response
                     if (createSandbox.status === 200) {
                         res.json({
-                            status: 'success'
+                            status: 'success',
+                            msg: "The SandBox flow has been created"
                         })
                     } else {
                         throw 'Error on creating SandBox workflow'
@@ -87,12 +92,13 @@ module.exports = (webServer) => {
             }
         },
         {
-            path: '/load/:flowId',
+            // Link : /api-docs/#/flow/LoadFlowFromTemplate
+            path: '/load',
             method: 'put',
             requireAuth: true,
             controller: async(req, res, next) => {
                 try {
-                    const flowId = req.params.flowId
+                    const flowId = req.body.payload.flowId
                     const flow = req.body.payload.flow
                     let formattedFlow = nodered.formatFlowGroupedNodes(flow)
                     formattedFlow.label = 'SandBox'
@@ -102,7 +108,8 @@ module.exports = (webServer) => {
 
                     if (updateSandBox.status === 'success') {
                         res.json({
-                            status: 'success'
+                            status: 'success',
+                            msg: "The template has been laoded on sandbox"
                         })
                     } else {
                         throw 'Cannot read the flow object'

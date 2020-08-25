@@ -40,6 +40,7 @@ module.exports = (webServer) => {
         },
         {
             // Delete a flow from BLS by its flowId
+            // Link : /api-docs/#/flow/DeleteFlowFromBLS
             path: '/:flowId',
             method: 'delete',
             requireAuth: true,
@@ -74,6 +75,7 @@ module.exports = (webServer) => {
 
         {
             // Get Business Logic Server credentials for requests
+            // Link : /api-docs/#/flow/GetBLSAuth
             path: '/getauth',
             method: 'get',
             requireAuth: true,
@@ -104,6 +106,7 @@ module.exports = (webServer) => {
               tockApplicationName
             }
             */
+            // Link : /api-docs/#/flow/postStaticFlowOnBLS
             path: '/postbls/static',
             method: 'post',
             requireAuth: true,
@@ -154,6 +157,7 @@ module.exports = (webServer) => {
               tockApplicationName
             }
             */
+            // Link : /api-docs/#/flow/postApplicationFlowOnBLS
             path: '/postbls/application',
             method: 'post',
             requireAuth: true,

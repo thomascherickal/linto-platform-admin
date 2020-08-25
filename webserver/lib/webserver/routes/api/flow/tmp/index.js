@@ -3,6 +3,7 @@ const flowTmpModel = require(`${process.cwd()}/model/mongodb/models/flow-tmp.js`
 module.exports = (webServer) => {
     return [{
             // Get the working temporary workflow object
+            // Link : api-docs/#/flow/GetTmpFlow
             path: '/',
             method: 'get',
             requireAuth: true,
@@ -12,7 +13,7 @@ module.exports = (webServer) => {
                     const tmpPattern = await flowTmpModel.getFullTmpFlow()
 
                     // Response
-                    res.json([tmpPattern])
+                    res.json(tmpPattern)
                 } catch (error) {
                     console.error(error)
                     res.json({
@@ -24,6 +25,7 @@ module.exports = (webServer) => {
         },
         {
             // Update the working temporary workflow object
+            // Link : /api-docs/#/flow/UpdateTmpFlow
             path: '/',
             method: 'put',
             requireAuth: false,

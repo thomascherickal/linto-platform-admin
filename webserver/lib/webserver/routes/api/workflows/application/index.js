@@ -7,6 +7,7 @@ const tmpFlowModel = require(`${process.cwd()}/model/mongodb/models/flow-tmp.js`
 module.exports = (webServer) => {
     return [{
             // Get all application workflows from database
+            // Link : /api-docs/#/workflows_applications/GetAllApplicationWorkflows
             path: '/',
             method: 'get',
             requireAuth: true,
@@ -24,30 +25,6 @@ module.exports = (webServer) => {
             }
         },
         {
-            // Get an application workflow by its id
-            path: '/:id',
-            method: 'get',
-            requireAuth: true,
-            controller: async(req, res, next) => {
-                try {
-                    const workflowId = req.params.id
-
-                    // Request
-                    const getApplicationWorkflow = await applicationWorkflowsModel.getApplicationWorkflowById(workflowId)
-
-                    // Response 
-                    if (!!getApplicationWorkflow.error) {
-                        throw getApplicationWorkflow.error
-                    } else {
-                        res.json(getApplicationWorkflow)
-                    }
-                } catch (error) {
-                    console.error(error)
-                    res.json({ error })
-                }
-            }
-        },
-        {
             // Create a new application workflow
             /*
               payload : {
@@ -58,6 +35,7 @@ module.exports = (webServer) => {
               tockApplicationName: String
               }
             */
+            // Link : /api-docs/#/workflows_applications/CreateApplicationWorkflow
             path: '/',
             method: 'post',
             requireAuth: true,
@@ -94,12 +72,39 @@ module.exports = (webServer) => {
             }
         },
         {
+            // Get an application workflow by its id
+            // Link : /api-docs/#/workflows_applications/GetApplicationWorkflowById
+            path: '/:id',
+            method: 'get',
+            requireAuth: true,
+            controller: async(req, res, next) => {
+                try {
+                    const workflowId = req.params.id
+
+                    // Request
+                    const getApplicationWorkflow = await applicationWorkflowsModel.getApplicationWorkflowById(workflowId)
+
+                    // Response 
+                    if (!!getApplicationWorkflow.error) {
+                        throw getApplicationWorkflow.error
+                    } else {
+                        res.json(getApplicationWorkflow)
+                    }
+                } catch (error) {
+                    console.error(error)
+                    res.json({ error })
+                }
+            }
+        },
+
+        {
             // Delete a workflow application
             /* 
             payload : {
               workflowName: String
             }
             */
+            // Link : /api-docs/#/workflows_applications/DeleteApplicationWorkflow
             path: '/:workflowId',
             method: 'delete',
             requireAuth: true,
@@ -127,6 +132,7 @@ module.exports = (webServer) => {
         },
         {
             // Get android users list by workflow ID
+            // Link : /api-docs/#/workflows_applications/GetAndroidUserByApplication
             path: '/:workflowId/androidusers',
             method: 'get',
             requireAuth: true,
@@ -146,6 +152,6 @@ module.exports = (webServer) => {
                     })
                 }
             }
-        },
+        }
     ]
 }

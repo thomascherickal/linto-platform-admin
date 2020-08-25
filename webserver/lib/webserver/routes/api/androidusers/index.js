@@ -3,6 +3,7 @@ const androidUsersModel = require(`${process.cwd()}/model/mongodb/models/android
 module.exports = (webServer) => {
     return [{
             // Get all android users
+            // link: /api-docs/#/android_users/getAllAndroidUsers
             path: '/',
             method: 'get',
             requireAuth: true,
@@ -30,6 +31,8 @@ module.exports = (webServer) => {
               applications: Array (Array of workflow_id)
             }
             */
+            // link: /api-docs/#/android_users/addAndroidUsers
+
             path: '/',
             method: 'post',
             requireAuth: true,
@@ -65,9 +68,9 @@ module.exports = (webServer) => {
             paylaod = {
               _id: String (application workflow_id),
               name: String (application worfklow name),
-              flowId: String (Nodered flow Id)
             }
             */
+            // Link: /api-docs/#/android_users/removeApplicationFromAndroidUsers
             path: '/applications',
             method: 'patch',
             requireAuth: true,
@@ -104,13 +107,13 @@ module.exports = (webServer) => {
               applications: Array (Array of application workflow_id)
             }
             */
+            // Link : /api-docs/#/android_users/AddApplicationToAndroidUser
             path: '/:userId/applications',
             method: 'put',
             requireAuth: true,
             controller: async(req, res, next) => {
                 try {
-                    console.log('LA')
-                        // Set variables & values
+                    // Set variables & values
                     const payload = req.body.payload
                     const userId = req.params.userId
                     const applicationsToAdd = payload.applications
@@ -145,6 +148,7 @@ module.exports = (webServer) => {
         },
         {
             // Dissociate an android user from an android application
+            // Link: /api-docs/#/android_users/RemoveApplicationFromAndroidUser
             path: '/:userId/applications/:applicationId/remove',
             method: 'patch',
             requireAuth: true,
@@ -190,6 +194,7 @@ module.exports = (webServer) => {
         },
         {
             // Get an android user by its id
+            // Link: /api-docs/#/android_users/GetAndroidUserById
             path: '/:userId',
             method: 'get',
             requireAuth: true,
@@ -219,6 +224,7 @@ module.exports = (webServer) => {
               email : String (android user email)
             }
             */
+            // Link: /api-docs/#/android_users/deleteAndroidUser
             path: '/:userId',
             method: 'delete',
             requireAuth: true,

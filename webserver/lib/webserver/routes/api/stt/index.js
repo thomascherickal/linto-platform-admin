@@ -14,13 +14,10 @@ const AMstorage = multer.diskStorage({
     }
 })
 
-const AMupload = multer({ storage: AMstorage }).any()
-const request = require('request')
-const fs = require('fs')
-
 module.exports = (webServer) => {
     return [{
             // Get all services in stt-service-manager
+            // Link : /api-docs/#/stt/GetAllSttServices
             path: '/services',
             method: 'get',
             requireAuth: true,
@@ -45,6 +42,7 @@ module.exports = (webServer) => {
             }
         },
         {
+            // Link : /api-docs/#/stt/GetAllSttServicesLModels
             path: '/langmodels',
             method: 'get',
             requireAuth: true,
@@ -67,6 +65,7 @@ module.exports = (webServer) => {
             }
         },
         {
+            // Link : /api-docs/#/stt/GetAllSttServicesACModels
             path: '/acmodels',
             method: 'get',
             requireAuth: true,
@@ -90,13 +89,14 @@ module.exports = (webServer) => {
             }
         },
         {
+            // Link : /api-docs/#/stt/SttLexicalSeeding
             path: '/lexicalseeding',
             method: 'post',
             requireAuth: true,
             controller: async(req, res, next) => {
                 try {
-                    const flowId = req.body.flowId
-                    const service_name = req.body.service_name
+                    const flowId = req.body.payload.flowId
+                    const service_name = req.body.payload.service_name
                     const lexicalseeding = await lexSeed.sttLexicalSeeding(flowId, service_name)
                     if (lexicalseeding.status === 'success') {
                         res.json({
@@ -117,6 +117,8 @@ module.exports = (webServer) => {
             }
         },
         {
+            // Link : /api-docs/#/stt/SttGenerateGraph
+
             path: '/generategraph',
             method: 'post',
             requireAuth: true,

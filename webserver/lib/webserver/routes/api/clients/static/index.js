@@ -5,7 +5,8 @@ const nodered = require(`${process.cwd()}/lib/webserver/middlewares/nodered.js`)
 module.exports = (webServer) => {
     return [{
             // Get all static devices from database
-            path: '/static',
+            // Link : /api-docs/#/client_satic/GetAllStaticClients
+            path: '/',
             method: 'get',
             requireAuth: true,
             controller: async(req, res, next) => {
@@ -23,7 +24,8 @@ module.exports = (webServer) => {
         },
         {
             // Get a static device by its serial number
-            path: '/static/:sn',
+            // Link : /api-docs/#/client_static/GetStaticClientById
+            path: '/:sn',
             method: 'get',
             requireAuth: true,
             controller: async(req, res, next) => {
@@ -49,7 +51,8 @@ module.exports = (webServer) => {
               sn: String (static device serial number)
             }
             */
-            path: '/static',
+            // Link : /api-docs/#/client_static/CreateStaticDevice
+            path: '/',
             method: 'post',
             requireAuth: true,
             controller: async(req, res, next) => {
@@ -83,7 +86,8 @@ module.exports = (webServer) => {
               targetDevice: Sting (target static device serial number)
             }
           */
-            path: '/static/replace',
+            // Link : /api-docs/#/client_static/ReplaceStaticDeviceInWorkflow
+            path: '/replace',
             method: 'post',
             requireAuth: true,
             controller: async(req, res, next) => {
@@ -151,13 +155,16 @@ module.exports = (webServer) => {
               }
             }
           */
-            path: '/static',
+            // Link: http://localhost:9000/api-docs/#/client_static/UpdateStaticClientById
+            path: '/:sn',
             method: 'patch',
             requireAuth: true,
             controller: async(req, res, next) => {
                 try {
                     // Set variables & values
-                    const payload = req.body.payload
+                    let payload = req.body.payload
+                    const sn = req.params.sn
+                    payload.sn = sn
 
                     // Request
                     const updateStaticClient = await clientsStaticModel.updateStaticClient(payload)
@@ -179,14 +186,14 @@ module.exports = (webServer) => {
         },
         {
             // Delete a LinTO static device by its serial number
-
-            path: '/static',
+            // Link : /api-docs/#/client_static/deleteStaticClientById
+            path: '/:sn',
             method: 'delete',
             requireAuth: true,
             controller: async(req, res, next) => {
                 try {
                     // Set variables & values
-                    const sn = req.body.sn
+                    const sn = req.params.sn
 
                     // Request
                     const deleteClient = await clientsStaticModel.deleteStaticDevice(sn)

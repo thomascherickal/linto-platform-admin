@@ -11,6 +11,8 @@ const redisClient = require(`${process.cwd()}/lib/redis`)
 const middlewares = require(`${process.cwd()}/lib/webserver/middlewares/index.js`)
 let corsOptions = {}
 let whitelistDomains = [`${middlewares.useSSL() + process.env.LINTO_STACK_DOMAIN}`]
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require(`${process.cwd()}/doc/swagger.json`);
 
 if (process.env.LINTO_STACK_ADMIN_API_WHITELIST_DOMAINS.length > 0) {
     whitelistDomains.push(...process.env.LINTO_STACK_ADMIN_API_WHITELIST_DOMAINS.split(','))
@@ -69,6 +71,7 @@ class WebServer extends EventEmitter {
 
         // Router
         require('./routes')(this)
+        this.app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
         this.app.use((req, res, next) => {
             res.status(404)

@@ -6,6 +6,7 @@ const moment = require('moment')
 module.exports = (webServer) => {
     return [{
             // Get all static workflows from database
+            // Link : /api-docs/#/workflows_static/GetAllStaticWorkflows
             path: '/',
             method: 'get',
             requireAuth: true,
@@ -24,6 +25,7 @@ module.exports = (webServer) => {
         },
         {
             // Get a static workflow by its name
+            // Link : /api-docs/#/workflows_static/DeleteStaticWorkflowById
             path: '/:id',
             method: 'get',
             requireAuth: true,
@@ -48,6 +50,7 @@ module.exports = (webServer) => {
         },
         {
             // Get a static workflow by its name
+            // Link : /api-docs/#/workflows_static/GetStaticWorkflowByName
             path: '/name/:name',
             method: 'get',
             requireAuth: true,
@@ -82,6 +85,7 @@ module.exports = (webServer) => {
             tockApplicationName: String
             }
             */
+            // Link : /api-docs/#/workflows_static/CreateStaticWorkflows
             path: '/',
             method: 'post',
             requireAuth: true,
@@ -123,6 +127,7 @@ module.exports = (webServer) => {
         },
         {
             // Remove a static workflow and dissociate Static device and workflow template
+            // Link : /api-docs/#/workflows_static/DeleteStaticWorkflowById
             path: '/:id',
             method: 'delete',
             requireAuth: true,
