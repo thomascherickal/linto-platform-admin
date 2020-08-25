@@ -16,7 +16,16 @@ class AndroidUsersModel extends MongoModel {
 
             // compare object with schema
             if (this.testSchema(getAllAndroidUsers, AndroidUsersSchema)) {
-                return getAllAndroidUsers
+                let filteredData = []
+                getAllAndroidUsers.map(user => {
+                    filteredData.push({
+                        _id: user._id,
+                        email: user.email,
+                        applications: user.applications
+
+                    })
+                })
+                return filteredData
             } else {
                 throw 'Invalid document format'
             }
@@ -32,7 +41,12 @@ class AndroidUsersModel extends MongoModel {
             if (getUser.length > 0) {
                 // compare object with schema
                 if (this.testSchema(getUser[0], AndroidUsersSchema)) {
-                    return getUser[0]
+                    const resp = {
+                        _id: getUser[0]._id,
+                        email: getUser[0].email,
+                        applications: getUser[0].applications
+                    }
+                    return resp
                 } else {
                     throw 'Invalid document format'
                 }
@@ -51,7 +65,12 @@ class AndroidUsersModel extends MongoModel {
             if (getUser.length > 0) {
                 // compare object with schema
                 if (this.testSchema(getUser[0], AndroidUsersSchema)) {
-                    return getUser[0]
+                    const resp = {
+                        _id: getUser[0]._id,
+                        email: getUser[0].email,
+                        applications: getUser[0].applications
+                    }
+                    return resp
                 } else {
                     throw 'Invalid document format'
                 }
