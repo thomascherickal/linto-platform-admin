@@ -1323,6 +1323,10 @@
                             "workflowName": {
                                 "type": "string"
                             },
+                            "workflowDescription": {
+                                "type": "string",
+                                "description": "Description of the workflow"
+                            },
                             "workflowTemplate": {
                                 "type": "string"
                             },
@@ -1502,6 +1506,10 @@
                             "workflowName": {
                                 "type": "string",
                                 "description": "Workflow name and nodered workspace name"
+                            },
+                            "workflowDescription": {
+                                "type": "string",
+                                "description": "Description of the workflow"
                             },
                             "workflowTemplate": {
                                 "type": "string",
@@ -1844,6 +1852,9 @@
                 "name": {
                     "type": "string"
                 },
+                "description": {
+                    "type": "string"
+                },
                 "flowId": {
                     "type": "string"
                 },
@@ -1887,6 +1898,9 @@
                     "type": "integer"
                 },
                 "name": {
+                    "type": "string"
+                },
+                "description": {
                     "type": "string"
                 },
                 "flowId": {
