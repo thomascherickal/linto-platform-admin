@@ -193,7 +193,7 @@ export default {
           workflowTemplate: this.workflowTemplate.value,
           sttServiceLanguage: this.sttServiceLanguage.value,
           sttService: this.sttService.value,
-          tockApplicationName: this.tockApplicationName.value
+          tockApplicationName: this.tockApplicationName.value !== 'new' ? this.tockApplicationName.value : this.workflowName.value.replace(/[\s\_]/g, '-').toLowerCase()
         }
         this.submitting = true
 
