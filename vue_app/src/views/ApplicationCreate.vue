@@ -3,7 +3,10 @@
     <h1>Create a new application</h1>
     <div class="flex col">
       <!-- Workflow name -->
-      <AppInput :label="'Workflow name'" :obj="workflowName" :test="'testWorkflowName'"></AppInput>
+      <AppInput :label="'Application name'" :obj="workflowName" :test="'testWorkflowName'"></AppInput>
+
+      <!-- Workflow description -->
+      <AppTextarea :obj="workflowDescription" :label="'Application description'" ></AppTextarea>
 
       <!-- Workflow tempalte -->
       <AppSelect :label="'Workflow template'" :obj="workflowTemplate" :list="workflowTemplates" :params="{key:'_id', value:'name' , optLabel: 'name'}" :disabled="workflowTemplates.length === 0" :disabledTxt="'No application workflow template was found.'"></AppSelect>
@@ -35,6 +38,7 @@
 <script>
 import AppInput from '@/components/AppInput.vue'
 import AppSelect from '@/components/AppSelect.vue'
+import AppTextarea from '@/components/AppTextarea.vue'
 import { bus } from '../main.js'
 import axios from 'axios'
 export default {
@@ -44,6 +48,11 @@ export default {
         value: '',
         error: null,
         valid: false
+      },
+      workflowDescription: {
+        value: '',
+        error: null,
+        valid: true
       },
       sttServiceLanguage: {
         value: '',
@@ -124,7 +133,7 @@ export default {
       return this.$store.getters.WORKFLOW_TEMPLATES_BY_TYPE('application')
     },
     formValid () {
-      return (this.workflowName.valid && this.workflowTemplate.valid && this.sttServiceLanguage.valid && this.sttService.valid && this.tockApplicationName.valid)
+      return (this.workflowName.valid && this.workflowTemplate.valid && this.sttServiceLanguage.valid && this.sttService.valid && this.tockApplicationName.valid && this.workflowDescription.valid)
     },
     deployLabel () {
       if (this.submitting) {
@@ -148,11 +157,16 @@ export default {
       this.modalVisible = false
     },
     async handleForm () {
+
       /* Workflow Name */ 
-        this.$options.filters.testStaticWorkflowName(this.workflowName) // Test if workflow name is not used
-        if (this.workflowName.error === null) {
-          this.$options.filters.testName(this.workflowName) // Test if workflow name is valid
-        }
+      this.$options.filters.testStaticWorkflowName(this.workflowName) // Test if workflow name is not used
+      if (this.workflowName.error === null) {
+        this.$options.filters.testName(this.workflowName) // Test if workflow name is valid
+      }
+
+      /* Workflow description */
+       this.$options.filters.testContent(this.workflowDescription)
+
       /* Workflow Template */ 
       this.$options.filters.testSelectField(this.workflowTemplate)
 
@@ -171,13 +185,16 @@ export default {
     },
     async createApplication (sn) {
       try { 
+
         let payload = {
           workflowName: this.workflowName.value,
+          workflowDescription: this.workflowDescription.value.replace(/\n/g,' '),
           workflowTemplate: this.workflowTemplate.value,
           sttServiceLanguage: this.sttServiceLanguage.value,
           sttService: this.sttService.value,
           tockApplicationName: this.tockApplicationName.value
         }
+
         this.submitting = true
 
         // STEP 1 : Post workflow template on BLS
@@ -348,7 +365,8 @@ export default {
   },
   components: {
     AppInput,
-    AppSelect
+    AppSelect,
+    AppTextarea
   }
 }
 </script>

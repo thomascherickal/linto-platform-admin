@@ -47,6 +47,7 @@ module.exports = (webServer) => {
                     // Create workflow 
                     const workflowPayload = {
                         name: payload.workflowName,
+                        description: payload.workflowDescription,
                         flowId: payload.flowId,
                         created_date: moment().format(),
                         updated_date: moment().format(),

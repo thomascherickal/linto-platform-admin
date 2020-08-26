@@ -14,6 +14,7 @@
             <tr>
               <th>Status</th>
               <th>Serial number</th>
+              <th>Description</th>
               <th>Deployed workflow</th>
               <th>Services parameters</th>
               <th>Dissociate</th>
@@ -31,10 +32,12 @@
               </td>
               <td class="center">
                 <strong class="button__label">{{ client.sn }}</strong>
+                
                 <button class="button button-icon button--bluemid button--with-desc bottom" data-desc="Use an other serial number" @click="updateEnrolledStaticDevice(client.sn, client.associated_workflow)">
                   <span class="button__icon button__icon--settings"></span>
                 </button>
               </td>
+              <td class="table--desc">{{ !!workflowByClients[client._id].description && workflowByClients[client._id].description.length > 0 ? workflowByClients[client._id].description : 'No description.'}}</td>
               <td>
                 <a :href="`/admin/clients/static/workflow/${client.associated_workflow._id}`" class="button button-icon-txt button--bluemid button--with-desc bottom" data-desc="Edit on Node-red interface">
                   <span class="button__icon button__icon--workflow"></span>
@@ -109,29 +112,36 @@ import axios from 'axios'
 export default {
   data () {
     return {
-      staticClientsLoaded: false 
+      staticClientsLoaded: false,
+      staticWorkflowsLoaded: false
     }
   },
   async created () {
     // Request store
-    await this.dispatchStaticClients()
+    await this.dispatchStore('getStaticClients')
+    await this.dispatchStore('getStaticWorkflows')
   },
   async mounted () {
     // Events
     bus.$on('delete_static_device_success', async (data) => {
-      await this.dispatchStaticClients()
+      await this.dispatchStore('getStaticClients')
+      await this.dispatchStore('getStaticWorkflows')
     })
     bus.$on('update_enrolled_static_device_success', async (data) => {
-      await this.dispatchStaticClients()
+      await this.dispatchStore('getStaticClients')
+      await this.dispatchStore('getStaticWorkflows')
     })
     bus.$on('update_workflow_services_success', async (data) => {
-      await this.dispatchStaticClients()
+      await this.dispatchStore('getStaticClients')
+      await this.dispatchStore('getStaticWorkflows')
     })
     bus.$on('dissociate_static_device_success', async (data) => {
-      await this.dispatchStaticClients()
+      await this.dispatchStore('getStaticClients')
+      await this.dispatchStore('getStaticWorkflows')
     })
     bus.$on('add_static_device_success', async (data) => {
-      await this.dispatchStaticClients()
+      await this.dispatchStore('getStaticClients')
+      await this.dispatchStore('getStaticWorkflows')
     })
   },
   computed: {
@@ -144,8 +154,11 @@ export default {
     provisionning () {
       return this.staticClients.filter(sc => sc.associated_workflow === null)
     },
+    workflowByClients () {
+      return this.$store.getters.STATIC_WORKFLOWS_BY_CLIENTS
+    },
     dataLoaded () {
-      return this.staticClientsLoaded
+      return this.staticClientsLoaded && this.staticWorkflowsLoaded
     }
   },
   methods: {
@@ -173,15 +186,23 @@ export default {
     addStaticDevice () {
       bus.$emit('add_static_device', {})
     },
-    // Get static clients from store
-    async dispatchStaticClients () {
+    async dispatchStore (topic) {
       try {
-        const dispatchStaticClients = await this.$options.filters.dispatchStore('getStaticClients')
-        if (dispatchStaticClients.status === 'success') {
-          this.staticClientsLoaded = true
-        } else if (dispatchStaticClients.status === 'error'){
-          throw dispatchStaticClients.msg
+        const dispatch = await this.$options.filters.dispatchStore(topic)
+        const dispatchSuccess = dispatch.status == 'success' ? true : false
+        if (dispatch.status === 'error') {
+          throw dispatch.msg
         }
+        switch(topic) {
+          case 'getStaticClients':
+            this.staticClientsLoaded = dispatchSuccess
+            break
+          case 'getStaticWorkflows':
+            this.staticWorkflowsLoaded = dispatchSuccess
+            break
+          default:
+            return
+        }  
       } catch (error) {
         bus.$emit('app_notif', {
           status: 'error',
@@ -189,8 +210,8 @@ export default {
           timeout: false,
           redirect: false
         })
-      }
-    }
+      } 
+    } 
   }
 }
 </script>

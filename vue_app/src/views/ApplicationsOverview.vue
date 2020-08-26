@@ -12,6 +12,7 @@
           <thead>
             <tr>
               <th>Application Name</th>
+              <th>Application Name</th>
               <th>Android app</th>
               <th>Web app</th>
               <th>Deployed workflow</th>
@@ -21,14 +22,15 @@
           </thead>
           <tbody>
             <tr v-for="app in applicationWorkflows" :key="app._id">
-              <td>{{ app.name }}</td>
+              <td><strong>{{ app.name }}</strong></td>
+              <td class="table--desc">{{ !!app.description && app.description.length > 0 ? app.description : 'No description.'}}</td>
               <td>
                 <button class="button button-icon-txt button--bluemid" @click="manageAndroidUsers(app._id,  app.name)">
                   <span class="button__icon button__icon--android"></span>
                   <span class="button__label">Users ({{ !!usersByApps[app._id] ? usersByApps[app._id].length : 0 }})</span>
                 </button>
               </td>
-              <td>{{ app._id }}</td>
+              <td>Todo</td>
               <td>
                 <a :href="`/admin/clients/application/workflow/${app._id}`" class="button button-icon-txt button--bluemid button--with-desc bottom" data-desc="Edit on Node-red interface">
                   <span class="button__icon button__icon--workflow"></span>

@@ -254,6 +254,10 @@ ul.checkbox-list {
                 &::last-child {
                     border: none;
                 }
+                &.table--desc {
+                    font-size: 14px;
+                    font-style: italic;
+                }
             }
             &:hover {
                 td {

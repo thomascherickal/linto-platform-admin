@@ -28,6 +28,7 @@ if (process.env.LINTO_STACK_ADMIN_API_WHITELIST_DOMAINS.length > 0) {
 }
 
 class WebServer extends EventEmitter {
+
     constructor() {
         super()
         this.app = express()
@@ -42,23 +43,25 @@ class WebServer extends EventEmitter {
         this.app.use(cookieParser())
         this.app.use(CORS(corsOptions))
         let sessionConfig = {
-            resave: false,
-            saveUninitialized: true,
-            secret: process.env.LINTO_STACK_ADMIN_COOKIE_SECRET,
-            cookie: {
-                secure: false,
-                maxAge: 604800 // 7 days
+                resave: true,
+                saveUninitialized: true,
+                secret: process.env.LINTO_STACK_ADMIN_COOKIE_SECRET,
+                cookie: {
+                    secure: false,
+                    maxAge: 604800, // 7 days
+                    _expires: new Date(Date.now() + 3600000) // 1 heure 
+                }
             }
-        }
+            // Redis
+            // if (process.env.NODE_ENV === 'production') {
+        this.app.redis = new redisClient()
+        sessionConfig.store = this.app.redis.redisStore
 
-        // Redis
-        if (process.env.NODE_ENV === 'production') {
-            this.app.redis = new redisClient()
-            sessionConfig.store = this.app.redis.redisStore
-        }
+        // }
 
         this.session = Session(sessionConfig)
         this.app.use(this.session)
+
         this.httpServer = this.app.listen(process.env.LINTO_STACK_ADMIN_HTTP_PORT, "0.0.0.0", (err) => {
             if (err) console.error(err)
         })

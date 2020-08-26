@@ -6,7 +6,7 @@ module.exports = (webServer) => {
     return [{
             path: '/',
             method: 'get',
-            requireAuth: false,
+            requireAuth: true,
             controller: async(req, res, next) => {
                 try {
                     if (!!req.session && req.session.logged === 'on') {

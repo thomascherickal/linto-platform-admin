@@ -62,7 +62,7 @@ module.exports = (webServer) => {
             method: 'post',
             controller: async(req, res, next) => {
                 try {
-                    const flowId = req.body.flowId
+                    const flowId = req.body.payload.flowId
                     const lexicalSeeding = await lexSeed.nluLexicalSeeding(flowId)
                     if (lexicalSeeding.status === 'success') {
                         res.json({

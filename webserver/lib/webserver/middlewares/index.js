@@ -65,7 +65,7 @@ async function checkBasicAuthLogin(login, password) {
 }
 
 async function checkAuth(req, res, next) {
-    debug(req.session)
+    debug(req.url, req.session)
     try {
         // Basic Auth
         if (!!req.headers.authorization) {
@@ -82,7 +82,6 @@ async function checkAuth(req, res, next) {
         // Session
         else if (!!req.session) {
             if (!!req.session.logged) {
-                debug(req.session.logged)
                 if (req.session.logged === 'on' && req.url === '/login') {
                     req.session.save((err) => {
                         if (err && err !== 'undefined') {
@@ -107,7 +106,7 @@ async function checkAuth(req, res, next) {
                     next()
                 }
             }
-        } else { // session not found
+        } else { // session not foun
             res.redirect('/login')
         }
     } catch (error) {

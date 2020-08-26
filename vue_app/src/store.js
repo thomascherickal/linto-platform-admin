@@ -212,6 +212,23 @@ export default new Vuex.Store({
                 return { error }
             }
         },
+        STATIC_WORKFLOWS_BY_CLIENTS: (state) => {
+            try {
+                const associatedClients = state.staticClients.filter(sc => sc.associated_workflow !== null)
+                let wfByClients = []
+
+                if (associatedClients.length > 0 && state.staticWorkflows.length > 0) {
+                    associatedClients.map(ac => {
+                        if (!wfByClients[ac._id]) {
+                            wfByClients[ac._id] = state.staticWorkflows.filter(sw => sw._id === ac.associated_workflow._id)[0]
+                        }
+                    })
+                }
+                return wfByClients
+            } catch (error) {
+                return { error }
+            }
+        },
         ANDROID_USERS_BY_APPS: (state) => {
             try {
                 const users = state.androidUsers

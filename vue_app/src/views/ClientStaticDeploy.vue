@@ -5,6 +5,9 @@
       <!-- Workflow name -->
       <AppInput :label="'Workflow name'" :obj="workflowName" :test="'testWorkflowName'"></AppInput>
 
+      <!-- Workflow description -->
+      <AppTextarea :obj="workflowDescription" :label="'Workflow description'" ></AppTextarea>
+
       <!-- Workflow tempalte -->
       <AppSelect :label="'Workflow template'" :obj="workflowTemplate" :list="workflowTemplates" :params="{key:'_id', value:'name' , optLabel: 'name'}"></AppSelect>
 
@@ -35,6 +38,7 @@
 <script>
 import AppInput from '@/components/AppInput.vue'
 import AppSelect from '@/components/AppSelect.vue'
+import AppTextarea from '@/components/AppTextarea.vue'
 import { bus } from '../main.js'
 import axios from 'axios'
 export default {
@@ -46,6 +50,11 @@ export default {
         error: null,
         valid: false
       },
+      workflowDescription: {
+        value:'',
+        error: null,
+        valid: false
+      }, 
       sttServiceLanguage: {
         value: '',
         error: null,
@@ -151,10 +160,14 @@ export default {
     },
     async handleForm () {
       /* Workflow Name */ 
-        this.$options.filters.testStaticWorkflowName(this.workflowName) // Test if workflow name is not used
-        if (this.workflowName.error === null) {
-          this.$options.filters.testName(this.workflowName) // Test if workflow name is valid
-        }
+      this.$options.filters.testStaticWorkflowName(this.workflowName) // Test if workflow name is not used
+      if (this.workflowName.error === null) {
+        this.$options.filters.testName(this.workflowName) // Test if workflow name is valid
+      }
+
+      /* Workflow description */
+      this.$options.filters.testContent(this.workflowDescription)
+
       /* Workflow Template */ 
       this.$options.filters.testSelectField(this.workflowTemplate)
 
@@ -176,6 +189,7 @@ export default {
         let payload = {
           sn: this.sn,
           workflowName: this.workflowName.value,
+          workflowDescription: this.workflowDescription.value.replace(/\n/g,' '),
           workflowTemplate: this.workflowTemplate.value,
           sttServiceLanguage: this.sttServiceLanguage.value,
           sttService: this.sttService.value,
@@ -311,9 +325,7 @@ export default {
       try {
         const nluLexSeed = await axios(`${process.env.VUE_APP_URL}/api/tock/lexicalseeding`, {
           method: 'post', 
-          data: { 
-            flowId: payload.flowId
-          }
+          data: { payload }
         })
         if(nluLexSeed.data.status === 'success') {
           this.nluLexSeedUpdate = true
@@ -333,14 +345,15 @@ export default {
         })
       }
     },
-    async sttLexicalSeeding (payload) {
+    async sttLexicalSeeding (data) {
       try {
+        const payload = { 
+            flowId: data.flowId,
+            service_name: data.sttService
+          }
         const sttLexSeed = await axios(`${process.env.VUE_APP_URL}/api/stt/lexicalseeding`, {
           method: 'post', 
-          data: { 
-            flowId: payload.flowId,
-            service_name: payload.sttService
-          }
+          data: { payload }
         })
         if(sttLexSeed.data.status === 'success') {
           this.sttLexSeedUpdate = true
@@ -352,7 +365,7 @@ export default {
           throw sttLexSeed.data
         }
       } catch (error) {
-        this.sttLexSeedStatus = error.data.msg
+        this.sttLexSeedStatus = error.msg
         bus.$emit('app_notif', {
           status: 'error',
           msg: !!error.msg ? error.msg : error,
@@ -396,7 +409,8 @@ export default {
   },
   components: {
     AppInput,
-    AppSelect
+    AppSelect,
+    AppTextarea
   }
 }
 </script>

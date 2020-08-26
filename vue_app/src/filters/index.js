@@ -178,3 +178,17 @@ Vue.filter('testAndroidUserEmail', function(obj) {
         }
     }
 })
+Vue.filter('testContent', function(obj) {
+    obj.valid = false
+    obj.error = null
+    if (obj.value.length === 0) {
+        obj.valid = true
+    } else {
+        const regex = /[0-9A-Za-z\?\!\@\#\$\%\-\_\.\/\:\;\(\)\[\]\=\+\s]+$/g
+        if (obj.value.match(regex)) {
+            obj.valid = true
+        } else {
+            obj.error = 'Invalid content. Unauthorized characters.'
+        }
+    }
+})
