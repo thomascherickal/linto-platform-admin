@@ -43,13 +43,11 @@ class WebServer extends EventEmitter {
         this.app.use(cookieParser())
         this.app.use(CORS(corsOptions))
         let sessionConfig = {
-                resave: true,
-                saveUninitialized: true,
+                resave: false,
+                saveUninitialized: false,
                 secret: process.env.LINTO_STACK_ADMIN_COOKIE_SECRET,
                 cookie: {
-                    secure: false,
-                    maxAge: 604800, // 7 days
-                    _expires: new Date(Date.now() + 3600000) // 1 heure 
+                    maxAge: 30240000000 // 1 year
                 }
             }
             // Redis
