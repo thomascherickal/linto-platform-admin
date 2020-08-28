@@ -28,7 +28,7 @@
                   :class="client.connexion"
                   :data-label="client.connexion === 'online' ? 'up since ' + client.last_up : 'down since ' + client.last_down"
                 ></span>
-                <a class="client-status__link" href="#"> more...</a>
+                <a class="client-status__link" :href="`/admin/clients/static/${client.sn}/monitoring`"> more...</a>
               </td>
               <td class="center">
                 <strong class="button__label">{{ client.sn }}</strong>

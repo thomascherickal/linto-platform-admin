@@ -61,6 +61,9 @@ export default {
         this.$options.filters.testPasswordConfirm(obj, this.compare)
       }
     },
+    testUrl (obj) {
+      this.$options.filters.testUrl(obj)
+    },
     exec (functionName) {
       switch(functionName) {
         case 'testName':
@@ -86,6 +89,9 @@ export default {
           break
         case 'testPasswordConfirm':
           this.testPasswordConfirm(this.obj)
+          break
+        case 'testUrl':
+          this.testUrl(this.obj)
           break
         default:
           return

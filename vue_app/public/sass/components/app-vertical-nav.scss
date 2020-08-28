@@ -32,33 +32,36 @@
         font-weight: 400;
         color: #fff;
         text-decoration: none;
-        .nav-link--icon {
+        .nav-link__icon {
             display: inline-block;
             width: 30px;
             height: 30px;
             background-color: #fff;
             margin: 0 5px;
             vertical-align: top;
-            &.nav-link--icon__static {
+            &.nav-link__icon--static {
                 @include maskImage('../img/svg/cpu.svg');
             }
-            &.nav-link--icon__app {
+            &.nav-link__icon--app {
                 @include maskImage('../img/svg/app.svg');
             }
-            &.nav-link--icon__android {
+            &.nav-link__icon--android {
                 @include maskImage('../img/svg/android.svg');
             }
-            &.nav-link--icon__android-users {
+            &.nav-link__icon--android-users {
                 @include maskImage('../img/svg/android-users.svg');
             }
-            &.nav-link--icon__workflow {
+            &.nav-link__icon--webapp {
+                @include maskImage('../img/svg/webapp.svg');
+            }
+            &.nav-link__icon--workflow {
                 @include maskImage('../img/svg/workflow.svg');
             }
-            &.nav-link--icon__nlu {
+            &.nav-link__icon--nlu {
                 @include maskImage('../img/svg/nlu.svg');
             }
         }
-        .nav-link--label {
+        .nav-link__label {
             display: inline-block;
             height: 30px;
             vertical-align: top;

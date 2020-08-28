@@ -10,27 +10,33 @@
       </div>
     </div>
     <AppNotif></AppNotif>
-    <ModalDeleteClientStatic v-if="path.indexOf('/clients/static') >= 0"></ModalDeleteClientStatic>
-    <ModalUpdateClientStatic v-if="path.indexOf('/clients/static') >= 0"></ModalUpdateClientStatic>
-    <ModalUpdateWorkflowServices v-if="path.indexOf('/clients/static') >= 0 || path.indexOf('/clients/application') >= 0"></ModalUpdateWorkflowServices>
-    <ModalDissociateStaticDevice v-if="path.indexOf('/clients/static') >= 0"></ModalDissociateStaticDevice>
-    <ModalAddStaticDevice v-if="path.indexOf('/clients/static') >= 0"></ModalAddStaticDevice>
+
+    <!-- Static workflows -->
+    <ModalDeleteClientStatic v-if="path.indexOf('/admin/clients/static') >= 0"></ModalDeleteClientStatic>
+    <ModalUpdateClientStatic v-if="path.indexOf('/admin/clients/static') >= 0"></ModalUpdateClientStatic>
+    <ModalDissociateStaticDevice v-if="path.indexOf('/admin/clients/static') >= 0"></ModalDissociateStaticDevice>
+    <ModalAddStaticDevice v-if="path.indexOf('/admin/clients/static') >= 0"></ModalAddStaticDevice>
+
+    <ModalUpdateWorkflowServices v-if="path.indexOf('/admin/clients/static') >= 0 || path.indexOf('/clients/application') >= 0"></ModalUpdateWorkflowServices>
 
     <!-- Android users -->
-    <ModalManageAndroidUsers v-if="path.indexOf('/clients/application') >= 0"></ModalManageAndroidUsers>
-
-    <ModalAddAndroidUsers v-if="path.indexOf('/users/android') >= 0"></ModalAddAndroidUsers
+    <ModalManageAndroidUsers v-if="path.indexOf('/admin/clients/application') >= 0"></ModalManageAndroidUsers>
+    <ModalAddAndroidUsers v-if="path.indexOf('/admin/users/android') >= 0"></ModalAddAndroidUsers
     >
-    <ModalEditAndroidUser v-if="path.indexOf('/users/android') >= 0"></ModalEditAndroidUser>
+    <ModalEditAndroidUser v-if="path.indexOf('/admin/users/android') >= 0"></ModalEditAndroidUser>
+    <ModalDeleteAndroidUser v-if="path.indexOf('/admin/users/android') >= 0"></ModalDeleteAndroidUser>
+    <ModalDeleteApplication v-if="path.indexOf('/admin/clients/application') >= 0"></ModalDeleteApplication>
 
-    <ModalDeleteAndroidUser v-if="path.indexOf('/users/android') >= 0"></ModalDeleteAndroidUser>
-      
-    <ModalDeleteApplication v-if="path.indexOf('admin/clients/application') >= 0"></ModalDeleteApplication>
-    
+    <!-- Webapp hosts -->
+    <ModalAddWebappHost v-if="path.indexOf('/admin/users/webapp') >= 0"></ModalAddWebappHost>
+    <ModalDeleteWebappHost v-if="path.indexOf('/admin/users/webapp') >= 0"></ModalDeleteWebappHost>
+    <ModalEditWebappHost v-if="path.indexOf('/admin/users/webapp') >= 0"></ModalEditWebappHost>
+    <ModalManageWebappHosts v-if="path.indexOf('/admin/clients/application') >= 0"></ModalManageWebappHosts>
+
     <!-- Worflows templates -->
     <ModalSaveAsWorkflowTemplate v-if="path.indexOf('/admin/workflows') >= 0 || path.indexOf('/clients/static/workflow') "></ModalSaveAsWorkflowTemplate>
-
     <ModalManageWorkflowTemplates v-if="path.indexOf('admin/workflow-editor') >= 0"></ModalManageWorkflowTemplates>
+    
   </div>
 </template>
 <script>
@@ -53,6 +59,10 @@
   import ModalDeleteAndroidUser from '@/components/ModalDeleteAndroidUser.vue'
   import ModalDeleteApplication from '@/components/ModalDeleteApplication.vue'
   import ModalManageWorkflowTemplates from '@/components/ModalManageWorkflowTemplates.vue'
+  import ModalAddWebappHost from '@/components/ModalAddWebappHost.vue'
+  import ModalDeleteWebappHost from '@/components/ModalDeleteWebappHost.vue'
+  import ModalEditWebappHost from '@/components/ModalEditWebappHost.vue'
+  import ModalManageWebappHosts from '@/components/ModalManageWebappHosts.vue'
   import { bus } from './main.js'
   export default {
     data () {
@@ -84,6 +94,11 @@
       ModalManageAndroidUsers,
       ModalEditAndroidUser,
       ModalDeleteAndroidUser,
+      // Webapp hosts
+      ModalAddWebappHost,
+      ModalDeleteWebappHost,
+      ModalEditWebappHost,
+      ModalManageWebappHosts
     },
     mounted () {
       bus.$on('iframe-set-fullscreen', () => {

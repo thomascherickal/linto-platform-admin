@@ -28,7 +28,6 @@ module.exports = (webServer) => {
         "/api": require('./api')(webServer),
         "/api/swagger": require('./api/swagger')(webServer),
         "/api/clients/static": require('./api/clients/static')(webServer),
-
         "/api/workflows": require('./api/workflows')(webServer),
         "/api/workflows/application": require('./api/workflows/application')(webServer),
         "/api/workflows/static": require('./api/workflows/static')(webServer),
@@ -36,6 +35,8 @@ module.exports = (webServer) => {
         "/api/workflows/templates": require('./api/workflows/templates')(webServer),
         // Android users
         "/api/androidusers": require('./api/androidusers')(webServer),
+        // Webapp hosts
+        "/api/webapphosts": require('./api/webapphosts')(webServer),
         // Flow
         "/api/flow": require('./api/flow')(webServer),
         "/api/flow/tmp": require('./api/flow/tmp')(webServer),

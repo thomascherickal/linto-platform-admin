@@ -11,6 +11,7 @@
     outline: none;
     cursor: pointer;
     position: relative;
+    overflow: hidden;
     /* label & icon */
     .button__label {
         display: inline-block;
@@ -100,6 +101,12 @@
         &.button__icon--android {
             @include maskImage('../img/svg/android.svg');
         }
+        &.button__icon--webapp {
+            @include maskImage('../img/svg/webapp.svg');
+        }
+        &.button__icon--reset {
+            @include maskImage('../img/svg/reset.svg');
+        }
         &.button__icon--loading {
             @include maskImage('../img/svg/loading.svg');
             @include rotate();
@@ -107,6 +114,7 @@
     }
     /* Type of button */
     &.button-icon-txt {
+        min-width: 120px;
         .button__icon {
             margin-left: 5px;
         }
@@ -234,6 +242,7 @@
             background-color: #fff;
         }
         &.button--with-desc {
+            overflow: visible;
             &::after {
                 content: attr(data-desc);
                 position: absolute;

@@ -15,6 +15,7 @@ export default new Vuex.Store({
         sttLanguageModels: '',
         sttAcousticModels: '',
         tockApplications: '',
+        webappHosts: '',
         workflowsTemplates: '',
     },
     mutations: {
@@ -44,6 +45,9 @@ export default new Vuex.Store({
         },
         SET_ANDROID_USERS: (state, data) => {
             state.androidUsers = data
+        },
+        SET_WEB_APP_HOSTS: (state, data) => {
+            state.webappHosts = data
         }
     },
     actions: {
@@ -103,6 +107,16 @@ export default new Vuex.Store({
                 return state.androidUsers
             } catch (error) {
                 return { error: 'Error on getting android applications users' }
+            }
+        },
+        // Web app hosts
+        getWebappHosts: async({ commit, state }) => {
+            try {
+                const getWebappHosts = await axios.get(`${process.env.VUE_APP_URL}/api/webapphosts`)
+                commit('SET_WEB_APP_HOSTS', getWebappHosts.data)
+                return state.webappHosts
+            } catch (error) {
+                return { error: 'Error on getting web app hosts' }
             }
         },
         // Stt services
@@ -197,6 +211,18 @@ export default new Vuex.Store({
                 return { error }
             }
         },
+        STATIC_CLIENT_BY_SN: (state) => (sn) => {
+            try {
+                const client = state.staticClients.filter(sc => sc.sn === sn)
+                if (client.length > 0) {
+                    return client[0]
+                } else  {
+                    throw 'Static client not found'
+                }
+            } catch (error) {
+                return { error }
+            }
+        },
         STATIC_WORKFLOW_BY_ID: (state) => (id) => {
             try {
                 if (state.staticWorkflows.length > 0) {
@@ -272,6 +298,44 @@ export default new Vuex.Store({
                 const workflows = state.applicationWorkflows
                 const workflow = workflows.filter(wf => wf._id === workflowId)
                 return workflow[0]
+            } catch (error) {
+                return { error }
+            }
+        },
+        WEB_APP_HOST_BY_ID: (state) => (id) => {
+            try {
+                const webappHosts = state.webappHosts
+                const webappHost = webappHosts.filter(wh => wh._id === id)
+                return webappHost[0]
+            } catch (error) {
+                return { error }
+            }
+        },
+        WEB_APP_HOST_BY_APP_ID: (state) => (workflowId) => {
+            try {
+                const hosts = state.webappHosts
+                return hosts.filter(host => host.applications.indexOf(workflowId) >= 0)
+            } catch (error) {
+                return { error }
+            }
+        },
+        WEB_APP_HOST_BY_APPS: (state) => {
+            try {
+                const webappHosts = state.webappHosts
+                let hostByApp = []
+
+                if (webappHosts.length > 0) {
+                    webappHosts.map(host => {
+                        host.applications.map(app => {
+                            if (!hostByApp[app]) {
+                                hostByApp[app] = [host.originUrl]
+                            } else {
+                                hostByApp[app].push(host.originUrl)
+                            }
+                        })
+                    })
+                }
+                return hostByApp
             } catch (error) {
                 return { error }
             }

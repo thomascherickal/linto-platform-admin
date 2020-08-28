@@ -14,12 +14,6 @@
         </div>
       </div>
       <div class="modal-footer flex row">
-        <div class="flex flex1 modal-footer-left">
-          <button class="button button-icon-txt button--grey" @click="closeModal()">
-            <span class="button__icon button__icon--cancel"></span>
-            <span class="button__label">Cancel</span>
-          </button>
-        </div>
         <div class="flex flex1 modal-footer-right">
           <button class="button button-icon-txt button--green" @click="updateStaticDevice()">
             <span class="button__icon button__icon--apply"></span>
@@ -94,7 +88,6 @@ export default {
             bus.$emit('update_enrolled_static_device_success', {})
           }
         } catch (error) {
-          console.error(error)
           bus.$emit('app_notif', {
             status: 'error',
             msg: error,

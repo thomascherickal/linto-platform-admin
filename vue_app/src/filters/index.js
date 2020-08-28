@@ -192,3 +192,35 @@ Vue.filter('testContent', function(obj) {
         }
     }
 })
+
+Vue.filter('testUrl', function(obj) {
+    obj.valid = false
+    obj.error = null
+    if (obj.value.length === 0) {
+        obj.valid = false
+        obj.error = 'This field is required'
+    } else {
+        const regex = /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/g
+        if (obj.value.match(regex)) {
+            obj.valid = true
+        } else {
+            obj.error = 'Invalid content url format.'
+        }
+    }
+})
+
+Vue.filter('testInteger', function(obj) {
+    obj.valid = false
+    obj.error = null
+    if (obj.value.length === 0) {
+        obj.valid = false
+        obj.error = 'This field is required'
+    } else {
+        if (typeof(obj.value) !== 'number') {
+            obj.valid = false
+            obj.error = 'the value of the field must be a number'
+        } else {
+            obj.valid = true
+        }
+    }
+})

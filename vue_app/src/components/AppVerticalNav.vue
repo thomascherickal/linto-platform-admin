@@ -4,16 +4,16 @@
     <!-- Static clients -->
     <div class="vertical-nav-item flex col" :class="routePath.indexOf(staticClientsUrl) >= 0 ? 'active' : ''">
       <a  class="vertical-nav-item__link vertical-nav-item__link" :href="staticClientsUrl" >
-        <span class="nav-link--icon nav-link--icon__static "></span>
-        <span class="nav-link--label">Static clients</span>
+        <span class="nav-link__icon nav-link__icon--static "></span>
+        <span class="nav-link__label">Static clients</span>
       </a>
     </div>
     
     <!-- Applications -->
     <div class="vertical-nav-item flex col" :class="routePath.indexOf(applicationsUrl) >= 0 ? 'active' : ''">
       <a class="vertical-nav-item__link vertical-nav-item__link" :href="applicationsUrl">
-        <span class="nav-link--icon nav-link--icon__app "></span>
-        <span class="nav-link--label">Applications</span>
+        <span class="nav-link__icon nav-link__icon--app "></span>
+        <span class="nav-link__label">Applications</span>
       </a>
     </div>
     
@@ -22,8 +22,16 @@
     <!-- Android users -->
     <div class="vertical-nav-item flex col" :class="routePath.indexOf(androidUsersUrl) >= 0 ? 'active' : ''">
       <a class="vertical-nav-item__link vertical-nav-item__link" :href="androidUsersUrl">
-        <span class="nav-link--icon nav-link--icon__android-users "></span>
-        <span class="nav-link--label">Android users</span>
+        <span class="nav-link__icon nav-link__icon--android-users"></span>
+        <span class="nav-link__label">Android users</span>
+      </a>
+    </div>
+    
+    <!-- webapp hosts -->
+    <div class="vertical-nav-item flex col" :class="routePath.indexOf(webAppHostsUrl) >= 0 ? 'active' : ''">
+      <a class="vertical-nav-item__link vertical-nav-item__link" :href="webAppHostsUrl">
+        <span class="nav-link__icon nav-link__icon--webapp"></span>
+        <span class="nav-link__label">Webapp Hosts</span>
       </a>
     </div>
     
@@ -32,8 +40,8 @@
     <!-- Workflow editor -->
     <div class="vertical-nav-item flex col" :class="routePath.indexOf(workflowEditorUrl) >= 0 ? 'active' : ''">
       <a class="vertical-nav-item__link vertical-nav-item__link" :href="workflowEditorUrl">
-        <span class="nav-link--icon nav-link--icon__workflow "></span>
-        <span class="nav-link--label">Workflow templates</span>
+        <span class="nav-link__icon nav-link__icon--workflow "></span>
+        <span class="nav-link__label">Workflow templates</span>
       </a>
     </div>
     
@@ -42,8 +50,8 @@
     <!-- NLU interface -->
     <div class="vertical-nav-item flex col" :class="routePath.indexOf(nluUrl) >= 0 ? 'active' : ''">
       <a class="vertical-nav-item__link vertical-nav-item__link" :href="nluUrl">
-        <span class="nav-link--icon nav-link--icon__nlu "></span>
-        <span class="nav-link--label">Tock interface</span>
+        <span class="nav-link__icon nav-link__icon--nlu "></span>
+        <span class="nav-link__label">Tock interface</span>
       </a>
     </div>
 
@@ -60,6 +68,7 @@ export default {
       workflowEditorUrl: '/admin/workflow-editor',
       nluUrl: '/admin/nlu',
       androidUsersUrl: '/admin/users/android',
+      webAppHostsUrl:  '/admin/users/webapp',
       routePath: ''
     }
   },

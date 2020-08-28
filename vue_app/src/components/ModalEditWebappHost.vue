@@ -1,9 +1,9 @@
 <template>
-  <div class="modal-wrapper" v-if="modalVisible && dataLoaded && user !== null">
+  <div class="modal-wrapper" v-if="modalVisible && dataLoaded && webappHost !== null">
     <div class="modal">
       <!-- HEADER -->
       <div class="modal-header flex row">
-        <span class="modal-header__tilte flex1">Edit android user - {{ user.email }}</span>
+        <span class="modal-header__tilte flex1">Edit Web-application host</span>
         <button class="button button-icon button--red" @click="closeModal()">
           <span class="button__icon button__icon--close"></span>
         </button>
@@ -15,12 +15,12 @@
           <div class="flex row" v-if="addAppFormVisible">
             <button class="button button-icon-txt button--orange" @click="hideAddAppForm()">
               <span class="button__icon button__icon--back"></span>
-              <span class="button__label">Back to user infos</span>
+              <span class="button__label">Back to host infos</span>
             </button>
           </div>
           <div class="flex col" v-if="!addAppFormVisible">
-            <span class="subtitle" v-if="user.applications.length > 0">Applications</span>
-            <div class="flex row"  v-if="user.applications.length > 0">
+            <span class="subtitle" v-if="webappHost.applications.length > 0">Applications</span>
+            <div class="flex row"  v-if="webappHost.applications.length > 0">
               <table class="table">
                 <thead>
                   <tr>
@@ -29,9 +29,10 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="app in user.applications" :key="app">
+                  <tr v-for="app in webappHost.applications" :key="app">
                     <td>{{ workflowByName[app] }}</td>
-                    <td class="center"><button class="button button-icon button--red" @click="removeUserFromApp(user, app)">
+                    <td class="center">
+                      <button class="button button-icon button--red" @click="removeAppFromWebappHost(webappHost, app)">
                         <span class="button__icon button__icon--trash"></span>
                       </button>
                     </td>
@@ -49,7 +50,7 @@
             </div>
           </div>
           <div class="flex col" v-else>
-            <p>Please select android applications to <strong>associate</strong> with user "<strong>{{ user.email }}</strong>"</p>
+            <p>Please select applications to <strong>associate</strong> with web-application host "<strong>{{ webappHost.originUrl }}</strong>"</p>
             <div class="flex col">
               <ul class="checkbox-list">
                 <li v-for="wf in filteredApplicationWorkflows" :key="wf._id">
@@ -61,7 +62,7 @@
             </div>
             <div class="divider small"></div>
             <div class="flex row">
-              <button class="button button-icon-txt button--green" @click="addAppToUser()">
+              <button class="button button-icon-txt button--green" @click="addAppToWebappHost()">
                 <span class="button__icon button__icon--apply"></span>
                 <span class="button__label">Associate applications</span>
               </button>
@@ -85,24 +86,24 @@ export default {
   data () {
     return {
       modalVisible: false,
-      userId: null,
+      webappHostId: null,
       selectedApps: [],
       addAppFormVisible: false,
       applicationWorkflowsLoaded: false,
-      androidUsersLoaded: false
+      webappHostsLoaded: false
     }
   },
   async mounted () {
-    bus.$on('edit_android_user', async (data) => {
+    bus.$on('edit_webapp_host', async (data) => {
       this.showModal()
-      await this.dispatchStore('getAndroidUsers')
+      await this.dispatchStore('getWebappHosts')
       await this.dispatchStore('getApplicationWorkflows')
-      this.userId = data.user._id
+      this.webappHostId = data.webappHost._id
     })
   },
   computed: {
     dataLoaded () {
-      return this.applicationWorkflowsLoaded && this.androidUsersLoaded
+      return this.applicationWorkflowsLoaded && this.webappHostsLoaded
     },
     workflowByName () {
       return this.$store.getters.APP_WORKFLOWS_NAME_BY_ID
@@ -111,16 +112,16 @@ export default {
       return this.$store.state.applicationWorkflows
     },
     filteredApplicationWorkflows () {
-      const userWorkflows = this.user.applications
-      if (userWorkflows.length > 0) {
-        return this.applicationWorkflows.filter(wf => userWorkflows.indexOf(wf._id) < 0)
+      const applications = this.webappHost.applications
+      if (applications.length > 0) {
+        return this.applicationWorkflows.filter(wf => applications.indexOf(wf._id) < 0)
       } else {
         return this.applicationWorkflows
       }
     },
-    user () {
-      if(this.userId !== null) {
-        return this.$store.getters.ANDROID_USER_BY_ID(this.userId)
+    webappHost () {
+      if(this.webappHostId !== null) {
+        return this.$store.getters.WEB_APP_HOST_BY_ID(this.webappHostId)
       } else {
         return null
       }
@@ -148,23 +149,23 @@ export default {
         this.selectedApps.pop(workflowId)
       }
     },
-    async addAppToUser () {
+    async addAppToWebappHost () {
       try {
         if (this.selectedApps.length > 0) {
           const payload = {
             applications: this.selectedApps
           }
-          const updateUser = await axios(`${process.env.VUE_APP_URL}/api/androidusers/${this.user._id}/applications`, {
+          const updateWebappHost = await axios(`${process.env.VUE_APP_URL}/api/webapphosts/${this.webappHost._id}/applications`, {
             method: 'put',
             data: { payload }
           })
-          if (updateUser.data.status === 'success') {
+          if (updateWebappHost.data.status === 'success') {
             this.hideAddAppForm()
-            await this.dispatchStore('getAndroidUsers')
+            await this.dispatchStore('getWebappHosts')
             await this.dispatchStore('getApplicationWorkflows')
             bus.$emit('app_notif', {
               status: 'success',
-              msg: updateUser.data.msg,
+              msg: updateWebappHost.data.msg,
               timeout: 3000,
               redirect: false
             })
@@ -180,22 +181,22 @@ export default {
         })
       }
     },
-    async removeUserFromApp (user, appId) {
+    async removeAppFromWebappHost (webappHost, appId) {
       try {
-        const removeUserFromApp = await axios(`${process.env.VUE_APP_URL}/api/androidusers/${user._id}/applications/${appId}/remove`, {
+        const removeApp = await axios(`${process.env.VUE_APP_URL}/api/webapphosts/${webappHost._id}/applications/${appId}/remove`, {
           method: 'patch'
         })
-        if (removeUserFromApp.data.status === 'success'){
+        if (removeApp.data.status === 'success'){
           bus.$emit('app_notif', {
             status: 'success',
-            msg: removeUserFromApp.data.msg,
+            msg: removeApp.data.msg,
             timeout: 3000,
             redirect: false
           })
-          await this.dispatchStore('getAndroidUsers')
+          await this.dispatchStore('getWebappHosts')
           await this.dispatchStore('getApplicationWorkflows')
         } else {
-          throw removeUserFromApp.data.msg
+          throw removeApp.data.msg
         }
       } catch (error) {
         bus.$emit('app_notif', {
@@ -217,8 +218,8 @@ export default {
           case 'getApplicationWorkflows':
             this.applicationWorkflowsLoaded = dispatchSuccess
             break
-          case 'getAndroidUsers':
-            this.androidUsersLoaded = dispatchSuccess
+          case 'getWebappHosts':
+            this.webappHostsLoaded = dispatchSuccess
             break
           default:
             return

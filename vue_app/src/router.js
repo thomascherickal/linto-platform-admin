@@ -20,9 +20,9 @@ import ClientStaticWorkflowEditor from './views/ClientStaticWorkflowEditor.vue'
 import ApplicationsOverview from './views/ApplicationsOverview.vue'
 import ApplicationCreate from './views/ApplicationCreate.vue'
 import ApplicationWorkflowEditor from './views/ApplicationWorkflowEditor.vue'
-
+import ClientStaticMonitoring from './views/ClientStaticMonitoring.vue'
 import AndroidUsers from './views/AndroidUsers.vue'
-
+import WebappHosts from './views/WebappHosts.vue'
 Vue.use(Router)
 const router = new Router({
     mode: 'history',
@@ -89,6 +89,35 @@ const router = new Router({
                     const sn = to.params.sn
                     const getStaticDevice = await axios(`${process.env.VUE_APP_URL}/api/clients/static/${sn}`)
                     if (getStaticDevice.data.associated_workflow !== null) {
+                        next('/admin/clients/static')
+                    } else {
+                        next()
+                    }
+                } catch (error) {
+                    console.error(error)
+                    next('/admin/clients/static')
+                }
+            }
+        },
+        {
+            path: '/admin/clients/static/:sn/monitoring',
+            name: 'Static devices - monitoring',
+            component: ClientStaticMonitoring,
+            meta: [{
+                    name: 'title',
+                    content: 'LinTO Admin - Static clients monitoring'
+                },
+                {
+                    name: 'robots',
+                    content: 'noindex, nofollow'
+                }
+            ],
+            beforeEnter: async(to, from, next) => {
+                try {
+                    // Check if the targeted static device exists
+                    const sn = to.params.sn
+                    const getStaticDevice = await axios(`${process.env.VUE_APP_URL}/api/clients/static/${sn}`)
+                    if (getStaticDevice.data.associated_workflow === null) {
                         next('/admin/clients/static')
                     } else {
                         next()
@@ -189,6 +218,20 @@ const router = new Router({
             meta: [{
                     name: 'title',
                     content: 'LinTO admin - android users'
+                },
+                {
+                    name: 'robots',
+                    content: 'noindex, nofollow'
+                }
+            ]
+        },
+        {
+            path: '/admin/users/webapp',
+            name: 'Web app hosts interface',
+            component: WebappHosts,
+            meta: [{
+                    name: 'title',
+                    content: 'LinTO admin - Web app hosts'
                 },
                 {
                     name: 'robots',

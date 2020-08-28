@@ -14,7 +14,7 @@
               <th>Application Name</th>
               <th>Application Name</th>
               <th>Android app</th>
-              <th>Web app</th>
+              <th>Web-app</th>
               <th>Deployed workflow</th>
               <th>Services Parameters</th>
               <th>Delete</th>
@@ -27,10 +27,15 @@
               <td>
                 <button class="button button-icon-txt button--bluemid" @click="manageAndroidUsers(app._id,  app.name)">
                   <span class="button__icon button__icon--android"></span>
-                  <span class="button__label">Users ({{ !!usersByApps[app._id] ? usersByApps[app._id].length : 0 }})</span>
+                  <span class="button__label">Users ({{ !!androidUsersByApps[app._id] ? androidUsersByApps[app._id].length : 0 }})</span>
                 </button>
               </td>
-              <td>Todo</td>
+              <td>
+                 <button class="button button-icon-txt button--bluemid" @click="manageWebappHosts(app._id,  app.name)">
+                  <span class="button__icon button__icon--webapp"></span>
+                  <span class="button__label">Hosts ({{ !!hostByApps[app._id] ? hostByApps[app._id].length : 0 }})</span>
+                </button>
+              </td>
               <td>
                 <a :href="`/admin/clients/application/workflow/${app._id}`" class="button button-icon-txt button--bluemid button--with-desc bottom" data-desc="Edit on Node-red interface">
                   <span class="button__icon button__icon--workflow"></span>
@@ -71,29 +76,30 @@ export default {
   data () {
     return {
       applicationWorkflowsLoaded: false,
-      androidUsersLoaded: false
+      androidUsersLoaded: false,
+      webappHostsLoaded: false
     }
   },
   async created () {
     // Request store
-    await this.dispatchStore('getApplicationWorkflows')
-    await this.dispatchStore('getAndroidUsers')
+    await this.refreshStore()
   },
   async mounted () {
+    setTimeout(() => {
+        console.log(this.hostByApps)
+    }, 1000);
+    
     // Events
     bus.$on('update_workflow_services_success', async (data) => {
-      await this.dispatchStore('getApplicationWorkflows')
-      await this.dispatchStore('getAndroidUsers')
+      await this.refreshStore()
     })
 
     bus.$on('manage_android_users_success', async (data) => {
-      await this.dispatchStore('getApplicationWorkflows')
-      await this.dispatchStore('getAndroidUsers')
+      await this.refreshStore()
     })
     
     bus.$on('delete_application_workflow_success', async (data) => {
-      await this.dispatchStore('getApplicationWorkflows')
-      await this.dispatchStore('getAndroidUsers')
+      await this.refreshStore()
     })
   },
   computed: {
@@ -106,13 +112,19 @@ export default {
     androidUsers () {
       return this.$store.state.androidUsers
     },
-    usersByApps () {
+    androidUsersByApps () {
       return this.$store.getters.ANDROID_USERS_BY_APPS
+    },
+    hostByApps() {
+      return this.$store.getters.WEB_APP_HOST_BY_APPS
     }
   },
   methods: {
     async manageAndroidUsers (workflowId, appName) {
       bus.$emit('manage_android_users', { workflowId, appName })
+    },
+    async manageWebappHosts (workflowId, appName) {
+      bus.$emit('manage_webapp_hosts', { workflowId, appName })
     },
     async deleteApplicationWorkflow (app) {
       bus.$emit('delete_application_workflow', {
@@ -131,6 +143,11 @@ export default {
       })
 
     },
+    async refreshStore() {
+      await this.dispatchStore('getApplicationWorkflows')
+      await this.dispatchStore('getAndroidUsers')
+      await this.dispatchStore('getWebappHosts')
+    },
     async dispatchStore (topic) {
       try {
         const dispatch = await this.$options.filters.dispatchStore(topic)
@@ -144,6 +161,9 @@ export default {
             break
           case 'getAndroidUsers':
             this.androidUsersLoaded = dispatchSuccess
+            break
+          case 'getWebappHosts':
+            this.webappHostsLoaded = dispatchSuccess
             break
           default:
             return

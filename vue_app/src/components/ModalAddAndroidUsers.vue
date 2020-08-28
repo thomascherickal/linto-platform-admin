@@ -25,19 +25,16 @@
             </ul>
            <span class="form__error-field">{{ userApps.error }}</span>
           </div>
-          <button class="button button-icon-txt button--green" @click="handleForm()">
-            <span class="button__icon button__icon--add"></span>
-            <span class="button__label">Create user</span>
-          </button>
+          
         </div>
       </div>
       <!-- End BODY -->
       <!-- FOOTER -->
       <div class="modal-footer flex row">
-        <div class="flex flex1 modal-footer-left">
-          <button class="button button-icon-txt button--grey" @click="closeModal()">
-            <span class="button__icon button__icon--cancel"></span>
-            <span class="button__label">Cancel</span>
+        <div class="flex flex1 modal-footer-right">
+          <button class="button button-icon-txt button--green" @click="handleForm()">
+            <span class="button__icon button__icon--apply"></span>
+            <span class="button__label">Create user</span>
           </button>
         </div>
       </div>

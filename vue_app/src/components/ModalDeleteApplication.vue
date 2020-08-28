@@ -60,22 +60,26 @@ export default {
     async removeApplicationWorkflow () {
       try {
         // Step 1: remove application from android users in DB
-        const removeUsers = await this.removeUserFromApplication()
+        const removeUsers = await this.removeApplicationFromAndroidUsers()
         if (removeUsers === 'success') {
-          // Step 2: remove BLS flow > "Success" NOT REQUIRED
-          const removeFlow = await this.removeBLSFlow(this.flowId)
-          // Step 3: Remove application workflow from DB 
-          const removeApplication = await this.removeApplication(this.applicationWorkflowId)
-            // success
-            if(removeApplication === 'success') {
-            bus.$emit('app_notif', {
-              status: 'success',
-              msg: `The application workflow "${this.applicationWorkflowName}" has been removed`,
-              timeout: 3000,
-              redirect: false
-            })
-            bus.$emit('delete_application_workflow_success', {})
-            this.closeModal()
+          // Step 2: remove application from web-app hosts in DB
+          const removeFromHosts = await this.removeApplicationFromWebappHosts()
+          if (removeFromHosts === 'success') {
+            // Step 3: remove BLS flow > "Success" NOT REQUIRED
+            const removeFlow = await this.removeBLSFlow(this.flowId)
+            // Step 4: Remove application workflow from DB 
+            const removeApplication = await this.removeApplication(this.applicationWorkflowId)
+              // success
+              if(removeApplication === 'success') {
+              bus.$emit('app_notif', {
+                status: 'success',
+                msg: `The application workflow "${this.applicationWorkflowName}" has been removed`,
+                timeout: 3000,
+                redirect: false
+              })
+              bus.$emit('delete_application_workflow_success', {})
+              this.closeModal()
+            }
           }
         }
       } catch (error) {
@@ -127,7 +131,7 @@ export default {
         
       }
     },
-    async removeUserFromApplication () {
+    async removeApplicationFromAndroidUsers () {
       try {
         const payload = {
           _id: this.applicationWorkflowId,
@@ -142,6 +146,32 @@ export default {
           return 'success'
         } else {
           throw removeUserFromApp.data.msg
+        }
+      } catch (error) {
+        console.error(error)
+         bus.$emit('app_notif', {
+          status: 'error',
+          msg: error,
+          timeout: false,
+          redirect: false
+        })
+      }
+    },
+     async removeApplicationFromWebappHosts () {
+      try {
+        const payload = {
+          _id: this.applicationWorkflowId,
+          name: this.applicationWorkflowName
+        }
+        const removeAppFromHost = await axios(`${process.env.VUE_APP_URL}/api/webapphosts/applications`, {
+          method: 'patch',
+          data: { payload }
+        })
+        
+        if (removeAppFromHost.data.status === 'success') {
+          return 'success'
+        } else {
+          throw removeAppFromHost.data.msg
         }
       } catch (error) {
         console.error(error)
