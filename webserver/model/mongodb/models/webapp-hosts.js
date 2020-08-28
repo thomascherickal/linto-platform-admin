@@ -7,7 +7,7 @@ class WebAppHosts extends MongoModel {
         super('webapp_hosts')
     }
 
-    // Get all android applications users
+    // Get all web-application hosts
     async getAllWebAppHosts() {
         try {
             const getAllWebAppHosts = await this.mongoRequest({})
@@ -24,10 +24,11 @@ class WebAppHosts extends MongoModel {
         }
     }
 
+    // Create a web-application hosts
     async createWebAppHost(payload) {
         try {
             if (this.testSchema(payload, WebAppHostsSchema)) {
-                return await this.mongoInsert(userPayload)
+                return await this.mongoInsert(payload)
             } else {
                 throw 'Invalid document format'
             }
@@ -38,6 +39,7 @@ class WebAppHosts extends MongoModel {
         }
     }
 
+    // Delete a web-application hosts
     async deleteWebAppHost(id) {
         try {
             const query = { _id: this.getObjectId(id) }
@@ -48,6 +50,7 @@ class WebAppHosts extends MongoModel {
         }
     }
 
+    // Get a web-application hosts by its ID
     async getWebappHostById(id) {
         try {
             const query = { _id: this.getObjectId(id) }
@@ -67,6 +70,7 @@ class WebAppHosts extends MongoModel {
         }
     }
 
+    // Update a web-application hosts
     async updateWebappHost(payload) {
         try {
             const query = { _id: this.getObjectId(payload._id) }
@@ -84,6 +88,7 @@ class WebAppHosts extends MongoModel {
         }
     }
 
+    // Remove an application from all web-application hosts
     async removeApplicationForAllHosts(applicationId) {
         try {
             const query = {
