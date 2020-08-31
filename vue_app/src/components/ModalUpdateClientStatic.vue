@@ -85,7 +85,7 @@ export default {
               redirect: false
             })
             this.closeModal()
-            bus.$emit('update_enrolled_static_device_success', {})
+            await this.dispatchClients()
           }
         } catch (error) {
           bus.$emit('app_notif', {
@@ -98,9 +98,18 @@ export default {
       }
     },
     async dispatchClients () {
-      const dispatchClients = await this.dispatchStore('getStaticClients')
-      if (dispatchClients.status === 'success') {
-        this.staticClientsLoaded = true
+      try {
+        const dispatchClients = await this.$options.filters.dispatchStore('getStaticClients')
+        if (dispatchClients.status === 'success') {
+          this.staticClientsLoaded = true
+        }  
+      } catch (error) {
+         bus.$emit('app_notif', {
+            status: 'error',
+            msg: !!error.msg ? error.msg : error,
+            timeout: false,
+            redirect: false
+        })
       }
     }
   },

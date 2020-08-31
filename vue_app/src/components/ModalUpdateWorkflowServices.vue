@@ -15,13 +15,11 @@
           <!-- STT language -->
           <AppSelect :label="'Select a language'" :obj="sttServiceLanguage" :list="sttAvailableLanguages" :params="{key:'value', value:'value', optLabel: 'value'}" :disabled="noSttService" :disabledTxt="'Create a STT service'"></AppSelect>
 
-      <!-- STT services -->
-      <AppSelect :label="'Select a STT service'" :obj="sttService" :list="sttServiceByLanguage" :params="{key:'_id', value:'serviceId', optLabel: 'serviceId'}" :disabled="sttServiceLanguage.value === ''" :disabledTxt="'Please select a language'"></AppSelect>
-      
-      <!-- TOCK application -->
-      <AppSelect :label="'Select Tock application'" :obj="tockApplicationName" :list="tockApplications" :params="{key:'name', value:'name', optLabel: 'name'}" :options="{value:'new', label:'Create a new tock application'}"></AppSelect>
-      
-
+          <!-- STT services -->
+          <AppSelect :label="'Select a STT service'" :obj="sttService" :list="sttServiceByLanguage" :params="{key:'_id', value:'serviceId', optLabel: 'serviceId'}" :disabled="sttServiceLanguage.value === ''" :disabledTxt="'Please select a language'"></AppSelect>
+          
+          <!-- TOCK application -->
+          <AppSelect :label="'Select Tock application'" :obj="tockApplicationName" :list="tockApplications" :params="{key:'name', value:'name', optLabel: 'name'}" :options="{value:'new', label:'Create a new tock application'}"></AppSelect>
           
         </div>
       </div>
@@ -90,13 +88,7 @@ export default {
         error: null,
         valid: true
       }
-
-      await this.dispatchStore('getStaticWorkflows')
-      await this.dispatchStore('getApplicationWorkflows')
-      await this.dispatchStore('getStaticClients')
-      await this.dispatchStore('getSttServices')
-      await this.dispatchStore('getSttLanguageModels')
-      await this.dispatchStore('getTockApplications')
+      await this.refreshStore()
       this.showModal()
     })
   },
@@ -121,7 +113,8 @@ export default {
         let sttLang = []
         if (this.sttServices.length > 0) {
           this.sttServices.map(service => {
-            if (!sttLang[service.lang]) {
+            
+            if(sttLang.filter(lang => lang.value === service.lang).length === 0) {
               sttLang.push({ value: service.lang })
             }
           })
@@ -231,10 +224,26 @@ export default {
           throw updateWorkflow
         }
       } catch (error) {
-        console.error(error)
         bus.$emit('app_notif', {
           status: 'error',
           msg: 'Error on updating workflow',
+          timeout: false,
+          redirect: false
+        })
+      }
+    },
+    async refreshStore () {
+      try {
+        await this.dispatchStore('getStaticWorkflows')
+        await this.dispatchStore('getApplicationWorkflows')
+        await this.dispatchStore('getStaticClients')
+        await this.dispatchStore('getSttServices')
+        await this.dispatchStore('getSttLanguageModels')
+        await this.dispatchStore('getTockApplications')
+      } catch (error) {
+        bus.$emit('app_notif', {
+          status: 'error',
+          msg: error,
           timeout: false,
           redirect: false
         })
@@ -270,7 +279,6 @@ export default {
             return
         }  
       } catch (error) {
-        console.error(error)
         bus.$emit('app_notif', {
           status: 'error',
           msg: error,

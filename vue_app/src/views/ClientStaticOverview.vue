@@ -118,30 +118,24 @@ export default {
   },
   async created () {
     // Request store
-    await this.dispatchStore('getStaticClients')
-    await this.dispatchStore('getStaticWorkflows')
+    await this.refreshStore()
   },
   async mounted () {
     // Events
     bus.$on('delete_static_device_success', async (data) => {
-      await this.dispatchStore('getStaticClients')
-      await this.dispatchStore('getStaticWorkflows')
+      await this.refreshStore()
     })
     bus.$on('update_enrolled_static_device_success', async (data) => {
-      await this.dispatchStore('getStaticClients')
-      await this.dispatchStore('getStaticWorkflows')
+      await this.refreshStore()
     })
     bus.$on('update_workflow_services_success', async (data) => {
-      await this.dispatchStore('getStaticClients')
-      await this.dispatchStore('getStaticWorkflows')
+      await this.refreshStore()
     })
     bus.$on('dissociate_static_device_success', async (data) => {
-      await this.dispatchStore('getStaticClients')
-      await this.dispatchStore('getStaticWorkflows')
+      await this.refreshStore()
     })
     bus.$on('add_static_device_success', async (data) => {
-      await this.dispatchStore('getStaticClients')
-      await this.dispatchStore('getStaticWorkflows')
+      await this.refreshStore()
     })
   },
   computed: {
@@ -185,6 +179,19 @@ export default {
     // Add a static device
     addStaticDevice () {
       bus.$emit('add_static_device', {})
+    },
+    async refreshStore () {
+      try {
+        await this.dispatchStore('getStaticClients')
+        await this.dispatchStore('getStaticWorkflows')
+      } catch (error) {
+        bus.$emit('app_notif', {
+          status: 'error',
+          msg: !!error.msg ? error.msg : error,
+          timeout: false,
+          redirect: false
+        })
+      }
     },
     async dispatchStore (topic) {
       try {

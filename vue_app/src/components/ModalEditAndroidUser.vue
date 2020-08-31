@@ -268,7 +268,7 @@ export default {
       } catch (error) {
         bus.$emit('app_notif', {
           status: 'error',
-          msg: error,
+          msg: !!error.msg ? error.msg : error,
           timeout: false,
           redirect: false
         })
@@ -294,7 +294,7 @@ export default {
       } catch (error) {
         bus.$emit('app_notif', {
           status: 'error',
-          msg: error,
+          msg: !!error.msg ? error.msg : error,
           timeout: false,
           redirect: false
         })

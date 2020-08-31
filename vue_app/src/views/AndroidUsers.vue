@@ -66,16 +66,15 @@ export default {
   },
   async created () {
     // Request store
-    await this.dispatchStore('getAndroidUsers')
-    await this.dispatchStore('getApplicationWorkflows')
+    await this.refreshStore()
   },
   async mounted () {
     // Events
     bus.$on('add_android_user_success', async () => {
-      await this.dispatchStore('getAndroidUsers')
+      await this.refreshStore()
     })
     bus.$on('delete_android_user_success', async () => {
-      await this.dispatchStore('getAndroidUsers')
+      await this.refreshStore()
     })
   },
   computed: {
@@ -89,7 +88,6 @@ export default {
       return this.$store.getters.APP_WORKFLOWS_NAME_BY_ID
     }
   },
-  
   methods: {
     addAndroidUser () {
       bus.$emit('add_android_user', {})
@@ -102,6 +100,19 @@ export default {
         userId: data._id,
         email: data.email
       })
+    },
+    async refreshStore () {
+      try {
+        await this.dispatchStore('getAndroidUsers')
+        await this.dispatchStore('getApplicationWorkflows')
+      } catch (error) {
+        bus.$emit('app_notif', {
+          status: 'error',
+          msg: !!error.msg ? error.msg : error,
+          timeout: false,
+          redirect: false
+        })
+      }
     },
     async dispatchStore (topic) {
       try {

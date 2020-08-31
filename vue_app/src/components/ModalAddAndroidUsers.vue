@@ -76,8 +76,7 @@ export default {
   async mounted () {
     bus.$on('add_android_user', async (data) => {
       this.showModal()
-      await this.dispatchStore('getAndroidUsers')
-      await this.dispatchStore('getApplicationWorkflows')
+      await this.refreshStore()
     })
   },
   computed: {
@@ -133,7 +132,7 @@ export default {
         })  
         if (addUser.data.status === 'success') {
           this.closeModal()
-          bus.$emit('add_android_user_success', {})
+          await this.refreshStore()
           bus.$emit('app_notif', {
             status: 'success',
             msg: addUser.data.msg,
@@ -151,6 +150,19 @@ export default {
             timeout: false,
             redirect: false
           })
+      }
+    },
+    async refreshStore () {
+      try {
+        await this.dispatchStore('getAndroidUsers')
+        await this.dispatchStore('getApplicationWorkflows')
+      } catch (error) {
+        bus.$emit('app_notif', {
+          status: 'error',
+          msg: error,
+          timeout: false,
+          redirect: false
+        })
       }
     },
     async dispatchStore (topic) {

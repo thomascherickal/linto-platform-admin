@@ -78,22 +78,17 @@ export default {
       }
     },
     async dispatchStaticWorkflows () {
-      const dispatchStaticWorkflows = await this.dispatchStore('getStaticWorkflows')
-      if (dispatchStaticWorkflows.status === 'success') {
-        this.staticWorkflowsLoaded = true
-      }
-    },
-    // Execute actions from store by topic
-    async dispatchStore (topic) {
       try {
-        return await this.$options.filters.dispatchStore(topic)
+         const dispatchStaticWorkflows = await this.$options.filters.dispatchStore('getStaticWorkflows')
+        if (dispatchStaticWorkflows.status === 'success') {
+          this.staticWorkflowsLoaded = true
+        }  
       } catch (error) {
-        console.error(error)
-        bus.$emit('app_notif', {
-          status: 'error',
-          msg: error,
-          timeout: false,
-          redirect: false
+         bus.$emit('app_notif', {
+            status: 'error',
+            msg: !!error.msg ? error.msg : error,
+            timeout: false,
+            redirect: false
         })
       }
     }

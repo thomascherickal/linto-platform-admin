@@ -146,10 +146,7 @@ export default {
   },
   async mounted () {
     this.sn = this.$route.params.sn
-    await this.dispatchStore('getWorkflowsTemplates')
-    await this.dispatchStore('getSttServices')
-    await this.dispatchStore('getSttLanguageModels')
-    await this.dispatchStore('getTockApplications')
+    await this.refreshStore()
   },
   methods: {
     showModal () {
@@ -366,6 +363,21 @@ export default {
         }
       } catch (error) {
         this.sttLexSeedStatus = error.msg
+        bus.$emit('app_notif', {
+          status: 'error',
+          msg: !!error.msg ? error.msg : error,
+          timeout: false,
+          redirect: false
+        })
+      }
+    },
+    async refreshStore () {
+      try {
+        await this.dispatchStore('getWorkflowsTemplates')
+        await this.dispatchStore('getSttServices')
+        await this.dispatchStore('getSttLanguageModels')
+        await this.dispatchStore('getTockApplications')
+      } catch (error) {
         bus.$emit('app_notif', {
           status: 'error',
           msg: !!error.msg ? error.msg : error,

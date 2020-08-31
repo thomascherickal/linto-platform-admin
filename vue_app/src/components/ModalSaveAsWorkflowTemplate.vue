@@ -97,7 +97,7 @@ export default {
               timeout: 3000,
               redirect: false
             })
-            bus.$emit('save_as_workflow_template_success', {})
+            await this.dispatchWorkflowTempaltes()
           } else {
             throw saveTemplate
           }

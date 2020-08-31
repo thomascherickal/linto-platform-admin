@@ -89,11 +89,9 @@ export default {
     bus.$on('update_workflow_services_success', async (data) => {
       await this.refreshStore()
     })
-
     bus.$on('manage_android_users_success', async (data) => {
       await this.refreshStore()
     })
-    
     bus.$on('delete_application_workflow_success', async (data) => {
       await this.refreshStore()
     })
@@ -139,10 +137,19 @@ export default {
       })
 
     },
-    async refreshStore() {
-      await this.dispatchStore('getApplicationWorkflows')
-      await this.dispatchStore('getAndroidUsers')
-      await this.dispatchStore('getWebappHosts')
+    async refreshStore () {
+      try {
+        await this.dispatchStore('getApplicationWorkflows')
+        await this.dispatchStore('getAndroidUsers')
+        await this.dispatchStore('getWebappHosts')
+      } catch (error) {
+        bus.$emit('app_notif', {
+          status: 'error',
+          msg: !!error.msg ? error.msg : error,
+          timeout: false,
+          redirect: false
+        })
+      }
     },
     async dispatchStore (topic) {
       try {

@@ -85,8 +85,7 @@ export default {
   async mounted () {
     bus.$on('add_webapp_host', async (data) => {
       this.showModal()
-      await this.dispatchStore('getWebappHosts')
-      await this.dispatchStore('getApplicationWorkflows')
+      await this.refreshStore()
     })
   },
   watch: {
@@ -190,7 +189,19 @@ export default {
           redirect: false
         })
       }
-      
+    },
+    async refreshStore () {
+      try {
+        await this.dispatchStore('getWebappHosts')
+        await this.dispatchStore('getApplicationWorkflows')
+      } catch (error) {
+        bus.$emit('app_notif', {
+          status: 'error',
+          msg: !!error.msg ? error.msg : error,
+          timeout: false,
+          redirect: false
+        })
+      }
     },
     async dispatchStore (topic) {
       try {

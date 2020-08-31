@@ -80,22 +80,17 @@ export default {
       }
     },
     async dispatchApplicationWorkflows () {
-      const dispatchApplicationWorkflows = await this.dispatchStore('getApplicationWorkflows')
-      if (dispatchApplicationWorkflows.status === 'success') {
-        this.applicationWorkflowsLoaded = true
-      }
-    },
-    // Execute actions from store by topic
-    async dispatchStore (topic) {
       try {
-        return await this.$options.filters.dispatchStore(topic)
+         const dispatchApplicationWorkflows = await this.$options.filters.dispatchStore('getApplicationWorkflows')
+        if (dispatchApplicationWorkflows.status === 'success') {
+          this.applicationWorkflowsLoaded = true
+        }  
       } catch (error) {
-        console.error(error)
-        bus.$emit('app_notif', {
-          status: 'error',
-          msg: error,
-          timeout: false,
-          redirect: false
+         bus.$emit('app_notif', {
+            status: 'error',
+            msg: !!error.msg ? error.msg : error,
+            timeout: false,
+            redirect: false
         })
       }
     }

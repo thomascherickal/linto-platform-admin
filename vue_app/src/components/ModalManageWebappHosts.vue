@@ -94,8 +94,7 @@ export default {
       this.showModal()
       this.workflowId = data.workflowId
       this.appName = data.appName
-      await this.dispatchStore('getWebappHosts')
-
+      await this.refreshStore()
     })
   },
   computed: {
@@ -141,7 +140,7 @@ export default {
               redirect: false
             })
             this.hideWebappHostsForm()
-            await this.dispatchStore('getWebappHosts')
+            await this.refreshStore()
           }
         }
       } catch (error) {
@@ -166,8 +165,7 @@ export default {
             timeout: 3000,
             redirect: false
           })
-          await this.dispatchStore('getWebappHosts')
-          await this.dispatchStore('getApplicationWorkflows')
+          await this.refreshStore()
         } else {
           throw removeAppFromWebappHost.data.msg
         }
@@ -175,6 +173,19 @@ export default {
         bus.$emit('app_notif', {
           status: 'error',
           msg: error,
+          timeout: false,
+          redirect: false
+        })
+      }
+    },
+    async refreshStore () {
+      try {
+        await this.dispatchStore('getWebappHosts')
+        await this.dispatchStore('getApplicationWorkflows')
+      } catch (error) {
+        bus.$emit('app_notif', {
+          status: 'error',
+          msg: !!error.msg ? error.msg : error,
           timeout: false,
           redirect: false
         })

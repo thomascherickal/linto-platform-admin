@@ -71,18 +71,15 @@ export default {
   },
   async created () {
     // Request store
-    await this.dispatchStore('getWebappHosts')
-    await this.dispatchStore('getApplicationWorkflows')
+    await this.refreshStore()
   },
   async mounted () {
     // Events
     bus.$on('add_webapp_host_success', async (data) => {
-      await this.dispatchStore('getWebappHosts')
-      await this.dispatchStore('getApplicationWorkflows')
+      await this.refreshStore()
     })
     bus.$on('delete_webapp_host_success', async (data) => {
-      await this.dispatchStore('getWebappHosts')
-      await this.dispatchStore('getApplicationWorkflows')
+      await this.refreshStore()
     })
   },
   computed: {
@@ -96,7 +93,6 @@ export default {
       return this.$store.getters.APP_WORKFLOWS_NAME_BY_ID
     }
   },
-  
   methods: {
     addWebappHost () {
       bus.$emit('add_webapp_host', {})
@@ -107,6 +103,19 @@ export default {
     editWebappHost (webapp) {
       bus.$emit('edit_webapp_host', { webappHost : webapp })
       
+    },
+    async refreshStore () {
+      try {
+        await this.dispatchStore('getWebappHosts')
+        await this.dispatchStore('getApplicationWorkflows')
+      } catch (error) {
+        bus.$emit('app_notif', {
+          status: 'error',
+          msg: !!error.msg ? error.msg : error,
+          timeout: false,
+          redirect: false
+        })
+      }
     },
     async dispatchStore (topic) {
       try {
