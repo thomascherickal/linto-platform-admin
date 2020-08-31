@@ -12,9 +12,7 @@
       <!-- BODY -->
       <div class="modal-body flex col">
         <div class="modal-body__content flex col">
-          
           <p v-if="androidRegisteredUsers.length > 0 && !showAddUserForm"> List of <strong>users</strong> registered in "<strong>{{ appName }}</strong>" android application.</p>
-
           <div class="flex row" v-if="androidRegisteredUsers.length > 0 && !showAddUserForm">
             <table class="table">
               <thead>
@@ -96,8 +94,7 @@ export default {
       this.showModal()
       this.workflowId = data.workflowId
       this.appName = data.appName
-      await this.dispatchStore('getAndroidUsers')
-
+      await this.refreshStore()
     })
   },
   computed: {
@@ -126,7 +123,6 @@ export default {
     },
     async updateAndroidUser () {
       this.$options.filters.testSelectField(this.userId)
-      
       try {
         if (this.userId.valid) {
           const payload = {
@@ -144,7 +140,7 @@ export default {
               redirect: false
             })
             this.hideAndroidUsersForm()
-            await this.dispatchStore('getAndroidUsers')
+            await this.refreshStore()
           }
         }
       } catch (error) {
@@ -169,11 +165,24 @@ export default {
             timeout: 3000,
             redirect: false
           })
-          await this.dispatchStore('getAndroidUsers')
-          await this.dispatchStore('getApplicationWorkflows')
+          await this.refreshStore()
+          
         } else {
           throw removeUserFromApp.data.msg
         }
+      } catch (error) {
+        bus.$emit('app_notif', {
+          status: 'error',
+          msg: error,
+          timeout: false,
+          redirect: false
+        })
+      }
+    },
+    async refreshStore () {
+      try {
+        await this.dispatchStore('getAndroidUsers')
+        await this.dispatchStore('getApplicationWorkflows')
       } catch (error) {
         bus.$emit('app_notif', {
           status: 'error',

@@ -12,6 +12,47 @@
       <!-- BODY -->
       <div class="modal-body flex col">
         <div class="modal-body__content flex col">
+          <span class="subtitle" v-if="!addAppFormVisible">Host informations</span>
+
+          <div class="flex row" v-if="!addAppFormVisible">
+            <AppInput :label="'Origin URL'" :obj="originUrl" :test="'testUrl'" :class="'flex1'"></AppInput>
+            <div class="flex1 row">
+              <button class="button button-icon-txt button--green" style="margin: 23px 0 0 10px" @click="updateHostUrl()">
+                <span class="button__icon button__icon--save"></span>
+                <span class="button__label">Save</span>
+              </button>
+            </div>
+          </div>
+          
+          <div class="flex row" v-if="!addAppFormVisible">
+            <div class="flex col">
+              <span class="form__label">Request token :</span>
+              <input class="form__input form__input--disabled" disabled :value="requestToken"/>
+              <span class="form__error-field"></span>
+            </div>
+            <div class="flex1 row">
+              <button class="button button-icon-txt button--bluemid" @click="generateRequestToken()" style="margin:5px;">
+                <span class="button__icon button__icon--reset"></span>
+                <span class="button__label">Regenerate</span>
+              </button>
+              <button class="button button-icon-txt button--green" style="margin: 23px 0 0 10px" @click="updateRequestToken()">
+                <span class="button__icon button__icon--save"></span>
+                <span class="button__label">Save</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="flex row" v-if="!addAppFormVisible">
+             <AppSelect :label="'Max slots'" :obj="maxSlots" :type="'numberArray'" :min="1" :max="50" :class="'flex1'"></AppSelect>
+            <div class="flex1 row">
+              <button class="button button-icon-txt button--green" style="margin: 23px 0 0 10px" @click="updateHostMaxSlots()">
+                <span class="button__icon button__icon--save"></span>
+                <span class="button__label">Save</span>
+              </button>
+            </div>
+          </div>
+
+
           <div class="flex row" v-if="addAppFormVisible">
             <button class="button button-icon-txt button--orange" @click="hideAddAppForm()">
               <span class="button__icon button__icon--back"></span>
@@ -82,6 +123,7 @@ import AppInput from '@/components/AppInput.vue'
 import AppSelect from '@/components/AppSelect.vue'
 import { bus } from '../main.js'
 import axios from 'axios'
+import randomstring from 'randomstring'
 export default {
   data () {
     return {
@@ -90,15 +132,34 @@ export default {
       selectedApps: [],
       addAppFormVisible: false,
       applicationWorkflowsLoaded: false,
-      webappHostsLoaded: false
+      webappHostsLoaded: false,
+      originUrl: {
+        value: '',
+        error: null,
+        valid: false
+      },
+      requestToken: null,
+      maxSlots: {
+        value: '',
+        error: null,
+        valid: false
+      }
     }
   },
   async mounted () {
     bus.$on('edit_webapp_host', async (data) => {
       this.showModal()
-      await this.dispatchStore('getWebappHosts')
-      await this.dispatchStore('getApplicationWorkflows')
+      await this.refreshStore()
+
       this.webappHostId = data.webappHost._id
+      
+      this.originUrl.value = data.webappHost.originUrl
+      this.originUrl.valid = true
+
+      this.maxSlots.value = data.webappHost.maxSlots
+      this.maxSlots.valid = true
+
+      this.requestToken = data.webappHost.requestToken
     })
   },
   computed: {
@@ -118,6 +179,9 @@ export default {
       } else {
         return this.applicationWorkflows
       }
+    },
+    webappHosts () {
+      return this.$store.state.webappHosts
     },
     webappHost () {
       if(this.webappHostId !== null) {
@@ -149,6 +213,15 @@ export default {
         this.selectedApps.pop(workflowId)
       }
     },
+    generateRequestToken () {
+      const token = randomstring.generate(16)
+      const tokenExist = this.webappHosts.filter(wh => wh.requestToken === token)  
+      if(tokenExist.length > 0) {
+        this.generateRequestToken()
+      } else {
+        this.requestToken = token
+      }
+    },
     async addAppToWebappHost () {
       try {
         if (this.selectedApps.length > 0) {
@@ -161,8 +234,7 @@ export default {
           })
           if (updateWebappHost.data.status === 'success') {
             this.hideAddAppForm()
-            await this.dispatchStore('getWebappHosts')
-            await this.dispatchStore('getApplicationWorkflows')
+            await this.refreshStore()
             bus.$emit('app_notif', {
               status: 'success',
               msg: updateWebappHost.data.msg,
@@ -172,7 +244,6 @@ export default {
           }
         }
       } catch (error) {
-        console.error(error)
         bus.$emit('app_notif', {
           status: 'error',
           msg: error,
@@ -193,11 +264,106 @@ export default {
             timeout: 3000,
             redirect: false
           })
-          await this.dispatchStore('getWebappHosts')
-          await this.dispatchStore('getApplicationWorkflows')
+          await this.refreshStore()
         } else {
           throw removeApp.data.msg
         }
+      } catch (error) {
+        bus.$emit('app_notif', {
+          status: 'error',
+          msg: error,
+          timeout: false,
+          redirect: false
+        })
+      }
+    },
+    async updateHostUrl () {
+      try {
+        this.$options.filters.testUrl(this.originUrl)
+        if (this.originUrl.valid) {
+          const payload = {
+            _id: this.webappHost._id,
+            originUrl: this.originUrl.value
+          }
+          await this.updateWebappHost(payload)
+        }
+      } catch (error) {
+        bus.$emit('app_notif', {
+          status: 'error',
+          msg: error,
+          timeout: false,
+          redirect: false
+        })
+      }
+    },
+    async updateHostMaxSlots () {
+      try {
+        this.$options.filters.testInteger(this.maxSlots)
+        if (this.maxSlots.valid) {
+          const payload = {
+            _id: this.webappHost._id,
+            maxSlots: this.maxSlots.value,
+            originUrl: this.originUrl.value
+          }
+        await this.updateWebappHost(payload)
+        }
+      } catch (error) {
+        bus.$emit('app_notif', {
+          status: 'error',
+          msg: error,
+          timeout: false,
+          redirect: false
+        })
+      }
+    },
+    async updateRequestToken () {
+      try {
+        const payload = {
+          _id: this.webappHost._id,
+          requestToken: this.requestToken,
+          originUrl: this.originUrl.value
+        }
+        await this.updateWebappHost(payload)
+      } catch (error) {
+         bus.$emit('app_notif', {
+          status: 'error',
+          msg: error,
+          timeout: false,
+          redirect: false
+        })
+      }
+    },
+    async updateWebappHost (payload) {
+      try {
+        const updateWebappHost = await axios(`${process.env.VUE_APP_URL}/api/webapphosts/${payload._id}`, {
+            method: 'put',
+            data: { payload }
+          })
+          
+          if (updateWebappHost.data.status === 'success') {
+            bus.$emit('app_notif', {
+              status: 'success',
+              msg: updateWebappHost.data.msg,
+              timeout: 3000,
+              redirect: false
+            })
+            await this.refreshStore()
+          } else {
+              throw updateWebappHost.data.msg
+          }
+      } catch (error) {
+         bus.$emit('app_notif', {
+          status: 'error',
+          msg: !!error.msg ? error.msg : error,
+          timeout: false,
+          redirect: false
+        })
+      }
+    },
+    async refreshStore () {
+      try {
+        await this.dispatchStore('getWebappHosts')
+        await this.dispatchStore('getApplicationWorkflows')
       } catch (error) {
         bus.$emit('app_notif', {
           status: 'error',

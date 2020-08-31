@@ -31,6 +31,23 @@ const testEmail = (obj) => {
     return obj
 }
 
+const testUrl = (obj) => {
+    obj.valid = false
+    obj.error = null
+    if (obj.value.length === 0) {
+        obj.valid = false
+        obj.error = 'This field is required'
+    } else {
+        const regex = /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/g
+        if (obj.value.match(regex)) {
+            obj.valid = true
+        } else {
+            obj.error = 'Invalid content url format.'
+        }
+    }
+    return obj
+}
+
 // DISPATCH STORE
 Vue.filter('dispatchStore', async function(label) {
     try {
@@ -196,15 +213,16 @@ Vue.filter('testContent', function(obj) {
 Vue.filter('testUrl', function(obj) {
     obj.valid = false
     obj.error = null
-    if (obj.value.length === 0) {
-        obj.valid = false
-        obj.error = 'This field is required'
-    } else {
-        const regex = /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/g
-        if (obj.value.match(regex)) {
-            obj.valid = true
+    obj = testUrl(obj)
+    if (obj.valid) {
+        const hosts = store.state.webappHosts
+        const hostExist = hosts.filter(host => host.originUrl === obj.value)
+        if (hostExist.length > 0) {
+            obj.valid = false
+            obj.error = 'This origin url is already used'
         } else {
-            obj.error = 'Invalid content url format.'
+            obj.error = null
+            obj.valid = true
         }
     }
 })

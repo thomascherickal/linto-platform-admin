@@ -39,6 +39,23 @@ class WebAppHosts extends MongoModel {
         }
     }
 
+    async updateWebAppHost(payload) {
+        try {
+            const query = { _id: this.getObjectId(payload._id) }
+
+            // Validation of data structure 
+            if (this.testSchema(payload, WebAppHostsSchema)) {
+                return await this.mongoUpdate(query, payload)
+            } else {
+                throw 'Invalid document format'
+            }
+
+        } catch (error) {
+            console.error(error)
+            return error
+        }
+    }
+
     // Delete a web-application hosts
     async deleteWebAppHost(id) {
         try {

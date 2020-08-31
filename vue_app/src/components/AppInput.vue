@@ -51,7 +51,7 @@ export default {
       this.$options.filters.testEmail(obj)
     },
     testAndroidUserEmail (obj) {
-      this.$options.filters.testAndroidUserEmail(obj, this.workflowId)
+      this.$options.filters.testAndroidUserEmail(obj)
     },
     testPassword (obj) {
       this.$options.filters.testPassword(obj)

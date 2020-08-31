@@ -85,10 +85,6 @@ export default {
     await this.refreshStore()
   },
   async mounted () {
-    setTimeout(() => {
-        console.log(this.hostByApps)
-    }, 1000);
-    
     // Events
     bus.$on('update_workflow_services_success', async (data) => {
       await this.refreshStore()

@@ -12,6 +12,16 @@
       <!-- BODY -->
       <div class="modal-body flex col">
         <div class="modal-body__content flex col">
+          <span class="subtitle" v-if="!addAppFormVisible">User informations</span>
+          <div class="flex row" v-if="!addAppFormVisible">
+            <AppInput :label="'Email'" :obj="userEmail" :test="'testAndroidUserEmail'" :class="'flex1'"></AppInput>
+            <div class="flex1 row">
+              <button class="button button-icon-txt button--green" style="margin: 23px 0 0 10px" @click="updateUserEmail(user)">
+                <span class="button__icon button__icon--save"></span>
+                <span class="button__label">Save</span>
+              </button>
+            </div>
+          </div>
           <div class="flex row" v-if="addAppFormVisible">
             <button class="button button-icon-txt button--orange" @click="hideAddAppForm()">
               <span class="button__icon button__icon--back"></span>
@@ -57,7 +67,6 @@
                   <span class="checkbox__label">{{ wf.name }}</span>
                 </li>
               </ul>
-              
             </div>
             <div class="divider small"></div>
             <div class="flex row">
@@ -68,7 +77,6 @@
             </div>
           </div>
         </div>
-        
       </div>
       <!-- End BODY -->
       <!-- FOOTER -->
@@ -89,15 +97,21 @@ export default {
       selectedApps: [],
       addAppFormVisible: false,
       applicationWorkflowsLoaded: false,
-      androidUsersLoaded: false
+      androidUsersLoaded: false,
+      userEmail: {
+        value: '',
+        error: null,
+        valid: false
+      }
     }
   },
   async mounted () {
     bus.$on('edit_android_user', async (data) => {
       this.showModal()
-      await this.dispatchStore('getAndroidUsers')
-      await this.dispatchStore('getApplicationWorkflows')
+      await this.refreshStore()
       this.userId = data.user._id
+      this.userEmail.value = data.user.email
+      this.userEmail.valid = true
     })
   },
   computed: {
@@ -133,6 +147,12 @@ export default {
     },
     closeModal () {
       this.modalVisible = false
+      this.selectedApps = []
+      this.userEmail = {
+        value: '',
+        error: null,
+        valid: false
+      }
     },
     showAddAppForm () {
       this.addAppFormVisible = true
@@ -159,19 +179,55 @@ export default {
             data: { payload }
           })
           if (updateUser.data.status === 'success') {
-            this.hideAddAppForm()
-            await this.dispatchStore('getAndroidUsers')
-            await this.dispatchStore('getApplicationWorkflows')
             bus.$emit('app_notif', {
               status: 'success',
               msg: updateUser.data.msg,
               timeout: 3000,
               redirect: false
             })
+            this.hideAddAppForm()
+            await this.refreshStore()
           }
         }
       } catch (error) {
         console.error(error)
+        bus.$emit('app_notif', {
+          status: 'error',
+          msg: error,
+          timeout: false,
+          redirect: false
+        })
+      }
+    },
+    async updateUserEmail (user) {
+      try {
+        this.$options.filters.testAndroidUserEmail(this.userEmail)
+        if (this.userEmail.valid) {
+          const payload = {
+            _id: user._id,
+            email: this.userEmail.value
+          }
+
+          const updateUser = await axios(`${process.env.VUE_APP_URL}/api/androidusers/${payload._id}`,{
+            method: 'put',
+            data: { payload }
+          })
+
+          if (updateUser.data.status === 'success') {
+            bus.$emit('app_notif', {
+              status: 'success',
+              msg: updateUser.data.msg,
+              timeout: 3000,
+              redirect: false
+            })
+            await this.refreshStore()
+            this.closeModal()
+          } else {
+            throw updateUser.data.msg
+          }
+        }
+        
+      } catch (error) {
         bus.$emit('app_notif', {
           status: 'error',
           msg: error,
@@ -192,11 +248,23 @@ export default {
             timeout: 3000,
             redirect: false
           })
-          await this.dispatchStore('getAndroidUsers')
-          await this.dispatchStore('getApplicationWorkflows')
+          await this.refreshStore()
         } else {
           throw removeUserFromApp.data.msg
         }
+      } catch (error) {
+        bus.$emit('app_notif', {
+          status: 'error',
+          msg: error,
+          timeout: false,
+          redirect: false
+        })
+      }
+    },
+    async refreshStore () {
+      try {
+        await this.dispatchStore('getAndroidUsers')
+        await this.dispatchStore('getApplicationWorkflows')
       } catch (error) {
         bus.$emit('app_notif', {
           status: 'error',

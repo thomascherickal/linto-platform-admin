@@ -218,6 +218,37 @@ module.exports = (webServer) => {
             }
         },
         {
+            // Update an android user
+            path: '/:userId',
+            method: 'put',
+            requireAuth: true,
+            controller: async(req, res, next) => {
+                try {
+                    // Set variables & values
+                    const payload = req.body.payload
+
+                    // Request
+                    const updateAndroidUser = await androidUsersModel.updateAndroidUser(payload)
+
+                    if (updateAndroidUser === 'success') {
+                        res.json({
+                            status: 'success',
+                            msg: `Android user ${payload.email} has been updated`
+                        })
+                    }
+
+                    // Response
+                    res.json(getAndroidUser)
+                } catch (error) {
+                    console.error(error)
+                    res.json({
+                        status: 'error',
+                        error
+                    })
+                }
+            }
+        },
+        {
             // Delete an android user
             /*
             payload = {

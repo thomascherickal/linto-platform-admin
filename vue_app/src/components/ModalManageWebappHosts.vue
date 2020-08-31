@@ -12,9 +12,7 @@
       <!-- BODY -->
       <div class="modal-body flex col">
         <div class="modal-body__content flex col">
-          
           <p v-if="registeredHosts.length > 0 && !showAddHostForm"> List of <strong>hosts</strong> registered in "<strong>{{ appName }}</strong>" android application.</p>
-
           <div class="flex row" v-if="registeredHosts.length > 0 && !showAddHostForm">
             <table class="table">
               <thead>
@@ -135,7 +133,6 @@ export default {
             method: 'put',
             data: { payload }
           })
-          console.log('>', updateWebappHost)
           if(updateWebappHost.data.status === 'success') {
             bus.$emit('app_notif', {
               status: 'success',

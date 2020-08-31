@@ -81,6 +81,34 @@ module.exports = (webServer) => {
             }
         },
         {
+            // Update a webapp host
+            path: '/:id',
+            method: 'put',
+            requireAuth: true,
+            controller: async(req, res, next) => {
+                try {
+                    const payload = req.body.payload
+
+                    // Request
+                    const updateWebappHost = await webappHostsModel.updateWebAppHost(payload)
+
+                    // Response
+                    if (updateWebappHost === 'success') {
+                        res.json({
+                            status: 'success',
+                            msg: `The host "${payload.originUrl}" has been updated`
+                        })
+                    }
+                } catch (error) {
+                    console.error(error)
+                    res.json({
+                        status: 'error',
+                        error
+                    })
+                }
+            }
+        },
+        {
             // Dissociate an application from a web app host
             path: '/:webappHostId/applications/:applicationId/remove',
             method: 'patch',
