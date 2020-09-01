@@ -106,7 +106,8 @@ export default {
         let sttLang = []
         if (this.sttServices.length > 0) {
           this.sttServices.map(service => {
-            if (!sttLang[service.lang]) {
+            
+            if(sttLang.filter(lang => lang.value === service.lang).length === 0) {
               sttLang.push({ value: service.lang })
             }
           })
@@ -277,9 +278,7 @@ export default {
       try {
         const nluLexSeed = await axios(`${process.env.VUE_APP_URL}/api/tock/lexicalseeding`, {
           method: 'post', 
-          data: { 
-            flowId: payload.flowId
-          }
+          data: { payload }
         })
         if(nluLexSeed.data.status === 'success') {
           this.nluLexSeedUpdate = true

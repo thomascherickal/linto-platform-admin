@@ -107,7 +107,8 @@ export default {
         let sttLang = []
         if (this.sttServices.length > 0) {
           this.sttServices.map(service => {
-            if (!sttLang[service.lang]) {
+            
+            if(sttLang.filter(lang => lang.value === service.lang).length === 0) {
               sttLang.push({ value: service.lang })
             }
           })
