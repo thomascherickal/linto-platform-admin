@@ -216,7 +216,7 @@ export default {
                       status: 'success',
                       msg: `Static client ${this.sn} has been deployed`,
                       timeout: 3000,
-                      redirect: 'http://localhost:9000/admin/clients/static'
+                      redirect: `${process.env.VUE_APP_URL}/admin/clients/static`
                     })
                   }
                 }

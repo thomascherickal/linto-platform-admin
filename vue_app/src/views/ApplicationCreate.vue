@@ -213,7 +213,7 @@ export default {
                     status: 'success',
                     msg: `Application ${this.workflowName.value} has been created`,
                     timeout: 3000,
-                    redirect: 'http://localhost:9000/admin/clients/application'
+                    redirect: `${process.env.VUE_APP_URL}/admin/clients/application`
                   })
                 }
               }
