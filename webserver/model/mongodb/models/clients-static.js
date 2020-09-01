@@ -49,7 +49,7 @@ class ClientsStaticModel extends MongoModel {
                 enrolled: true,
                 associated_workflow: null,
                 connexion: 'offline',
-                last_up: true,
+                last_up: null,
                 last_down: moment().format(),
                 config: {},
                 meeting: []
