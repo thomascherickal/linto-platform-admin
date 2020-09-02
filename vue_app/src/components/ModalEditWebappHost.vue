@@ -23,35 +23,6 @@
               </button>
             </div>
           </div>
-          
-          <div class="flex row" v-if="!addAppFormVisible">
-            <div class="flex col">
-              <span class="form__label">Request token :</span>
-              <input class="form__input form__input--disabled" disabled :value="requestToken"/>
-              <span class="form__error-field"></span>
-            </div>
-            <div class="flex1 row">
-              <button class="button button-icon-txt button--bluemid" @click="generateRequestToken()" style="margin:5px;">
-                <span class="button__icon button__icon--reset"></span>
-                <span class="button__label">Regenerate</span>
-              </button>
-              <button class="button button-icon-txt button--green" style="margin: 23px 0 0 10px" @click="updateRequestToken()">
-                <span class="button__icon button__icon--save"></span>
-                <span class="button__label">Save</span>
-              </button>
-            </div>
-          </div>
-
-          <div class="flex row" v-if="!addAppFormVisible">
-             <AppSelect :label="'Max slots'" :obj="maxSlots" :type="'numberArray'" :min="1" :max="50" :class="'flex1'"></AppSelect>
-            <div class="flex1 row">
-              <button class="button button-icon-txt button--green" style="margin: 23px 0 0 10px" @click="updateHostMaxSlots()">
-                <span class="button__icon button__icon--save"></span>
-                <span class="button__label">Save</span>
-              </button>
-            </div>
-          </div>
-
 
           <div class="flex row" v-if="addAppFormVisible">
             <button class="button button-icon-txt button--orange" @click="hideAddAppForm()">
@@ -66,12 +37,16 @@
                 <thead>
                   <tr>
                     <th>Application name</th>
+                    <th>Slots</th>
+                    <th>Request token</th>
                     <th>Dissociate</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="app in webappHost.applications" :key="app">
-                    <td>{{ workflowByName[app] }}</td>
+                  <tr v-for="app in webappHost.applications" :key="app.applicationId">
+                    <td>{{ workflowByName[app.applicationId] }}</td>
+                    <td>{{ app.maxSlots }}</td>
+                    <td>{{ app.requestToken }}</td>
                     <td class="center">
                       <button class="button button-icon button--red" @click="removeAppFromWebappHost(webappHost, app)">
                         <span class="button__icon button__icon--trash"></span>
@@ -92,15 +67,32 @@
           </div>
           <div class="flex col" v-else>
             <p>Please select applications to <strong>associate</strong> with web-application host "<strong>{{ webappHost.originUrl }}</strong>"</p>
-            <div class="flex col">
-              <ul class="checkbox-list">
-                <li v-for="wf in filteredApplicationWorkflows" :key="wf._id">
-                  <input type="checkbox" :value="wf._id" name="app-workflow" @change="updateSelectedApps($event, wf._id)">
-                  <span class="checkbox__label">{{ wf.name }}</span>
-                </li>
-              </ul>
-              
+            <div class="flex row">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th colspan="2">Application name</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr 
+                    v-for="wf in filteredApplicationWorkflows" 
+                    :key="wf._id" 
+                    :class="[selectedAppsIds.indexOf(wf._id) >= 0 ? 'active' : '']"
+                  >
+
+                    <td><input type="checkbox" @change="selectApp($event, wf)"></td>
+                    <td>{{ wf.name }}</td>
+                    <td v-if="selectedAppsIds.indexOf(wf._id) >= 0">
+                      <AppSelect :label="'Max slots'" :obj="selectedApps[selectedApps.findIndex(item => item.applicationId === wf._id)].maxSlots" :type="'numberArray'" :min="1" :max="50" :class="'flex1'" :extraClass="'form__select--inarray'"></AppSelect>
+                    </td>
+                    <td v-else></td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
+
+            
             <div class="divider small"></div>
             <div class="flex row">
               <button class="button button-icon-txt button--green" @click="addAppToWebappHost()">
@@ -130,6 +122,7 @@ export default {
       modalVisible: false,
       webappHostId: null,
       selectedApps: [],
+      selectedAppsIds: [],
       addAppFormVisible: false,
       applicationWorkflowsLoaded: false,
       webappHostsLoaded: false,
@@ -137,13 +130,8 @@ export default {
         value: '',
         error: null,
         valid: false
-      },
-      requestToken: null,
-      maxSlots: {
-        value: '',
-        error: null,
-        valid: false
       }
+      
     }
   },
   async mounted () {
@@ -155,11 +143,6 @@ export default {
       
       this.originUrl.value = data.webappHost.originUrl
       this.originUrl.valid = true
-
-      this.maxSlots.value = data.webappHost.maxSlots
-      this.maxSlots.valid = true
-
-      this.requestToken = data.webappHost.requestToken
     })
   },
   computed: {
@@ -173,9 +156,18 @@ export default {
       return this.$store.state.applicationWorkflows
     },
     filteredApplicationWorkflows () {
-      const applications = this.webappHost.applications
-      if (applications.length > 0) {
-        return this.applicationWorkflows.filter(wf => applications.indexOf(wf._id) < 0)
+      const hostApplications = this.webappHost.applications
+      const allApps = this.applicationWorkflows
+      let filteredApps = []
+
+      if (hostApplications.length > 0) {
+        allApps.map(app => {
+          if(hostApplications.findIndex(item => item.applicationId === app._id) < 0) {
+            filteredApps.push(app)
+          }
+        })
+
+        return filteredApps
       } else {
         return this.applicationWorkflows
       }
@@ -205,6 +197,24 @@ export default {
     hideAddAppForm () {
       this.addAppFormVisible = false
       this.selectedApps = []
+      this.selectedAppsIds = []
+    },
+    selectApp (event, wf) {
+      if (event.srcElement.checked) {
+        this.selectedAppsIds.push(wf._id)
+        this.selectedApps.push({
+          applicationId: wf._id,
+          requestToken: this.generateRequestToken(),
+          maxSlots: {
+            value: 1,
+            error: null,
+            valid: true
+          }
+        })
+      } else {
+        this.selectedAppsIds.pop(wf._id)
+        this.selectedApps.splice(this.selectedApps.findIndex(item => item.applicationId === wf._id), 1)
+      }
     },
     updateSelectedApps (event, workflowId) {
       if (event.srcElement.checked) {
@@ -218,16 +228,24 @@ export default {
       const tokenExist = this.webappHosts.filter(wh => wh.requestToken === token)  
       if(tokenExist.length > 0) {
         this.generateRequestToken()
-      } else {
-        this.requestToken = token
-      }
+      } 
+      return token
     },
     async addAppToWebappHost () {
       try {
         if (this.selectedApps.length > 0) {
-          const payload = {
-            applications: this.selectedApps
+          let payload = {
+            applications: []
           }
+          this.selectedApps.map(app => {
+            payload.applications.push({
+              applicationId: app.applicationId,
+              requestToken: app.requestToken,
+              maxSlots: app.maxSlots.value,
+              slots: []
+            })
+          })
+          
           const updateWebappHost = await axios(`${process.env.VUE_APP_URL}/api/webapphosts/${this.webappHost._id}/applications`, {
             method: 'put',
             data: { payload }
@@ -241,6 +259,8 @@ export default {
               timeout: 3000,
               redirect: false
             })
+          } else {
+            throw updateWebappHost.data.msg
           }
         }
       } catch (error) {
@@ -252,10 +272,15 @@ export default {
         })
       }
     },
-    async removeAppFromWebappHost (webappHost, appId) {
+    async removeAppFromWebappHost (webappHost, app) {
       try {
-        const removeApp = await axios(`${process.env.VUE_APP_URL}/api/webapphosts/${webappHost._id}/applications/${appId}/remove`, {
-          method: 'patch'
+        const payload = {
+          webappHost, 
+          app
+        }
+        const removeApp = await axios(`${process.env.VUE_APP_URL}/api/webapphosts/${webappHost._id}/applications/${app.applicationId}`, {
+          method: 'patch',
+          data: { payload }
         })
         if (removeApp.data.status === 'success'){
           bus.$emit('app_notif', {

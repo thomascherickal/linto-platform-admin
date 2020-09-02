@@ -12,31 +12,9 @@
       <!-- BODY -->
       <div class="modal-body flex col" v-if="dataLoaded">
         <div class="modal-body__content flex col" >
+          <p>Please enter a web application host origin url: </p>
           <div class="flex col">
-            <AppInput :label="'Host'" :obj="webappHost" :test="'testUrl'"></AppInput>
-
-            <div v-if="webappHost.valid" class="flex col">
-              <span class="form__label">Request token :</span>
-              <div class="flex row">
-                <input class="form__input form__input--disabled" disabled :value="requestToken"/> 
-                <button class="button button-icon-txt button--green" @click="generateRequestToken()" style="margin:5px;">
-                  <span class="button__icon button__icon--reset"></span>
-                  <span class="button__label">Regenerate</span>
-                </button>
-              </div>
-            </div>
-            <div class="divider small"></div>
-            <AppSelect :label="'Max slots'" :obj="maxSlots" :type="'numberArray'" :min="1" :max="50" ></AppSelect>
-
-
-            <span class="form__label">Select applications :</span>
-            <ul class="checkbox-list">
-              <li v-for="app in applicationWorkflows" :key="app._id">
-                <input type="checkbox" name="app-wf" :value="app._id" @change="selectApp($event, app._id)"> 
-                <span class="checkbox__label">{{ app.name }}</span>
-              </li>
-            </ul>
-           <span class="form__error-field">{{ applications.error }}</span>
+            <AppInput :label="'Origin url'" :obj="webappHost" :test="'testUrl'"></AppInput>
           </div>
         </div>
       </div>
@@ -56,10 +34,8 @@
 </template>
 <script>
 import AppInput from '@/components/AppInput.vue'
-import AppSelect from '@/components/AppSelect.vue'
 import { bus } from '../main.js'
 import axios from 'axios'
-import randomstring from 'randomstring'
 export default {
   data () {
     return {
@@ -69,17 +45,7 @@ export default {
         error: null,
         valid: false
       },
-      requestToken: null,
-      maxSlots: {
-        value: 1,
-        error: null,
-        valid: true
-      },
-      applications: {
-        value: []
-      },
-     webappHostsLoaded: false,
-     applicationWorkflowsLoaded: false
+      webappHostsLoaded: false
     }
   },
   async mounted () {
@@ -88,27 +54,15 @@ export default {
       await this.refreshStore()
     })
   },
-  watch: {
-    'webappHost.valid' (data) {
-      if (data) {
-        this.generateRequestToken()
-      } else {
-        this.requestToken = null
-      }
-    }
-  },
   computed: {
     dataLoaded () {
-      return this.applicationWorkflowsLoaded && this.webappHostsLoaded
+      return this.webappHostsLoaded
     },
     webappHosts () {
       return this.$store.state.webappHosts
     },
-    applicationWorkflows () {
-      return this.$store.state.applicationWorkflows
-    },
     formValid () {
-      return (this.webappHost.valid && this.maxSlots.valid && this.requestToken !== null)
+      return this.webappHost.valid
     }
   },
   methods: {
@@ -123,37 +77,9 @@ export default {
         error: null,
         valid: false
       }
-      this.requestToken = null
-      this. maxSlots = {
-        value: 1,
-        error: null,
-        valid: true
-      }
-      this.applications = {
-        value: []
-      }
-    },
-    selectApp (event, appId) {
-      if (event.srcElement.checked) {
-        this.applications.value.push(appId)
-      } else {
-        this.applications.value.pop(appId)
-      }
-    },
-    generateRequestToken () {
-      const token = randomstring.generate(16)
-      const tokenExist = this.webappHosts.filter(wh => wh.requestToken === token)  
-      if(tokenExist.length > 0) {
-        this.generateRequestToken()
-      } else {
-        this.requestToken = token
-      }
-      
     },
     async handleForm () {
       this.$options.filters.testUrl(this.webappHost)
-      this.$options.filters.testInteger(this.maxSlots)
-
       if (this.formValid) {
         await this.createWebappHost()
       }
@@ -161,10 +87,7 @@ export default {
     async createWebappHost () {
       try {
         const payload = {
-          originUrl: this.webappHost.value,
-          requestToken: this.requestToken,
-          maxSlots: this.maxSlots.value,
-          applications: this.applications.value
+          originUrl: this.webappHost.value
         }
 
         const createWebappHost = await axios(`${process.env.VUE_APP_URL}/api/webapphosts`, { 
@@ -193,7 +116,6 @@ export default {
     async refreshStore () {
       try {
         await this.dispatchStore('getWebappHosts')
-        await this.dispatchStore('getApplicationWorkflows')
       } catch (error) {
         bus.$emit('app_notif', {
           status: 'error',
@@ -214,9 +136,6 @@ export default {
           case 'getWebappHosts':
             this.webappHostsLoaded = dispatchSuccess
             break
-          case 'getApplicationWorkflows':
-            this.applicationWorkflowsLoaded = dispatchSuccess
-            break
           default:
             return
         }  
@@ -231,7 +150,6 @@ export default {
     }
   },
   components: {
-    AppSelect,
     AppInput
   }
 }

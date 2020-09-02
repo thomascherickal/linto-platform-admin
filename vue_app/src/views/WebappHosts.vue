@@ -12,8 +12,6 @@
           <thead>
             <tr>
               <th>Host</th>
-              <th>requestToken</th>
-              <th>MaxSlots</th>
               <th>Applications</th>
               <th>Edit</th>
               <th>Delete</th>
@@ -22,12 +20,10 @@
           <tbody>
             <tr v-for="webapp in webappHosts" :key="webapp._id">
               <td><strong>{{ webapp.originUrl }}</strong></td>
-              <td>{{ webapp.requestToken }}</td>
-              <td>{{ webapp.maxSlots }}</td>
               <td>
-                <ul class="checkbox-list no-borders" v-if="webapp.applications.length > 0">
-                  <li v-for="app in webapp.applications" :key="app">
-                    {{ workflowByName[app] }}
+                <ul class="array-list" v-if="webapp.applications.length > 0">
+                  <li v-for="app in webapp.applications" :key="app.applicationId">
+                    {{ workflowByName[app.applicationId] }}
                   </li>
                 </ul>
                 <span class="none" v-else>none</span>

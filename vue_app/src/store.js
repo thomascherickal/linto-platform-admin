@@ -313,8 +313,16 @@ export default new Vuex.Store({
         },
         WEB_APP_HOST_BY_APP_ID: (state) => (workflowId) => {
             try {
-                const hosts = state.webappHosts
-                return hosts.filter(host => host.applications.indexOf(workflowId) >= 0)
+                let hosts = state.webappHosts
+                let webappHostsById = []
+                hosts.map(host => {
+                    host.applications.map(app => {
+                        if (app.applicationId.indexOf(workflowId) >= 0) {
+                            webappHostsById.push(host)
+                        }
+                    })
+                })
+                return webappHostsById
             } catch (error) {
                 return { error }
             }
@@ -323,14 +331,13 @@ export default new Vuex.Store({
             try {
                 const webappHosts = state.webappHosts
                 let hostByApp = []
-
                 if (webappHosts.length > 0) {
                     webappHosts.map(host => {
                         host.applications.map(app => {
-                            if (!hostByApp[app]) {
-                                hostByApp[app] = [host.originUrl]
+                            if (!hostByApp[app.applicationId]) {
+                                hostByApp[app.applicationId] = [host.originUrl]
                             } else {
-                                hostByApp[app].push(host.originUrl)
+                                hostByApp[app.applicationId].push(host.originUrl)
                             }
                         })
                     })

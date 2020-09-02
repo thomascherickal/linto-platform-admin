@@ -45,6 +45,9 @@
         padding: 20px 0;
         overflow: auto;
         flex: 1;
+        &>.flex {
+            padding: 0 5px;
+        }
         .modal-body__content {
             .subtitle {
                 display: inline-block;

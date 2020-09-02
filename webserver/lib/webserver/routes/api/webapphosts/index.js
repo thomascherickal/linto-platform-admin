@@ -110,30 +110,27 @@ module.exports = (webServer) => {
         },
         {
             // Dissociate an application from a web app host
-            path: '/:webappHostId/applications/:applicationId/remove',
+            path: '/:webappHostId/applications/:applicationId',
             method: 'patch',
             requireAuth: true,
             controller: async(req, res, next) => {
                 try {
                     // Set variables & values
+                    const payload = req.body.payload
+
                     const applicationId = req.params.applicationId
-                    const webappHostId = req.params.webappHostId
-
-                    // get Webapp host data
-                    const webappHost = await webappHostsModel.getWebappHostById(webappHostId)
-
-                    // get application workflow data
                     const applicationWorkflow = await applicationWorkflowsModel.getApplicationWorkflowById(applicationId)
 
-                    // Format data for update
-                    let applications = webappHost.applications
-                    applications.pop(applicationId)
+                    let webappHost = payload.webappHost
+
+                    const appIndex = webappHost.applications.findIndex(item => item.applicationId === applicationId)
+
+                    if (appIndex >= 0)  {
+                        webappHost.applications.splice(appIndex, 1)
+                    }
 
                     // Request
-                    const updateWebappHost = await webappHostsModel.updateWebappHost({
-                        _id: webappHostId,
-                        applications
-                    })
+                    const updateWebappHost = await webappHostsModel.updateWebappHost(webappHost)
 
                     // Response
                     if (updateWebappHost === 'success') {

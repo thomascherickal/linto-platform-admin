@@ -21,7 +21,7 @@
             <tr v-for="user in androidRegisteredUsers" :key="user._id">
               <td><strong>{{ user.email }}</strong></td>
               <td>
-                <ul class="checkbox-list no-borders" v-if="user.applications.length > 0">
+                <ul class="array-list" v-if="user.applications.length > 0">
                   <li v-for="app in user.applications" :key="app">
                     {{ workflowByName[app] }}
                   </li>

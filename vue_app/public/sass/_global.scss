@@ -74,39 +74,47 @@ ul {
     li {
         padding: 0;
     }
-}
-
-ul.checkbox-list {
-    padding: 20px;
-    border: 1px solid $blueLight;
-    display: flex;
-    flex-direction: column;
-    padding: 10px;
-    li {
-        display: inline-block;
-        flex: 1;
-        height: 30px;
-        input[type=checkbox] {
+    &.checkbox-list {
+        padding: 20px;
+        border: 1px solid $blueLight;
+        display: flex;
+        flex-direction: column;
+        padding: 10px;
+        li {
             display: inline-block;
-            line-height: 30px;
-            vertical-align: top;
-            margin: 10px 5px;
+            flex: 1;
+            height: 30px;
+            input[type=checkbox] {
+                display: inline-block;
+                line-height: 30px;
+                vertical-align: top;
+                margin: 10px 5px;
+            }
+            .checkbox__label {
+                line-height: 30px;
+                vertical-align: top;
+                font-size: 16px;
+                color: $blueDark;
+            }
+            .none {
+                display: inline-block;
+                font-style: italic;
+                color: #ccc;
+            }
         }
-        .checkbox__label {
-            line-height: 30px;
-            vertical-align: top;
-            font-size: 16px;
-            color: $blueDark;
-        }
-        .none {
-            display: inline-block;
-            font-style: italic;
-            color: #ccc;
+        &.no-borders {
+            border: none;
+            padding: 10px;
         }
     }
-    &.no-borders {
-        border: none;
-        padding: 10px;
+    &.array-list {
+        padding: 0 10px;
+        list-style-type: disc;
+        li {
+            padding: 2px 0;
+            font-size: 15px;
+            font-weight: 600;
+        }
     }
 }
 
@@ -265,8 +273,12 @@ ul.checkbox-list {
                 }
             }
             &.active {
-                td {
-                    background-color: $greenLight;
+                &,
+                &:hover {
+                    td {
+                        background-color: rgba(125, 252, 245, 0.1);
+                        border: 1x solid $valid;
+                    }
                 }
             }
             &.center {

@@ -102,7 +102,7 @@
     4px,
     0,
     rgba(0, 0, 0, 0.3));
-    font-size: 16px;
+    font-size: 15px;
     background-color: #fff;
     color: #333;
     max-width: 400px;
@@ -121,6 +121,9 @@
         background-color: #ececec;
         border-color: #ccc;
         color: $textColor;
+    }
+    &.form__select--inarray {
+        max-width: 120px;
     }
 }
 

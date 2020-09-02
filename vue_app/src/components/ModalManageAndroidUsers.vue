@@ -22,7 +22,7 @@
               </thead>
               <tbody>
                 <tr v-for="user in androidRegisteredUsers" :key="user._id">
-                  <td>{{ user.email }}</td>
+                  <td><strong>{{ user.email }}</strong></td>
                   <td>
                     <button class="button button-icon button--red" @click="removeUserFromApp(user, workflowId)">
                       <span class="button__icon button__icon--trash"></span>

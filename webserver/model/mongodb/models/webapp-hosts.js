@@ -27,8 +27,12 @@ class WebAppHosts extends MongoModel {
     // Create a web-application hosts
     async createWebAppHost(payload) {
         try {
-            if (this.testSchema(payload, WebAppHostsSchema)) {
-                return await this.mongoInsert(payload)
+            const hostPayload = {
+                originUrl: payload.originUrl,
+                applications: []
+            }
+            if (this.testSchema(hostPayload, WebAppHostsSchema)) {
+                return await this.mongoInsert(hostPayload)
             } else {
                 throw 'Invalid document format'
             }
