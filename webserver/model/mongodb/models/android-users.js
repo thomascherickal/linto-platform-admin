@@ -120,6 +120,21 @@ class AndroidUsersModel extends MongoModel {
         }
     }
 
+    async upadeAndroidUserPassword(payload) {
+        try {
+            const query = { _id: this.getObjectId(payload._id) }
+            const salt = randomstring.generate(12)
+            let userPayload = {
+                pswdHash: sha1(payload.pswd + salt),
+                salt
+            }
+            return await this.mongoUpdate(query, userPayload)
+        } catch (error) {
+            console.error(error)
+            return error
+        }
+    }
+
     async removeApplicationFromAndroidUsers(applicationId) {
         try {
             const query = {

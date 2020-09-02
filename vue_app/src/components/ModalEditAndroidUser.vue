@@ -14,14 +14,30 @@
         <div class="modal-body__content flex col">
           <span class="subtitle" v-if="!addAppFormVisible">User informations</span>
           <div class="flex row" v-if="!addAppFormVisible">
-            <AppInput :label="'Email'" :obj="userEmail" :test="'testAndroidUserEmail'" :class="'flex1'"></AppInput>
-            <div class="flex1 row">
+            <AppInput :label="'Email'" :obj="userEmail" :test="'testAndroidUserEmail'" :class="'flex2'"></AppInput>
+            <div class="flex flex1 row">
               <button class="button button-icon-txt button--green" style="margin: 23px 0 0 10px" @click="updateUserEmail(user)">
                 <span class="button__icon button__icon--save"></span>
                 <span class="button__label">Save</span>
               </button>
             </div>
           </div>
+
+          <span class="subtitle" v-if="!addAppFormVisible">Update password</span>
+          <div class="flex row" v-if="!addAppFormVisible">
+            <div class="flex col flex2">
+              <AppInput :label="'New password'" :obj="userPswd" :test="'testPassword'" :type="'password'"></AppInput>
+
+              <AppInput :label="'Password confirmation'" :obj="userPswdConfirm" :test="'testPasswordConfirm'" :compare="userPswd" :type="'password'"></AppInput>
+            </div>
+            <div class="flex flex1 row">
+               <button class="button button-icon-txt button--green" style="margin: 103px 0 0 10px" @click="updateUserPassword(user)">
+                <span class="button__icon button__icon--save"></span>
+                <span class="button__label">Save</span>
+              </button>
+            </div>
+          </div>
+
           <div class="flex row" v-if="addAppFormVisible">
             <button class="button button-icon-txt button--orange" @click="hideAddAppForm()">
               <span class="button__icon button__icon--back"></span>
@@ -102,7 +118,17 @@ export default {
         value: '',
         error: null,
         valid: false
-      }
+      },
+      userPswd: {
+        value: '',
+        error: null,
+        valid: false
+      },
+      userPswdConfirm: {
+        value: '',
+        error: null,
+        valid: false
+      },
     }
   },
   async mounted () {
@@ -256,6 +282,50 @@ export default {
         bus.$emit('app_notif', {
           status: 'error',
           msg: error,
+          timeout: false,
+          redirect: false
+        })
+      }
+    },
+    async updateUserPassword (user) {
+      try {
+        this.$options.filters.testPassword(this.userPswd)
+        this.$options.filters.testPasswordConfirm(this.userPswdConfirm, this.userPswd)
+        if (this.userPswd.valid && this.userPswdConfirm.valid) {
+          const payload = {
+            email: user.email,
+            _id: user._id,
+            newPswd: this.userPswd.value,
+            newPswdConfirmation: this.userPswd.value
+          }
+          const updateUser = await axios(`${process.env.VUE_APP_URL}/api/androidusers/${user._id}/pswd`, {
+            method: 'put',
+            data: { payload }
+          })
+
+          if (updateUser.data.status === 'success'){
+            this.userPswd = {
+              value: '',
+              error: null,
+              valid: false
+            }
+            this.userPswdConfirm = this.userPswd
+
+            bus.$emit('app_notif', {
+              status: 'success',
+              msg: updateUser.data.msg,
+              timeout: 3000,
+              redirect: false
+            })
+            await this.refreshStore()
+          } else {
+            throw updateUser.data.msg
+        }
+        } 
+      } catch (error) {
+        bus.$emit('app_notif', {
+          status: 'error',
+          msg: !!error.msg ? error.msg : error,
           timeout: false,
           redirect: false
         })

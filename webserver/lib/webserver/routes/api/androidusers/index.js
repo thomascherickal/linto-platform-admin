@@ -249,6 +249,43 @@ module.exports = (webServer) => {
             }
         },
         {
+            // Update an android user
+            path: '/:userId/pswd',
+            method: 'put',
+            requireAuth: true,
+            controller: async(req, res, next) => {
+                try {
+                    // Set variables & values
+                    const payload = req.body.payload
+
+                    if (payload.newPswd === payload.newPswdConfirmation) {
+                        const userPayload = {
+                            _id: payload._id,
+                            pswd: payload.newPswd
+                        }
+                        const updateUserPswd = await androidUsersModel.upadeAndroidUserPassword(userPayload)
+
+                        if (updateUserPswd === 'success') {
+                            res.json({
+                                status: 'success',
+                                msg: `Android user ${payload.email} has been updated`
+                            })
+                        } else {
+                            throw `Error on updating android user ${payload.email}`
+                        }
+                    } else {
+                        throw 'Password and confirmation password don\'t match'
+                    }
+                } catch (error) {
+                    console.error(error)
+                    res.json({
+                        status: 'error',
+                        error
+                    })
+                }
+            }
+        },
+        {
             // Delete an android user
             /*
             payload = {
