@@ -13,8 +13,8 @@
             <tr>
               <th>Application Name</th>
               <th>Description</th>
-              <th>Android app</th>
-              <th>Web-app</th>
+              <th>Android users</th>
+              <th>Web-app hosts</th>
               <th>Deployed workflow</th>
               <th>Services Parameters</th>
               <th>Delete</th>
