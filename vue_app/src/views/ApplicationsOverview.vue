@@ -49,7 +49,7 @@
                 </a>
               </td>
               <td class="center">
-                <button class="button button-icon-txt button--green button--with-desc bottom" data-desc="Edit services settings" @click="updateWorkflowServicesSettings(app)">
+                <button class="button button-icon-txt button--blue button--with-desc bottom" data-desc="Edit services settings" @click="updateWorkflowServicesSettings(app)">
                   <span class="button__icon button__icon--settings"></span>
                   <span class="button__label">Edit</span>
                 </button>

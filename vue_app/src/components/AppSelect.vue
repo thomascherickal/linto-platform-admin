@@ -1,6 +1,6 @@
 <template>
   <div class="flex col">
-    <span class="form__label">{{ label }} :</span>
+    <span class="form__label" v-if="!noLabel">{{ label }} :</span>
     <select
       v-if="!type"
       class="form__select"
@@ -41,7 +41,7 @@
 </template>
 <script>
 export default {
-  props: ['label','obj','list','params','options', 'disabled', 'disabledTxt', 'type', 'min','max', 'extraClass'],
+  props: ['label','obj','list','params','options', 'disabled', 'disabledTxt', 'type', 'min','max', 'extraClass', 'noLabel'],
   data () {
     return {
       numberArray: []

@@ -40,16 +40,48 @@
                     <th>Slots</th>
                     <th>Request token</th>
                     <th>Dissociate</th>
+                    <th>Edit</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="app in webappHost.applications" :key="app.applicationId">
-                    <td>{{ workflowByName[app.applicationId] }}</td>
-                    <td>{{ app.maxSlots }}</td>
-                    <td>{{ app.requestToken }}</td>
+                  <tr 
+                    v-for="app in webappHost.applications" 
+                    :key="app.applicationId"
+                    :class="editingIds.indexOf(app.applicationId) >= 0 ? 'active' : ''"
+                  >
+                    <td><strong>{{ workflowByName[app.applicationId] }}</strong></td>
+                    <!-- Slots -->
+                    <td v-if="editingIds.indexOf(app.applicationId) < 0">{{ app.maxSlots }}</td>
+                    <td v-else>
+                        <AppSelect :label="'Max slots'" :obj="editingObj[editingObj.findIndex(item => item.applicationId === app.applicationId)].maxSlots" :type="'numberArray'" :min="1" :max="50" :class="'flex1'" :extraClass="'form__select--inarray'" :noLabel="true"></AppSelect>
+                    </td>
+                    
+                    <!-- Request Token -->
+                    <td v-if="editingIds.indexOf(app.applicationId) < 0">{{ app.requestToken }}</td>
+                    <td v-else>
+                      <div class="flex row">
+                        <input type="text" class="form__input" disabled="disabled" v-model="editingObj[editingObj.findIndex(item => item.applicationId === app.applicationId)].requestToken" />
+
+                        <button class="button button-icon button--blue" @click="generateToken(app.applicationId)" style="margin: 5px 0 0 5px;">
+                          <span class="button__icon button__icon--reset"></span>
+                        </button>
+                      </div>
+
+                    </td>
+
                     <td class="center">
-                      <button class="button button-icon button--red" @click="removeAppFromWebappHost(webappHost, app)">
+                      <button class="button button--icon button--red" @click="removeAppFromWebappHost(webappHost, app)">
                         <span class="button__icon button__icon--trash"></span>
+                      </button>
+                    </td>
+                    <td v-if="editingIds.indexOf(app.applicationId) < 0"><button class="button button-icon button--blue" @click="toggleEditParameters(webappHost, app)">
+                      <span class="button__icon button__icon--edit"></span></button></td>
+                    <td v-else>
+                      <button @click="toggleEditParameters(webappHost, app)" class="button button-icon button--grey" style="margin-right: 10px;">
+                        <span class="button__icon button__icon--cancel"></span>
+                      </button>
+                      <button @click="updateApplicationParameters(app.applicationId)" class="button button-icon button--green">
+                        <span class="button__icon button__icon--apply"></span>
                       </button>
                     </td>
                   </tr>
@@ -80,7 +112,6 @@
                     :key="wf._id" 
                     :class="[selectedAppsIds.indexOf(wf._id) >= 0 ? 'active' : '']"
                   >
-
                     <td><input type="checkbox" @change="selectApp($event, wf)"></td>
                     <td>{{ wf.name }}</td>
                     <td v-if="selectedAppsIds.indexOf(wf._id) >= 0">
@@ -91,8 +122,6 @@
                 </tbody>
               </table>
             </div>
-
-            
             <div class="divider small"></div>
             <div class="flex row">
               <button class="button button-icon-txt button--green" @click="addAppToWebappHost()">
@@ -130,7 +159,9 @@ export default {
         value: '',
         error: null,
         valid: false
-      }
+      },
+      editingIds: [],
+      editingObj: []
       
     }
   },
@@ -166,7 +197,6 @@ export default {
             filteredApps.push(app)
           }
         })
-
         return filteredApps
       } else {
         return this.applicationWorkflows
@@ -184,12 +214,71 @@ export default {
     }
   },
   methods: {
+      generateToken(applicationId) {
+        this.editingObj[this.editingObj.findIndex(item => item.applicationId === applicationId)].requestToken = this.generateRequestToken()
+      },
+      async toggleEditParameters(webappHost, app){
+      if(this.editingIds.indexOf(app.applicationId) < 0){
+        this.editingIds.push(app.applicationId)
+        this.editingObj.push({
+          webappHostId: webappHost._id,
+          applicationId:app.applicationId,
+          maxSlots: {
+            value: app.maxSlots,
+            error: null,
+            valid: true
+          },
+          requestToken: app.requestToken
+        })
+      } else {
+        this.editingIds.pop(app.applicationId)
+        this.editingObj.pop(this.editingObj.findIndex(item => item.applicationId === app.applicationId))
+      }
+    },
+    async updateApplicationParameters (applicationId) {
+      try {
+        const payload = this.editingObj[this.editingObj.findIndex(item => item.applicationId === applicationId)]
+
+        const updateWebappHostApplication = await axios(`${process.env.VUE_APP_URL}/api/webapphosts/${payload.webappHostId}/applications`, {
+          method: 'patch',
+          data: {payload}
+        })
+        if (updateWebappHostApplication.data.status === 'success') {
+          this.editingIds.pop(applicationId)
+          this.editingObj.pop(this.editingObj.findIndex(item => item.applicationId === app.applicationId))
+
+          await this.refreshStore()
+          bus.$emit('app_notif', {
+            status: 'success',
+            msg: updateWebappHostApplication.data.msg,
+            timeout: 3000,
+            redirect: false
+          })
+        } else {
+          throw updateWebappHostApplication.data.msg
+        }
+      } catch (error) {
+        bus.$emit('app_notif', {
+          status: 'error',
+          msg: error,
+          timeout: false,
+          redirect: false
+        })
+      }
+    },
     showModal () {
       this.modalVisible = true
       this.hideAddAppForm()
     },
     closeModal () {
       this.modalVisible = false
+      this.originUrl = {
+        value: '',
+        error: null,
+        valid: false
+      },
+      this.editingIds = [],
+      this.editingObj = []
     },
     showAddAppForm () {
       this.addAppFormVisible = true
@@ -385,6 +474,7 @@ export default {
         })
       }
     },
+  
     async refreshStore () {
       try {
         await this.dispatchStore('getWebappHosts')

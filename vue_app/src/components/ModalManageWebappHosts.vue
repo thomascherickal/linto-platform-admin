@@ -12,7 +12,7 @@
       <!-- BODY -->
       <div class="modal-body flex col">
         <div class="modal-body__content flex col">
-          <div class="flex row">
+          <div class="flex row button--toggle__container">
             <span class="button--toggle__label">Android authentication: </span>
             <button class="button--toggle" :class="webappAuth ? 'enabled': 'disabled'" @click="toggleWebappAuth()">
               <span class="button--toggle__disc"></span>
@@ -31,9 +31,9 @@
               </thead>
               <tbody>
                 <tr v-for="host in registeredHosts" :key="host._id">
-                  <td> <strong>{{ host.originUrl }}</strong></td>
-                  <td> {{ host.applications.filter(app => app.applicationId === workflowId)[0].requestToken }}
-                  <td> {{ host.applications.filter(app => app.applicationId === workflowId)[0].maxSlots }}
+                  <td><strong>{{ host.originUrl }}</strong></td>
+                  <td>{{ host.applications.filter(app => app.applicationId === workflowId)[0].requestToken }}</td>
+                  <td>{{ host.applications.filter(app => app.applicationId === workflowId)[0].maxSlots }}</td>
                   <td>
                     <button class="button button-icon button--red" @click="removeAppFromWebappHost(host, workflowId)">
                       <span class="button__icon button__icon--trash"></span>

@@ -12,7 +12,7 @@
       <!-- BODY -->
       <div class="modal-body flex col">
         <div class="modal-body__content flex col">
-          <div class="flex row">
+          <div class="flex row button--toggle__container">
             <span class="button--toggle__label">Android authentication: </span>
             <button class="button--toggle" :class="androidAuth ? 'enabled': 'disabled'" @click="toggleAndroidAuth()">
               <span class="button--toggle__disc"></span>

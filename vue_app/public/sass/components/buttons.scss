@@ -107,6 +107,9 @@
         &.button__icon--reset {
             @include maskImage('../img/svg/reset.svg');
         }
+        &.button__icon--edit {
+            @include maskImage('../img/svg/edit.svg');
+        }
         &.button__icon--loading {
             @include maskImage('../img/svg/loading.svg');
             @include rotate();
@@ -274,6 +277,11 @@
 
 a.button {
     height: 30px;
+}
+
+.button--toggle__container {
+    padding-bottom: 20px;
+    border-bottom: 1px solid $blueLight;
 }
 
 .button--toggle__label {

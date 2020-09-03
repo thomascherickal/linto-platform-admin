@@ -117,16 +117,12 @@ module.exports = (webServer) => {
                 try {
                     // Set variables & values
                     const payload = req.body.payload
-
                     const applicationId = req.params.applicationId
                     const applicationWorkflow = await applicationWorkflowsModel.getApplicationWorkflowById(applicationId)
-
                     let webappHost = payload.webappHost
 
-                    const appIndex = webappHost.applications.findIndex(item => item.applicationId === applicationId)
-
                     if (appIndex >= 0)  {
-                        webappHost.applications.splice(appIndex, 1)
+                        webappHost.applications.splice(webappHost.applications.findIndex(item => item.applicationId === applicationId), 1)
                     }
 
                     // Request
@@ -157,7 +153,6 @@ module.exports = (webServer) => {
               applications: Array (Array of application workflow_id)
             }
             */
-            // Link : /api-docs/#/android_users/AddApplicationToAndroidUser
             path: '/:webappHostId/applications',
             method: 'put',
             requireAuth: true,
@@ -187,6 +182,54 @@ module.exports = (webServer) => {
                     } else {
                         throw 'Error on updating user'
                     }
+                } catch (error) {
+                    console.error(error)
+                    res.json({
+                        status: 'error',
+                        error
+                    })
+                }
+            }
+        },
+        {
+            // Update a webappHost application
+            /* 
+            payload = {
+              webappHostId: webappHost._id,
+              applicationId:app.applicationId,
+              maxSlots: {
+                value: app.maxSlots,
+                error: null,
+                valid: true
+              },
+              requestToken: app.requestToken
+            }
+            */
+            path: '/:webappHostId/applications',
+            method: 'patch',
+            requireAuth: true,
+            controller: async(req, res, next) => {
+                try {
+                    const payload = req.body.payload
+                    const webappHostId = req.params.webappHostId
+                    let webappHost = await webappHostsModel.getWebappHostById(webappHostId)
+
+                    webappHost.applications[webappHost.applications.findIndex(item => item.applicationId === payload.applicationId)].requestToken = payload.requestToken
+                    webappHost.applications[webappHost.applications.findIndex(item => item.applicationId === payload.applicationId)].maxSlots = payload.maxSlots.value
+
+                    // Request
+                    const updateWebappHost = await webappHostsModel.updateWebappHost(webappHost)
+
+                    // Response
+                    if (updateWebappHost === 'success') {
+                        res.json({
+                            status: 'success',
+                            msg: `New applications have been attached to Web appliaction host "${webappHost.originUrl}"`
+                        })
+                    } else {
+                        throw 'Error on updating user'
+                    }
+
                 } catch (error) {
                     console.error(error)
                     res.json({
