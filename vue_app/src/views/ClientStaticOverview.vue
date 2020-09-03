@@ -37,7 +37,7 @@
                   <span class="button__icon button__icon--settings"></span>
                 </button>
               </td>
-              <td class="table--desc">{{ !!workflowByClients[client._id].description && workflowByClients[client._id].description.length > 0 ? workflowByClients[client._id].description : 'No description.'}}</td>
+              <td class="table--desc">{{ !!workflowByClients[client._id].description && workflowByClients[client._id].description.length > 0 ? workflowByClients[client._id].description : 'No description'}}</td>
               <td>
                 <a :href="`/admin/clients/static/workflow/${client.associated_workflow._id}`" class="button button-icon-txt button--bluemid button--with-desc bottom" data-desc="Edit on Node-red interface">
                   <span class="button__icon button__icon--workflow"></span>

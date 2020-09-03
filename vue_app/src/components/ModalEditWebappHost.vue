@@ -39,8 +39,9 @@
                     <th>Application name</th>
                     <th>Slots</th>
                     <th>Request token</th>
-                    <th>Dissociate</th>
                     <th>Edit</th>
+                    <th>Dissociate</th>
+                    
                   </tr>
                 </thead>
                 <tbody>
@@ -66,16 +67,11 @@
                           <span class="button__icon button__icon--reset"></span>
                         </button>
                       </div>
-
                     </td>
-
-                    <td class="center">
-                      <button class="button button--icon button--red" @click="removeAppFromWebappHost(webappHost, app)">
-                        <span class="button__icon button__icon--trash"></span>
-                      </button>
-                    </td>
+                    
                     <td v-if="editingIds.indexOf(app.applicationId) < 0"><button class="button button-icon button--blue" @click="toggleEditParameters(webappHost, app)">
-                      <span class="button__icon button__icon--edit"></span></button></td>
+                      <span class="button__icon button__icon--edit"></span></button>
+                    </td>
                     <td v-else>
                       <button @click="toggleEditParameters(webappHost, app)" class="button button-icon button--grey" style="margin-right: 10px;">
                         <span class="button__icon button__icon--cancel"></span>
@@ -84,6 +80,14 @@
                         <span class="button__icon button__icon--apply"></span>
                       </button>
                     </td>
+                    
+                    <td class="center">
+                      <button class="button button--icon button--red" @click="removeAppFromWebappHost(webappHost, app)">
+                        <span class="button__icon button__icon--trash"></span>
+                      </button>
+                    </td>
+
+                    
                   </tr>
                 </tbody>
               </table>

@@ -29,7 +29,7 @@
                 <span class="none" v-else>none</span>
               </td>
               <td class="center">
-                <button class="button button-icon-txt button--green" @click="editAndroidUser(user)">
+                <button class="button button-icon-txt button--blue" @click="editAndroidUser(user)">
                   <span class="button__icon button__icon--user-settings"></span>
                   <span class="button__label">Settings</span>
                 </button>

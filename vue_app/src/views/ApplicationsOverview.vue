@@ -12,7 +12,7 @@
           <thead>
             <tr>
               <th>Application Name</th>
-              <th>Application Name</th>
+              <th>Description</th>
               <th>Android app</th>
               <th>Web-app</th>
               <th>Deployed workflow</th>
@@ -23,7 +23,7 @@
           <tbody>
             <tr v-for="app in applicationWorkflows" :key="app._id">
               <td><strong>{{ app.name }}</strong></td>
-              <td class="table--desc">{{ !!app.description && app.description.length > 0 ? app.description : 'No description.'}}</td>
+              <td class="table--desc">{{ !!app.description && app.description.length > 0 ? app.description : 'No description'}}</td>
               <td>
                 <button 
                   class="button button-icon-txt" @click="manageAndroidUsers(app._id,  app.name)"
