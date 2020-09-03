@@ -1,5 +1,5 @@
 <template>
-  <div class="modal-wrapper" v-if="modalVisible">
+  <div class="modal-wrapper" v-if="modalVisible && dataLoaded">
     <div class="modal">
       <!-- HEADER -->
       <div class="modal-header flex row">
@@ -12,6 +12,13 @@
       <!-- BODY -->
       <div class="modal-body flex col">
         <div class="modal-body__content flex col">
+          <div class="flex row">
+            <span class="button--toggle__label">Android authentication: </span>
+            <button class="button--toggle" :class="androidAuth ? 'enabled': 'disabled'" @click="toggleAndroidAuth()">
+              <span class="button--toggle__disc"></span>
+            </button>
+          </div>
+
           <p v-if="androidRegisteredUsers.length > 0 && !showAddUserForm"> List of <strong>users</strong> registered in "<strong>{{ appName }}</strong>" android application.</p>
           <div class="flex row" v-if="androidRegisteredUsers.length > 0 && !showAddUserForm">
             <table class="table">
@@ -86,7 +93,9 @@ export default {
         valid: false
       },
      showAddUserForm: false,
-     androidUsersLoaded: false
+     androidUsersLoaded: false,
+     applicationWorkflowLoaded: false
+     
     }
   },
   async mounted () {
@@ -98,11 +107,20 @@ export default {
     })
   },
   computed: {
+    dataLoaded () {
+      return this.applicationWorkflowLoaded && this.androidUsersLoaded
+    },
     androidNotRegisteredUsers () {
       return this.$store.state.androidUsers.filter(user => user.applications.indexOf(this.workflowId) < 0)
     },
     androidRegisteredUsers () {
       return this.$store.getters.ANDROID_USERS_BY_APP_ID(this.workflowId)
+    },
+    applicationWorkflow () {
+      return this.$store.getters.APP_WORKFLOW_BY_ID(this.workflowId)
+    },
+    androidAuth () {
+      return this.applicationWorkflow.flow.nodes[this.applicationWorkflow.flow.nodes.findIndex(f => f.type === 'linto-application-in')].auth_android
     },
     
   },
@@ -120,6 +138,32 @@ export default {
     },
     hideAndroidUsersForm () {
       this.showAddUserForm = false
+    },
+    async toggleAndroidAuth () {
+      try {
+        const updateAndroidAuth = await axios(`${process.env.VUE_APP_URL}/api/workflows/application/${this.workflowId}/androidAuth`, {
+          method: 'put'
+        })
+
+        if(updateAndroidAuth.data.status === 'success') {
+          bus.$emit('app_notif', {
+            status: 'success',
+            msg: updateAndroidAuth.data.msg,
+            timeout: false,
+            redirect: false
+          })
+          await this.refreshStore()
+        } else {
+          throw updateAndroidAuth.data.msg
+        }
+      } catch (error) {
+        bus.$emit('app_notif', {
+          status: 'error',
+          msg: error,
+          timeout: false,
+          redirect: false
+        })
+      }
     },
     async updateAndroidUser () {
       this.$options.filters.testSelectField(this.userId)
@@ -202,6 +246,9 @@ export default {
         switch(topic) {
           case 'getAndroidUsers':
             this.androidUsersLoaded = dispatchSuccess
+            break
+          case 'getApplicationWorkflows':
+            this.applicationWorkflowLoaded = dispatchSuccess
             break
           default:
             return

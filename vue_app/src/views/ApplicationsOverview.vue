@@ -25,13 +25,19 @@
               <td><strong>{{ app.name }}</strong></td>
               <td class="table--desc">{{ !!app.description && app.description.length > 0 ? app.description : 'No description.'}}</td>
               <td>
-                <button class="button button-icon-txt button--bluemid" @click="manageAndroidUsers(app._id,  app.name)">
+                <button 
+                  class="button button-icon-txt" @click="manageAndroidUsers(app._id,  app.name)"
+                  :class="app.flow.nodes[app.flow.nodes.findIndex(f => f.type === 'linto-application-in')].auth_android === true ? 'button--green' : 'button--grey'"
+                >
                   <span class="button__icon button__icon--android"></span>
                   <span class="button__label">Users ({{ !!androidUsersByApps[app._id] ? androidUsersByApps[app._id].length : 0 }})</span>
                 </button>
               </td>
               <td>
-                 <button class="button button-icon-txt button--bluemid" @click="manageWebappHosts(app._id,  app.name)">
+                <button 
+                  class="button button-icon-txt" @click="manageWebappHosts(app._id,  app.name)"
+                  :class="app.flow.nodes[app.flow.nodes.findIndex(f => f.type === 'linto-application-in')].auth_web === true ? 'button--green' : 'button--grey'"
+                >
                   <span class="button__icon button__icon--webapp"></span>
                   <span class="button__label">Hosts ({{ !!hostByApps[app._id] ? hostByApps[app._id].length : 0 }})</span>
                 </button>

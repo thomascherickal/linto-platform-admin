@@ -44,3 +44,16 @@
         color: $blueMid;
     }
 }
+
+.auth-status {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    @include borderRadius(5px);
+    &.enabled {
+        background-color: $valid;
+    }
+    &.disabled {
+        background-color: $error;
+    }
+}

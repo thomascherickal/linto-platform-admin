@@ -153,6 +153,96 @@ module.exports = (webServer) => {
                     })
                 }
             }
+        },
+        {
+            // Get android users list by workflow ID
+            // Link : /api-docs/#/workflows_applications/GetAndroidUserByApplication
+            path: '/:workflowId/androidAuth',
+            method: 'put',
+            requireAuth: true,
+            controller: async(req, res, next) => {
+                try {
+                    const workflowId = req.params.workflowId
+
+                    const getApplicationWorkflow = await applicationWorkflowsModel.getApplicationWorkflowById(workflowId)
+                    let applicationPayload = getApplicationWorkflow
+
+                    const nodeIndex = applicationPayload.flow.nodes.findIndex(node => node.type === 'linto-application-in')
+
+                    if (nodeIndex >= 0) {
+                        applicationPayload.flow.nodes[nodeIndex].auth_android = !applicationPayload.flow.nodes[nodeIndex].auth_android
+
+                        const updateApplicationWorkflow = await applicationWorkflowsModel.updateApplicationWorkflow(applicationPayload)
+
+                        if (updateApplicationWorkflow === 'success') {
+                            const putBls = await nodered.putBLSFlow(applicationPayload.flowId, applicationPayload.flow)
+
+                            if (putBls.status === 'success')  {
+                                res.json({
+                                    status: 'success',
+                                    msg: `The applicationWorkflow ${applicationPayload.name} has been updated`
+                                })
+                            }
+                        } else  {
+                            throw 'Error on updating application workflow'
+                        }
+                    } else  {
+                        throw 'Cannot find android authentication settings'
+                    }
+                } catch (error) {
+                    console.error(error)
+                    res.json({
+                        status: 'error',
+                        error
+                    })
+                }
+            }
+        },
+        {
+            // Get android users list by workflow ID
+            // Link : /api-docs/#/workflows_applications/GetAndroidUserByApplication
+            path: '/:workflowId/webappAuth',
+            method: 'put',
+            requireAuth: true,
+            controller: async(req, res, next) => {
+                try {
+                    const workflowId = req.params.workflowId
+
+                    const getApplicationWorkflow = await applicationWorkflowsModel.getApplicationWorkflowById(workflowId)
+                    let applicationPayload = getApplicationWorkflow
+
+                    const nodeIndex = applicationPayload.flow.nodes.findIndex(node => node.type === 'linto-application-in')
+
+                    if (nodeIndex >= 0) {
+                        applicationPayload.flow.nodes[nodeIndex].auth_web = !applicationPayload.flow.nodes[nodeIndex].auth_web
+
+                        const updateApplicationWorkflow = await applicationWorkflowsModel.updateApplicationWorkflow(applicationPayload)
+
+                        if (updateApplicationWorkflow === 'success') {
+                            const putBls = await nodered.putBLSFlow(applicationPayload.flowId, applicationPayload.flow)
+
+                            if (putBls.status === 'success')  {
+                                res.json({
+                                    status: 'success',
+                                    msg: `The applicationWorkflow ${applicationPayload.name} has been updated`
+                                })
+                            }
+
+
+                        } else  {
+                            throw 'Error on updating application workflow'
+                        }
+                    } else  {
+                        throw 'Cannot find android authentication settings'
+                    }
+                } catch (error) {
+                    console.error(error)
+                    res.json({
+                        status: 'error',
+                        error
+                    })
+                }
+            }
         }
     ]
 }

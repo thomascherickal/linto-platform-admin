@@ -1,5 +1,5 @@
 <template>
-  <div class="modal-wrapper" v-if="modalVisible">
+  <div class="modal-wrapper" v-if="modalVisible && dataLoaded">
     <div class="modal">
       <!-- HEADER -->
       <div class="modal-header flex row">
@@ -12,6 +12,13 @@
       <!-- BODY -->
       <div class="modal-body flex col">
         <div class="modal-body__content flex col">
+          <div class="flex row">
+            <span class="button--toggle__label">Android authentication: </span>
+            <button class="button--toggle" :class="webappAuth ? 'enabled': 'disabled'" @click="toggleWebappAuth()">
+              <span class="button--toggle__disc"></span>
+            </button>
+          </div>
+
           <p v-if="registeredHosts.length > 0"> List of <strong>hosts</strong> registered in "<strong>{{ appName }}</strong>" android application.</p>
           <div class="flex row" v-if="registeredHosts.length > 0">
             <table class="table">
@@ -68,12 +75,12 @@ export default {
         error: null,
         valid: false
       },
-      webappHostsLoaded: false
+      webappHostsLoaded: false,
+      applicationWorkflowLoaded: false
     }
   },
   async mounted () {
     bus.$on('manage_webapp_hosts', async (data) => {
-      console.log(data)
       this.showModal()
       this.workflowId = data.workflowId
       this.appName = data.appName
@@ -82,6 +89,9 @@ export default {
     
   },
   computed: {
+    dataLoaded () {
+      return this.applicationWorkflowLoaded && this.webappHostsLoaded
+    },
     notRegisteredHosts () {
       if (this.registeredHosts.length > 0 ) { 
         let allHosts = this.$store.state.webappHosts
@@ -101,6 +111,12 @@ export default {
     },
     registeredHosts () {
       return this.$store.getters.WEB_APP_HOST_BY_APP_ID(this.workflowId)
+    },
+    applicationWorkflow () {
+      return this.$store.getters.APP_WORKFLOW_BY_ID(this.workflowId)
+    },
+    webappAuth () {
+      return this.applicationWorkflow.flow.nodes[this.applicationWorkflow.flow.nodes.findIndex(f => f.type === 'linto-application-in')].auth_web
     }
   },
   methods: {
@@ -109,6 +125,32 @@ export default {
     },
     closeModal () {
       this.modalVisible = false
+    },
+    async toggleWebappAuth () {
+      try {
+        const updateWebappAuth = await axios(`${process.env.VUE_APP_URL}/api/workflows/application/${this.workflowId}/webappAuth`, {
+          method: 'put'
+        })
+
+        if(updateWebappAuth.data.status === 'success') {
+          bus.$emit('app_notif', {
+            status: 'success',
+            msg: updateWebappAuth.data.msg,
+            timeout: false,
+            redirect: false
+          })
+          await this.refreshStore()
+        } else {
+          throw updateWebappAuth.data.msg
+        }
+      } catch (error) {
+        bus.$emit('app_notif', {
+          status: 'error',
+          msg: error,
+          timeout: false,
+          redirect: false
+        })
+      }
     },
     async removeAppFromWebappHost (webappHost, appId) {
       try {
@@ -162,6 +204,9 @@ export default {
           case 'getWebappHosts':
             this.webappHostsLoaded = dispatchSuccess
             break
+          case 'getApplicationWorkflows':
+            this.applicationWorkflowLoaded = dispatchSuccess
+            break  
           default:
             return
         }  
