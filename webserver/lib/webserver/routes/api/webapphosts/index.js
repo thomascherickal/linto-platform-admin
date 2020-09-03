@@ -120,10 +120,7 @@ module.exports = (webServer) => {
                     const applicationId = req.params.applicationId
                     const applicationWorkflow = await applicationWorkflowsModel.getApplicationWorkflowById(applicationId)
                     let webappHost = payload.webappHost
-
-                    if (appIndex >= 0)  {
-                        webappHost.applications.splice(webappHost.applications.findIndex(item => item.applicationId === applicationId), 1)
-                    }
+                    webappHost.applications.splice(webappHost.applications.findIndex(item => item.applicationId === applicationId), 1)
 
                     // Request
                     const updateWebappHost = await webappHostsModel.updateWebappHost(webappHost)
