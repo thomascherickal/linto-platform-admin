@@ -171,7 +171,7 @@ function generateApplicationWorkflowFromTemplate(flow, payload) {
         else if (f.type === 'linto-config-evaluate') {
             f.id = nluId
             f.api = 'tock'
-            f.host = `${process.env.LINTO_STACK_TOCK_SERVICE}:${process.env.LINTO_STACK_TOCK_SERVICE_PORT}`
+            f.host = `${process.env.LINTO_STACK_TOCK_NLP_API}:${process.env.LINTO_STACK_TOCK_SERVICE_PORT}`
             f.appname = payload.nlu.app_name
             f.namespace = 'app'
         }
