@@ -73,7 +73,7 @@ async function sttLexicalSeeding(flowId, service_name) {
         })
 
         // Generate Graph if model updated
-        if (getUpdatedSttLangModel.data.data.isDirty === 1 && getUpdatedSttLangModel.data.data.updateState === 0) {
+        if (getUpdatedSttLangModel.data.data.isDirty === 1) {
             try {
                 await generateGraph(service_name)
             } catch (error) {
