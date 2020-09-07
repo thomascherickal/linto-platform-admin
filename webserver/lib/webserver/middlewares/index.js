@@ -14,7 +14,7 @@ function logger(req, res, next) {
     next()
 }
 
-function decodeBasicAuth(req, res, next) {
+/*function decodeBasicAuth(req, res, next) {
     try {
         if (!!req.headers.authorization) {
             const auth = req.headers.authorization
@@ -34,7 +34,6 @@ function decodeBasicAuth(req, res, next) {
     } catch (error) {
         console.error(error)
     }
-
 }
 
 async function checkBasicAuthLogin(login, password) {
@@ -63,24 +62,11 @@ async function checkBasicAuthLogin(login, password) {
     }
 
 }
-
+*/
 async function checkAuth(req, res, next) {
     debug(req.url, req.session)
     try {
-        // Basic Auth
-        if (!!req.headers.authorization) {
-            const auth = decodeBasicAuth(req, res, next)
-            if (auth !== null) {
-                const authValid = await checkBasicAuthLogin(auth.login, auth.password)
-                if (authValid) {
-                    next()
-                } else {
-                    throw 'Invalid credentials'
-                }
-            }
-        }
-        // Session
-        else if (!!req.session) {
+        if (!!req.session) {
             if (!!req.session.logged) {
                 if (req.session.logged === 'on' && req.url === '/login') {
                     req.session.save((err) => {
@@ -124,7 +110,6 @@ function basicAuthToken(user, password) {
 }
 
 function useSSL() {
-
     if (process.env.NODE_ENV === 'local') {
         return ''
     } else {
