@@ -1,7 +1,5 @@
 <template>
   <div id="app" class="flex col">
-    <!-- <AppNotifTop></AppNotifTop> -->
-    <!-- <AppNotifTopErrors></AppNotifTopErrors> -->
     <AppHeader :extraClass="fullScreenFrame ? 'fullscreen-child' : ''"></AppHeader>
     <div id="page-view" class="flex1 flex row">
       <AppVerticalNav :extraClass="fullScreenFrame ? 'fullscreen-child' : ''"></AppVerticalNav>
@@ -11,30 +9,33 @@
     </div>
     <AppNotif></AppNotif>
 
-    <!-- Static workflows -->
-    <ModalDeleteClientStatic v-if="path.indexOf('/admin/clients/static') >= 0"></ModalDeleteClientStatic>
-    <ModalUpdateClientStatic v-if="path.indexOf('/admin/clients/static') >= 0"></ModalUpdateClientStatic>
-    <ModalDissociateStaticDevice v-if="path.indexOf('/admin/clients/static') >= 0"></ModalDissociateStaticDevice>
-    <ModalAddStaticDevice v-if="path.indexOf('/admin/clients/static') >= 0"></ModalAddStaticDevice>
+    <!-- Mono user applications -->
+    <ModalReplaceTerminal v-if="path.indexOf('/admin/applications/mono') >= 0"></ModalReplaceTerminal>
+    <ModalDissociateTerminal v-if="path.indexOf('/admin/applications/mono') >= 0 || path.indexOf('/admin/terminals') >= 0"></ModalDissociateTerminal>
 
-    <ModalUpdateWorkflowServices v-if="path.indexOf('/admin/clients/static') >= 0 || path.indexOf('/clients/application') >= 0"></ModalUpdateWorkflowServices>
+    <!-- Multi user applications --> 
+    <ModalDeleteMutliUserApp v-if="path.indexOf('/admin/applications/multi') >= 0"></ModalDeleteMutliUserApp>
+    
+    <ModalUpdateWorkflowServices v-if="path.indexOf('/admin/applications/mono') >= 0 || path.indexOf('/admin/applications/multi') >= 0"></ModalUpdateWorkflowServices>
+    
+    <!-- Terminals -->
+    <ModalAddTerminal v-if="path.indexOf('/admin/terminals') >= 0"></ModalAddTerminal>
+    <ModalDeleteTerminal v-if="path.indexOf('/admin/terminals') >= 0"></ModalDeleteTerminal>
 
-    <!-- Android users -->
-    <ModalManageAndroidUsers v-if="path.indexOf('/admin/clients/application') >= 0"></ModalManageAndroidUsers>
-    <ModalAddAndroidUsers v-if="path.indexOf('/admin/users/android') >= 0"></ModalAddAndroidUsers
-    >
-    <ModalEditAndroidUser v-if="path.indexOf('/admin/users/android') >= 0"></ModalEditAndroidUser>
-    <ModalDeleteAndroidUser v-if="path.indexOf('/admin/users/android') >= 0"></ModalDeleteAndroidUser>
-    <ModalDeleteApplication v-if="path.indexOf('/admin/clients/application') >= 0"></ModalDeleteApplication>
+    <!-- Users -->
+    <ModalManageUsers v-if="path.indexOf('/admin/applications/multi') >= 0"></ModalManageUsers>
+    <ModalAddUsers v-if="path.indexOf('/admin/users') >= 0"></ModalAddUsers>
+    <ModalEditUser v-if="path.indexOf('/admin/users') >= 0"></ModalEditUser>
+    <ModalDeleteUser v-if="path.indexOf('/admin/users') >= 0"></ModalDeleteUser>
 
-    <!-- Webapp hosts -->
-    <ModalAddWebappHost v-if="path.indexOf('/admin/users/webapp') >= 0"></ModalAddWebappHost>
-    <ModalDeleteWebappHost v-if="path.indexOf('/admin/users/webapp') >= 0"></ModalDeleteWebappHost>
-    <ModalEditWebappHost v-if="path.indexOf('/admin/users/webapp') >= 0"></ModalEditWebappHost>
-    <ModalManageWebappHosts v-if="path.indexOf('/admin/clients/application') >= 0"></ModalManageWebappHosts>
+    <!-- Domains -->
+    <ModalAddDomain v-if="path.indexOf('/admin/domains') >= 0"></ModalAddDomain>
+    <ModalDeleteDomain v-if="path.indexOf('/admin/domains') >= 0"></ModalDeleteDomain>
+    <ModalEditDomain v-if="path.indexOf('/admin/domains') >= 0"></ModalEditDomain>
+    <ModalManageDomains v-if="path.indexOf('/admin/applications/multi') >= 0"></ModalManageDomains>
 
     <!-- Worflows templates -->
-    <ModalSaveAsWorkflowTemplate v-if="path.indexOf('/admin/workflows') >= 0 || path.indexOf('/clients/static/workflow') "></ModalSaveAsWorkflowTemplate>
+    <ModalSaveAsWorkflowTemplate v-if="path.indexOf('admin/workflow-editor') >= 0 || path.indexOf('/admin/applications/') >= 0"></ModalSaveAsWorkflowTemplate>
     <ModalManageWorkflowTemplates v-if="path.indexOf('admin/workflow-editor') >= 0"></ModalManageWorkflowTemplates>
     
   </div>
@@ -46,23 +47,22 @@
   // App notify
   import AppNotif from '@/components/AppNotif.vue'
   // Modals
-  import AppNotifTop from '@/components/AppNotifTop.vue'
-  import ModalDeleteClientStatic from '@/components/ModalDeleteClientStatic.vue'
-  import ModalUpdateClientStatic from '@/components/ModalUpdateClientStatic.vue'
+  import ModalDeleteTerminal from '@/components/ModalDeleteTerminal.vue'
+  import ModalReplaceTerminal from '@/components/ModalReplaceTerminal.vue'
   import ModalUpdateWorkflowServices from '@/components/ModalUpdateWorkflowServices.vue'
-  import ModalDissociateStaticDevice from '@/components/ModalDissociateStaticDevice.vue'
+  import ModalDissociateTerminal from '@/components/ModalDissociateTerminal.vue'
   import ModalSaveAsWorkflowTemplate from '@/components/ModalSaveAsWorkflowTemplate.vue'
-  import ModalAddStaticDevice from '@/components/ModalAddStaticDevice.vue'
-  import ModalManageAndroidUsers from '@/components/ModalManageAndroidUsers.vue'
-  import ModalAddAndroidUsers from '@/components/ModalAddAndroidUsers.vue'
-  import ModalEditAndroidUser from '@/components/ModalEditAndroidUser.vue'
-  import ModalDeleteAndroidUser from '@/components/ModalDeleteAndroidUser.vue'
-  import ModalDeleteApplication from '@/components/ModalDeleteApplication.vue'
+  import ModalAddTerminal from '@/components/ModalAddTerminal.vue'
+  import ModalManageUsers from '@/components/ModalManageUsers.vue'
+  import ModalAddUsers from '@/components/ModalAddUsers.vue'
+  import ModalEditUser from '@/components/ModalEditUser.vue'
+  import ModalDeleteUser from '@/components/ModalDeleteUser.vue'
+  import ModalDeleteMutliUserApp from '@/components/ModalDeleteMutliUserApp.vue'
   import ModalManageWorkflowTemplates from '@/components/ModalManageWorkflowTemplates.vue'
-  import ModalAddWebappHost from '@/components/ModalAddWebappHost.vue'
-  import ModalDeleteWebappHost from '@/components/ModalDeleteWebappHost.vue'
-  import ModalEditWebappHost from '@/components/ModalEditWebappHost.vue'
-  import ModalManageWebappHosts from '@/components/ModalManageWebappHosts.vue'
+  import ModalAddDomain from '@/components/ModalAddDomain.vue'
+  import ModalDeleteDomain from '@/components/ModalDeleteDomain.vue'
+  import ModalEditDomain from '@/components/ModalEditDomain.vue'
+  import ModalManageDomains from '@/components/ModalManageDomains.vue'
   import { bus } from './main.js'
   export default {
     data () {
@@ -72,33 +72,35 @@
       }
     },
     created () {
-      this.path = this.$route.fullPath
+      setTimeout(() => {
+        this.path = this.$route.fullPath
+      }, 500)
     },
     components: {
       AppHeader,
       AppNotif,
-      AppNotifTop,
       AppVerticalNav,
-      ModalAddStaticDevice,
-      ModalDeleteClientStatic,
-      ModalUpdateClientStatic,
+      // Static clients
+      ModalAddTerminal,
+      ModalDeleteTerminal,
+      ModalReplaceTerminal,
       ModalUpdateWorkflowServices,
-      ModalDissociateStaticDevice,
+      ModalDissociateTerminal,
       // Workflow editor
       ModalSaveAsWorkflowTemplate,
       ModalManageWorkflowTemplates,
       // Applications
-      ModalDeleteApplication,
+      ModalDeleteMutliUserApp,
       // Android users Modal
-      ModalAddAndroidUsers,
-      ModalManageAndroidUsers,
-      ModalEditAndroidUser,
-      ModalDeleteAndroidUser,
+      ModalAddUsers,
+      ModalManageUsers,
+      ModalEditUser,
+      ModalDeleteUser,
       // Webapp hosts
-      ModalAddWebappHost,
-      ModalDeleteWebappHost,
-      ModalEditWebappHost,
-      ModalManageWebappHosts
+      ModalAddDomain,
+      ModalDeleteDomain,
+      ModalEditDomain,
+      ModalManageDomains
     },
     mounted () {
       bus.$on('iframe-set-fullscreen', () => {

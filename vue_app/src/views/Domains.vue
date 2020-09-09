@@ -1,53 +1,50 @@
 <template>
   <div v-if="dataLoaded">
-    <h1>Android Users</h1>
+    <h1>Domains</h1>
     <div class="flex col">
-      <h2>Registered android users</h2>
-      <details open class="description">
-        <summary>Infos</summary>
-        <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam laoreet nulla lacus, vel pellentesque augue ullamcorper sed. Curabitur scelerisque suscipit gravida. Morbi risus libero, viverra ac ipsum ornare, molestie aliquam leo. Donec quis arcu risus. Nam sit amet orci id sapien varius condimentum vitae non dolor.</span>
-      </details>
+      <h2>Registered domains</h2>
       <div class="flex row">
-        <table class="table">
+        <table class="table" v-if="webappHosts.length > 0">
           <thead>
             <tr>
-              <th>User</th>
+              <th>Domain</th>
               <th>Applications</th>
-              <th>Manage applications</th>
+              <th>Manage</th>
               <th>Delete</th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="user in androidRegisteredUsers" :key="user._id">
-              <td><strong>{{ user.email }}</strong></td>
+            <tr v-for="webapp in webappHosts" :key="webapp._id">
+              <td><strong>{{ webapp.originUrl }}</strong></td>
               <td>
-                <ul class="array-list" v-if="user.applications.length > 0">
-                  <li v-for="app in user.applications" :key="app">
-                    {{ workflowByName[app] }}
+                <ul class="array-list" v-if="webapp.applications.length > 0">
+                  <li v-for="app in webapp.applications" :key="app.applicationId">
+                    {{ workflowByName[app.applicationId] }}
                   </li>
                 </ul>
                 <span class="none" v-else>none</span>
               </td>
               <td class="center">
-                <button class="button button-icon-txt button--blue" @click="editAndroidUser(user)">
+                <button class="button button-icon-txt button--blue" @click="editWebappHost(webapp)">
                   <span class="button__icon button__icon--user-settings"></span>
                   <span class="button__label">Settings</span>
                 </button>
               </td>
               <td class="center">
-                <button class="button button-icon button--red" @click="deleteAndroidUser(user)">
+                  <button class="button button-icon button--red" @click="deleteWebappHost(webapp)">
                   <span class="button__icon button__icon--trash"></span>
                 </button>
               </td>
             </tr>
           </tbody>
         </table>
+        
       </div>
       <div class="divider"></div>
       <div class="flex row">
-        <button class="button button-icon-txt button--green" @click="addAndroidUser()">
+        <button class="button button-icon-txt button--green" @click="addWebappHost()">
           <span class="button__icon button__icon--add"></span>
-          <span class="button__label">Add an user</span>
+          <span class="button__label">Add a domain</span>
         </button>
       </div>
     </div>
@@ -60,7 +57,7 @@ import axios from 'axios'
 export default {
   data () {
     return {
-      androidUsersLoaded: false,
+      webappHostsLoaded: false,
       applicationWorkflowsLoaded: false
     }
   },
@@ -70,40 +67,38 @@ export default {
   },
   async mounted () {
     // Events
-    bus.$on('add_android_user_success', async () => {
+    bus.$on('add_webapp_host_success', async (data) => {
       await this.refreshStore()
     })
-    bus.$on('delete_android_user_success', async () => {
+    bus.$on('delete_webapp_host_success', async (data) => {
       await this.refreshStore()
     })
   },
   computed: {
     dataLoaded () {
-      return this.androidUsersLoaded && this.applicationWorkflowsLoaded
+      return this.webappHostsLoaded && this.applicationWorkflowsLoaded
     },
-    androidRegisteredUsers () {
-      return this.$store.state.androidUsers
+    webappHosts () {
+      return this.$store.state.webappHosts
     },
     workflowByName () {
       return this.$store.getters.APP_WORKFLOWS_NAME_BY_ID
     }
   },
   methods: {
-    addAndroidUser () {
-      bus.$emit('add_android_user', {})
+    addWebappHost () {
+      bus.$emit('add_webapp_host', {})
     },
-    editAndroidUser (data) {
-      bus.$emit('edit_android_user', {user: data})
-    }, 
-    deleteAndroidUser (data) {
-      bus.$emit('delete_android_user', {
-        userId: data._id,
-        email: data.email
-      })
+    deleteWebappHost (webapp) {
+      bus.$emit('delete_webapp_host', { webappHost : webapp })
+    },
+    editWebappHost (webapp) {
+      bus.$emit('edit_webapp_host', { webappHost : webapp })
+      
     },
     async refreshStore () {
       try {
-        await this.dispatchStore('getAndroidUsers')
+        await this.dispatchStore('getWebappHosts')
         await this.dispatchStore('getApplicationWorkflows')
       } catch (error) {
         bus.$emit('app_notif', {
@@ -122,8 +117,8 @@ export default {
           throw dispatch.msg
         }
         switch(topic) {
-          case 'getAndroidUsers':
-            this.androidUsersLoaded = dispatchSuccess
+          case 'getWebappHosts':
+            this.webappHostsLoaded = dispatchSuccess
             break
           case 'getApplicationWorkflows':
             this.applicationWorkflowsLoaded = dispatchSuccess
@@ -134,7 +129,7 @@ export default {
       } catch (error) {
         bus.$emit('app_notif', {
           status: 'error',
-          msg: error,
+          msg: error.error,
           timeout: false,
           redirect: false
         })

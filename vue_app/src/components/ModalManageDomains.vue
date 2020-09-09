@@ -3,7 +3,7 @@
     <div class="modal">
       <!-- HEADER -->
       <div class="modal-header flex row">
-        <span class="modal-header__tilte flex1">Manage Web-application hosts - "{{ appName }}"</span>
+        <span class="modal-header__tilte flex1">Manage domains for application "{{ appName }}"</span>
         <button class="button button-icon button--red" @click="closeModal()">
           <span class="button__icon button__icon--close"></span>
         </button>
@@ -13,18 +13,18 @@
       <div class="modal-body flex col">
         <div class="modal-body__content flex col">
           <div class="flex row button--toggle__container">
-            <span class="button--toggle__label">Android authentication: </span>
+            <span class="button--toggle__label">Domain authentication: </span>
             <button class="button--toggle" :class="webappAuth ? 'enabled': 'disabled'" @click="toggleWebappAuth()">
               <span class="button--toggle__disc"></span>
             </button>
           </div>
 
-          <p v-if="registeredHosts.length > 0"> List of <strong>hosts</strong> registered in "<strong>{{ appName }}</strong>" android application.</p>
+          <p v-if="registeredHosts.length > 0"> List of registered <strong>domains</strong> in multi-user application "<strong>{{ appName }}</strong>".</p>
           <div class="flex row" v-if="registeredHosts.length > 0">
             <table class="table">
               <thead>
                 <tr>
-                  <th>Host</th>
+                  <th>Domain</th>
                   <th>Request token</th>
                   <th>maxSlots</th>
                 </tr>
@@ -43,16 +43,16 @@
               </tbody>
             </table>
           </div>
-          <div class="flex col no-content" v-if="registeredHosts.length === 0 ">No web-application host was found for this application.</div>
+          <div class="flex col no-content" v-if="registeredHosts.length === 0 ">No domain was found for this application.</div>
         </div>
       </div>
       <!-- End BODY -->
       <!-- FOOTER -->
       <div class="modal-footer flex row">
         <div class="flex flex1 modal-footer-right">
-          <a href="/admin/users/webapp" class="button button-icon-txt button--blue">
+          <a href="/admin/domains" class="button button-icon-txt button--blue">
             <span class="button__icon button__icon--settings"></span>
-            <span class="button__label">Manage web-app host</span>
+            <span class="button__label">Manage domains</span>
           </a>
         </div>
       </div>

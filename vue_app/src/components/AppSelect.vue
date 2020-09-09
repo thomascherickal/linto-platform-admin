@@ -10,7 +10,7 @@
         obj.valid ? 'form__select--valid' : ''
       ]"
       @change="testSelectField(obj)"
-      :disabled="disabled ? 'disabled' : false"
+      :disabled="disabled || disabled2 ? 'disabled' : false"
     >
       <option 
         v-for="l in list"
@@ -30,18 +30,18 @@
         !!extraClass ? extraClass : ''
       ]"
       @change="testInteger(obj)"
-      :disabled="disabled ? 'disabled' : false"
+      :disabled="disabled || disabled2 ? 'disabled' : false"
     >
       <option v-for="index in numberArray" :key="index" :value="index">{{ index }}</option>
-
     </select>
     <span class="form__error-field" v-if="disabled">{{ disabledTxt }}</span>
+    <span class="form__error-field" v-if="!disabled && disabled2">{{ disabled2Txt }}</span>
     <span class="form__error-field" v-if="extraClass !== 'form__select--inarray'">{{ obj.error }}</span>
   </div>
 </template>
 <script>
 export default {
-  props: ['label','obj','list','params','options', 'disabled', 'disabledTxt', 'type', 'min','max', 'extraClass', 'noLabel'],
+  props: ['label','obj','list','params','options', 'disabled', 'disabledTxt', 'disabled2', 'disabled2Txt', 'type', 'min','max', 'extraClass', 'noLabel'],
   data () {
     return {
       numberArray: []

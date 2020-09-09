@@ -4,26 +4,34 @@
     <!-- Static clients -->
     <div class="vertical-nav-item flex col" :class="routePath.indexOf(staticClientsUrl) >= 0 ? 'active' : ''">
       <a  class="vertical-nav-item__link vertical-nav-item__link" :href="staticClientsUrl" >
-        <span class="nav-link__icon nav-link__icon--static "></span>
-        <span class="nav-link__label">Static clients</span>
+        <span class="nav-link__icon nav-link__icon--single-user "></span>
+        <span class="nav-link__label">Single user applications</span>
       </a>
     </div>
     
     <!-- Applications -->
     <div class="vertical-nav-item flex col" :class="routePath.indexOf(applicationsUrl) >= 0 ? 'active' : ''">
       <a class="vertical-nav-item__link vertical-nav-item__link" :href="applicationsUrl">
-        <span class="nav-link__icon nav-link__icon--app "></span>
-        <span class="nav-link__label">Applications</span>
+        <span class="nav-link__icon nav-link__icon--multi-user "></span>
+        <span class="nav-link__label">Mutli-user applications</span>
       </a>
     </div>
     
     <div class="nav-divider"></div>
+      
+    <!-- Terminals -->
+    <div class="vertical-nav-item flex col" :class="routePath.indexOf(terminalsUrl) >= 0 ? 'active' : ''">
+      <a class="vertical-nav-item__link vertical-nav-item__link" :href="terminalsUrl">
+        <span class="nav-link__icon nav-link__icon--terminal"></span>
+        <span class="nav-link__label">Terminals</span>
+      </a>
+    </div>
 
     <!-- Android users -->
     <div class="vertical-nav-item flex col" :class="routePath.indexOf(androidUsersUrl) >= 0 ? 'active' : ''">
       <a class="vertical-nav-item__link vertical-nav-item__link" :href="androidUsersUrl">
-        <span class="nav-link__icon nav-link__icon--android-users"></span>
-        <span class="nav-link__label">Android users</span>
+        <span class="nav-link__icon nav-link__icon--users"></span>
+        <span class="nav-link__label">Users</span>
       </a>
     </div>
     
@@ -31,7 +39,7 @@
     <div class="vertical-nav-item flex col" :class="routePath.indexOf(webAppHostsUrl) >= 0 ? 'active' : ''">
       <a class="vertical-nav-item__link vertical-nav-item__link" :href="webAppHostsUrl">
         <span class="nav-link__icon nav-link__icon--webapp"></span>
-        <span class="nav-link__label">Webapp Hosts</span>
+        <span class="nav-link__label">Domains</span>
       </a>
     </div>
     
@@ -63,12 +71,13 @@ export default {
   data () {
     return {
       clientsUrl: '/admin/clients',
-      staticClientsUrl: '/admin/clients/static',
-      applicationsUrl:  '/admin/clients/application',
+      staticClientsUrl: '/admin/applications/mono',
+      applicationsUrl:  '/admin/applications/multi',
       workflowEditorUrl: '/admin/workflow-editor',
       nluUrl: '/admin/nlu',
-      androidUsersUrl: '/admin/users/android',
-      webAppHostsUrl:  '/admin/users/webapp',
+      androidUsersUrl: '/admin/users',
+      webAppHostsUrl:  '/admin/domains',
+      terminalsUrl: '/admin/terminals',
       routePath: ''
     }
   },

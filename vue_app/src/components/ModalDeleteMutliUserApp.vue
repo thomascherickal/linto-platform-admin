@@ -2,14 +2,14 @@
   <div class="modal-wrapper" v-if="modalVisible">
     <div class="modal">
       <div class="modal-header flex row">
-        <span class="modal-header__tilte flex1">Delete workflow application - {{ applicationWorkflowName }}</span>
+        <span class="modal-header__tilte flex1">Delete a multi-user application</span>
         <button class="button button-icon button--red" @click="closeModal()">
           <span class="button__icon button__icon--close"></span>
         </button>
       </div>
       <div class="modal-body">
         <div class="modal-body__content">
-            Are you sure that you want to <strong>delete</strong> the application workflow "<strong>{{ applicationWorkflowName }}</strong>" ?
+            Are you sure that you want to <strong>delete</strong> the multi-user application "<strong>{{ applicationWorkflowName }}</strong>" ?
         </div>
       </div>
       <div class="modal-footer flex row">

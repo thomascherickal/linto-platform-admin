@@ -2,14 +2,14 @@
   <div class="modal-wrapper" v-if="modalVisible">
     <div class="modal">
       <div class="modal-header flex row">
-        <span class="modal-header__tilte flex1">Add a new static device</span>
+        <span class="modal-header__tilte flex1">Add a terminal</span>
         <button class="button button-icon button--red" @click="closeModal()">
           <span class="button__icon button__icon--close"></span>
         </button>
       </div>
       <div class="modal-body">
         <div class="modal-body__content">
-          <p>To create a new static device, please register an unused serial number</p>
+          <p>To create a new terminal, please register an unused <strong>serial number</strong></p>
           <AppInput :label="'Serial number'" :obj="sn" :test="'testStaticClientsSN'"></AppInput>
 
         </div>
@@ -18,7 +18,7 @@
         <div class="flex flex1 modal-footer-right">
           <button class="button button-icon-txt button--green" @click="handleForm()">
             <span class="button__icon button__icon--apply"></span>
-            <span class="button__label">Apply</span>
+            <span class="button__label">Create terminal</span>
           </button>
         </div>
       </div>

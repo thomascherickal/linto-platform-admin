@@ -23,10 +23,17 @@ export default {
     }
   },
   methods: {
-    testWorkflowName (obj) {
-      this.$options.filters.dispatchStore('getStaticWorkflows')
+    testStaticWorkflowName (obj) {
       // Test if workflow name is not used
       this.$options.filters.testStaticWorkflowName(obj)
+      if (obj.error === null) {
+        // Test if workflow name is valid
+        this.$options.filters.testName(obj)
+      }
+    },
+    testApplicationWorkflowName (obj) {
+      // Test if workflow name is not used
+      this.$options.filters.testApplicationWorkflowName(obj)
       if (obj.error === null) {
         // Test if workflow name is valid
         this.$options.filters.testName(obj)
@@ -69,8 +76,11 @@ export default {
         case 'testName':
           this.testName(this.obj)
           break
-        case 'testWorkflowName':
-          this.testWorkflowName(this.obj)
+        case 'testStaticWorkflowName':
+          this.testStaticWorkflowName(this.obj)
+          break
+        case 'testApplicationWorkflowName':
+          this.testApplicationWorkflowName(this.obj)
           break
         case 'testWorkflowTemplateName':
           this.testWorkflowTemplateName(this.obj)

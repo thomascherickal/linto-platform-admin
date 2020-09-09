@@ -1,28 +1,94 @@
 <template>
   <div v-if="dataLoaded">
-    <h1>Static devices - {{ sn }} - Deployment</h1>
+    <h1>Deploy a single user applicaiton</h1>
     <div class="flex col">
       <!-- Workflow name -->
-      <AppInput :label="'Workflow name'" :obj="workflowName" :test="'testWorkflowName'"></AppInput>
-
+      <AppInput 
+        :label="'Workflow name'" 
+        :obj="workflowName" 
+        :test="'testStaticWorkflowName'"
+      ></AppInput>
+      
       <!-- Workflow description -->
-      <AppTextarea :obj="workflowDescription" :label="'Workflow description'" ></AppTextarea>
+      <AppTextarea 
+        :obj="workflowDescription" 
+        :label="'Workflow description'"
+      ></AppTextarea>
+
+      <!-- Terminal -->
+      <AppSelect 
+        :label="'Choose a terminal'" 
+        :obj="associated_device" 
+        :list="availableStatiDevices" 
+        :params="{key:'_id', value:'sn' , optLabel: 'sn'}"
+        :disabled="availableStatiDevices.length === 0"
+        :disabledTxt="'No terminal available'"
+      ></AppSelect>
+      
 
       <!-- Workflow tempalte -->
-      <AppSelect :label="'Workflow template'" :obj="workflowTemplate" :list="workflowTemplates" :params="{key:'_id', value:'name' , optLabel: 'name'}"></AppSelect>
+      <AppSelect 
+        :label="'Workflow template'" 
+        :obj="workflowTemplate" 
+        :list="workflowTemplates" 
+        :params="{key:'_id', value:'name' , optLabel: 'name'}"
+      ></AppSelect>
 
       <!-- LinSTT language -->
-      <AppSelect :label="'Select a language'" :obj="sttServiceLanguage" :list="sttAvailableLanguages" :params="{key:'value', value:'value', optLabel: 'value'}" :disabled="noSttService" :disabledTxt="'Create a LinSTT service'"></AppSelect>
+      <AppSelect 
+        :label="'Select a language'" 
+        :obj="sttServiceLanguage" 
+        :list="sttAvailableLanguages" 
+        :params="{key:'value', value:'value', optLabel: 'value'}" 
+        :disabled="noSttService" 
+        :disabledTxt="'Create a LinSTT service'"
+      ></AppSelect> 
 
-      <!-- LinSTT services -->
-      <AppSelect :label="'Select a LinSTT service'" :obj="sttService" :list="sttServiceByLanguage" :params="{key:'_id', value:'serviceId', optLabel: 'serviceId'}" :disabled="sttServiceLanguage.value === ''" :disabledTxt="'Please select a language'"></AppSelect>
+      <!-- LinSTT service command -->
+      <AppSelect 
+        :label="'Select a LinSTT COMMAND service'" 
+        :obj="sttService" :list="sttServiceCmdByLanguage" 
+        :params="{key:'_id', value:'serviceId', optLabel: 'serviceId'}" 
+        :disabled="sttServiceLanguage.value === ''" 
+        :disabledTxt="'Please select a language'"
+      ></AppSelect>
       
+      <!-- LinSTT Large vocabulary online (streaming) -->
+      <AppSelect 
+        :label="'Select a LinSTT Large vocabulary streaming service'" 
+        :obj="sttLVOnlineService" 
+        :list="sttServiceLVOnlineByLanguage" 
+        :params="{key:'_id', value:'serviceId', optLabel: 'serviceId'}" 
+        :disabled="sttServiceLanguage.value === ''" 
+        :disabledTxt="'Please select a language'"
+        :disabled2="sttServiceLVOnlineByLanguage.length === 0" 
+        :disabled2Txt="'No service available'"
+      ></AppSelect>
+
+      <!-- LinSTT Large vocabulary offline (file) -->
+      <AppSelect 
+        :label="'Select a LinSTT Large vocabulary file service'" 
+        :obj="sttLVOfflineService" 
+        :list="sttServiceLVOfflineByLanguage" 
+        :params="{key:'_id', value:'serviceId', optLabel: 'serviceId'}" 
+        :disabled="sttServiceLanguage.value === ''" 
+        :disabledTxt="'Please select a language'"
+        :disabled2="sttServiceLVOfflineByLanguage.length === 0" 
+        :disabled2Txt="'No service available'"
+      ></AppSelect>
+
       <!-- TOCK application -->
-      <AppSelect :label="'Select Tock application'" :obj="tockApplicationName" :list="tockApplications" :params="{key:'name', value:'name', optLabel: 'name'}" :options="{value:'new', label:'Create a new tock application'}"></AppSelect>
+      <AppSelect 
+        :label="'Select Tock application'" 
+        :obj="tockApplicationName" 
+        :list="tockApplications" 
+        :params="{key:'name', value:'name', optLabel: 'name'}" 
+        :options="{value:'new', label:'Create a new tock application'}"
+      ></AppSelect>
 
       <!-- Submit -->
       <div class="flex row">
-        <a href="/admin/clients/static" class="button button-icon-txt button--grey">
+        <a href="/admin/applications/mono" class="button button-icon-txt button--grey">
           <span class="button__icon button__icon--cancel"></span>
           <span class="button__label">Cancel</span>
         </a>
@@ -54,13 +120,28 @@ export default {
         value:'',
         error: null,
         valid: false
-      }, 
+      },
+      associated_device: {
+        value: '',
+        error: null,
+        valid: false
+      },
       sttServiceLanguage: {
         value: '',
         error: null,
         valid: false
       },
       sttService: {
+        value: '',
+        error: null,
+        valid: false
+      },
+      sttLVOnlineService: {
+        value: '',
+        error: null,
+        valid: false
+      },
+      sttLVOfflineService: {
         value: '',
         error: null,
         valid: false
@@ -81,6 +162,7 @@ export default {
       sttServicesLoaded: false,
       tockApplicationsLoaded: false,
       workflowTemplatesLoaded: false,
+      staticClientsLoaded: false,
       // Workflow creation steps
       submitting: false,
       blsFlowUpdate: false,
@@ -97,7 +179,7 @@ export default {
   },
   computed: {
     dataLoaded () {
-      return (this.sttLanguageModelsLoaded && this.sttServicesLoaded && this.tockApplicationsLoaded && this.workflowTemplatesLoaded)
+      return (this.sttLanguageModelsLoaded && this.sttServicesLoaded && this.tockApplicationsLoaded && this.workflowTemplatesLoaded && this.staticClientsLoaded)
     },
     sttServices () {
       return this.$store.getters.STT_SERVICES_AVAILABLE
@@ -105,9 +187,8 @@ export default {
     sttAvailableLanguages () {
       if (this.sttServicesLoaded) {
         let sttLang = []
-        if (this.sttServices.length > 0) {
-          this.sttServices.map(service => {
-            
+        if (this.sttServices.cmd.length > 0) {
+          this.sttServices.cmd.map(service => {
             if(sttLang.filter(lang => lang.value === service.lang).length === 0) {
               sttLang.push({ value: service.lang })
             }
@@ -118,9 +199,23 @@ export default {
         return ''
       }
     },
-    sttServiceByLanguage () {
+    sttServiceCmdByLanguage () {
       if (this.sttServiceLanguage.value !== '') {
-        return this.sttServices.filter(service => service.lang === this.sttServiceLanguage.value)
+        return this.sttServices.cmd.filter(service => service.lang === this.sttServiceLanguage.value)
+      } else {
+        return []
+      }
+    },
+    sttServiceLVOnlineByLanguage () {
+      if (this.sttServiceLanguage.value !== '') {
+        return this.sttServices.lvOnline.filter(service => service.lang === this.sttServiceLanguage.value)
+      } else {
+        return []
+      }
+    },
+    sttServiceLVOfflineByLanguage () {
+      if (this.sttServiceLanguage.value !== '') {
+        return this.sttServices.lvOffline.filter(service => service.lang === this.sttServiceLanguage.value)
       } else {
         return []
       }
@@ -143,10 +238,17 @@ export default {
       } else {
         return 'Deploy'
       }
+    },
+    availableStatiDevices () {
+      return this.$store.getters.STATIC_CLIENTS_AVAILABLE
     }
   },
   async mounted () {
-    this.sn = this.$route.params.sn
+    if (!!this.$route.params.sn) {
+      this.sn = this.$route.params.sn
+      this.associated_device.value = this.sn
+      this.associated_device.valid = true
+    }
     await this.refreshStore()
   },
   methods: {
@@ -162,7 +264,6 @@ export default {
       if (this.workflowName.error === null) {
         this.$options.filters.testName(this.workflowName) // Test if workflow name is valid
       }
-
       /* Workflow description */
       this.$options.filters.testContent(this.workflowDescription)
 
@@ -185,7 +286,7 @@ export default {
     async deployStaticDevice (sn) {
       try { 
         let payload = {
-          sn: this.sn,
+          sn: this.associated_device.value,
           workflowName: this.workflowName.value,
           workflowDescription: this.workflowDescription.value.replace(/\n/g,' '),
           workflowTemplate: this.workflowTemplate.value,
@@ -217,7 +318,7 @@ export default {
                       status: 'success',
                       msg: `Static client ${this.sn} has been deployed`,
                       timeout: 3000,
-                      redirect: `${process.env.VUE_APP_URL}/admin/clients/static`
+                      redirect: `${process.env.VUE_APP_URL}/admin/applications/mono`
                     })
                   }
                 }
@@ -378,6 +479,7 @@ export default {
         await this.dispatchStore('getSttServices')
         await this.dispatchStore('getSttLanguageModels')
         await this.dispatchStore('getTockApplications')
+        await this.dispatchStore('getStaticClients')
       } catch (error) {
         bus.$emit('app_notif', {
           status: 'error',
@@ -395,6 +497,9 @@ export default {
           throw dispatch.msg
         }
         switch(topic) {
+          case 'getStaticClients':
+            this.staticClientsLoaded = dispatchSuccess
+            break
           case 'getWorkflowsTemplates':
             this.workflowTemplatesLoaded = dispatchSuccess
             break

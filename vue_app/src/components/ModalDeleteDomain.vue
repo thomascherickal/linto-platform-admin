@@ -1,17 +1,23 @@
 <template>
-  <div class="modal-wrapper" v-if="modalVisible">
+  <div class="modal-wrapper" v-if="modalVisible && dataLoaded">
     <div class="modal">
+      <!-- HEADER -->
       <div class="modal-header flex row">
-        <span class="modal-header__tilte flex1">Delete static device - {{ sn }}</span>
+        <span class="modal-header__tilte flex1">Delete a domain</span>
         <button class="button button-icon button--red" @click="closeModal()">
           <span class="button__icon button__icon--close"></span>
         </button>
       </div>
-      <div class="modal-body">
-        <div class="modal-body__content">
-            Are you sure that you want to <strong>delete</strong> the static device with serial number "<strong>{{ sn }}</strong>" ?
+      <!-- End HEADER -->
+      <!-- BODY -->
+      <div class="modal-body flex col">
+        <div class="modal-body__content flex col">
+         <p>Are you sure you want to <strong>delete</strong> the domain: "<strong>{{ webappHost.originUrl }}</strong>"</p>
+        
         </div>
       </div>
+      <!-- End BODY -->
+      <!-- FOOTER -->
       <div class="modal-footer flex row">
         <div class="flex flex1 modal-footer-left">
           <button class="button button-icon-txt button--grey" @click="closeModal()">
@@ -20,12 +26,13 @@
           </button>
         </div>
         <div class="flex flex1 modal-footer-right">
-          <button class="button button-icon-txt button--red" @click="deleteStaticDevice(sn)">
-            <span class="button__icon button__icon--delete"></span>
+          <button class="button button-icon-txt button--red" @click="removeWebappHost()">
+            <span class="button__icon button__icon--trash"></span>
             <span class="button__label">Delete</span>
           </button>
         </div>
       </div>
+    <!-- End FOOTER -->
     </div>
   </div>
 </template>
@@ -36,14 +43,19 @@ export default {
   data () {
     return {
       modalVisible: false,
-      sn: null
+      webappHost: null
     }
   },
-  mounted () {
-    bus.$on('delete_static_device', (data) => {
-      this.sn = data.sn
+  async mounted () {
+    bus.$on('delete_webapp_host', async (data) => {
       this.showModal()
+      this.webappHost = data.webappHost
     })
+  },
+  computed: {
+    dataLoaded () {
+      return this.webappHost !== null
+    }
   },
   methods: {
     showModal () {
@@ -52,26 +64,29 @@ export default {
     closeModal () {
       this.modalVisible = false
     },
-    async deleteStaticDevice (sn) {
+    async removeWebappHost () {
       try { 
-        const deleteDevice = await axios(`${process.env.VUE_APP_URL}/api/clients/static/${sn}`, {
-          method: 'delete'
+        const payload = {
+          originUrl: this.webappHost.originUrl
+        }
+        const removeWebappHost = await axios(`${process.env.VUE_APP_URL}/api/webapphosts/${this.webappHost._id}`, {
+          method: 'delete',
+          data: {payload}
         })
-
-        if (deleteDevice.data.status === 'success') {
+        
+        if (removeWebappHost.data.status === 'success') {
+          this.closeModal()
+          bus.$emit('delete_webapp_host_success', {})
           bus.$emit('app_notif', {
             status: 'success',
-            msg: deleteDevice.data.msg,
-            timeout: 3000,
+            msg: removeWebappHost.data.msg,
+            timeout: false,
             redirect: false
           })
-          this.closeModal()
-          bus.$emit('delete_static_device_success', {})
         } else {
-          throw deleteDevice.data.msg
+          throw removeWebappHost.data.msg
         }
       } catch (error) {
-        console.error(error)
         bus.$emit('app_notif', {
           status: 'error',
           msg: error,

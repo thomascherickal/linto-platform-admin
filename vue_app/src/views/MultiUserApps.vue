@@ -1,20 +1,16 @@
 <template>
   <div v-if="dataLoaded">
-    <h1>Clients - Applications</h1>
+    <h1>Multi-user applications</h1>
     <div class="flex col">
       <h2>Deployed applications</h2>
-      <details open class="description">
-        <summary>Infos</summary>
-        <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam laoreet nulla lacus, vel pellentesque augue ullamcorper sed. Curabitur scelerisque suscipit gravida. Morbi risus libero, viverra ac ipsum ornare, molestie aliquam leo. Donec quis arcu risus. Nam sit amet orci id sapien varius condimentum vitae non dolor.</span>
-      </details>
       <div class="flex row">
         <table class="table" v-if="applicationWorkflows.length > 0">
           <thead>
             <tr>
               <th>Application Name</th>
               <th>Description</th>
-              <th>Android users</th>
-              <th>Web-app hosts</th>
+              <th>Users</th>
+              <th>Domains</th>
               <th>Deployed workflow</th>
               <th>Services Parameters</th>
               <th>Delete</th>
@@ -27,7 +23,7 @@
               <td>
                 <button 
                   class="button button-icon-txt" @click="manageAndroidUsers(app._id,  app.name)"
-                  :class="app.flow.nodes[app.flow.nodes.findIndex(f => f.type === 'linto-application-in')].auth_android === true ? 'button--green' : 'button--grey'"
+                  :class="!!app.flow.nodes[app.flow.nodes.findIndex(f => f.type === 'linto-application-in')].auth_android && app.flow.nodes[app.flow.nodes.findIndex(f => f.type === 'linto-application-in')].auth_android === true ? 'button--green' : 'button--grey'"
                 >
                   <span class="button__icon button__icon--android"></span>
                   <span class="button__label">Users ({{ !!androidUsersByApps[app._id] ? androidUsersByApps[app._id].length : 0 }})</span>
@@ -39,17 +35,17 @@
                   :class="app.flow.nodes[app.flow.nodes.findIndex(f => f.type === 'linto-application-in')].auth_web === true ? 'button--green' : 'button--grey'"
                 >
                   <span class="button__icon button__icon--webapp"></span>
-                  <span class="button__label">Hosts ({{ !!hostByApps[app._id] ? hostByApps[app._id].length : 0 }})</span>
+                  <span class="button__label">Domains ({{ !!hostByApps[app._id] ? hostByApps[app._id].length : 0 }})</span>
                 </button>
               </td>
               <td>
-                <a :href="`/admin/clients/application/workflow/${app._id}`" class="button button-icon-txt button--bluemid button--with-desc bottom" data-desc="Edit on Node-red interface">
+                <a :href="`/admin/applications/multi/workflow/${app._id}`" class="button button-icon-txt button--bluemid button--with-desc bottom" data-desc="Edit on Node-red interface">
                   <span class="button__icon button__icon--workflow"></span>
                   <span class="button__label">{{ app.name }}</span>
                 </a>
               </td>
               <td class="center">
-                <button class="button button-icon-txt button--blue button--with-desc bottom" data-desc="Edit services settings" @click="updateWorkflowServicesSettings(app)">
+                <button class="button button-icon-txt button--blue button--with-desc bottom" data-desc="Edit services parameters" @click="updateWorkflowServicesSettings(app)">
                   <span class="button__icon button__icon--settings"></span>
                   <span class="button__label">Edit</span>
                 </button>
@@ -62,13 +58,13 @@
             </tr>
           </tbody>
         </table>
-        <div class="no-content" v-else>No application workflow was found.</div>
+        <div class="no-content" v-else>No multi-user application was found.</div>
       </div>
       <div class="divider"></div>
       <div class="flex row">
-        <a href="/admin/clients/application/create" class="button button-icon-txt button--green">
+        <a href="/admin/applications/multi/deploy" class="button button-icon-txt button--green">
           <span class="button__icon button__icon--add"></span>
-          <span class="button__label">Create an application</span>
+          <span class="button__label">Create a multi-user application</span>
         </a>
       </div>
     </div>
@@ -104,7 +100,7 @@ export default {
   },
   computed: {
     dataLoaded () {
-      return this.applicationWorkflowsLoaded && this.androidUsersLoaded
+      return this.applicationWorkflowsLoaded && this.androidUsersLoaded && this.webappHostsLoaded
     },
     applicationWorkflows () {
       return this.$store.state.applicationWorkflows

@@ -3,7 +3,7 @@
     <div class="modal">
       <!-- HEADER -->
       <div class="modal-header flex row">
-        <span class="modal-header__tilte flex1">Create an android user</span>
+        <span class="modal-header__tilte flex1">Create an user</span>
         <button class="button button-icon button--red" @click="closeModal()">
           <span class="button__icon button__icon--close"></span>
         </button>

@@ -3,7 +3,7 @@
     <div class="modal">
       <!-- HEADER -->
       <div class="modal-header flex row">
-        <span class="modal-header__tilte flex1">Edit Web-application host</span>
+        <span class="modal-header__tilte flex1">Edit domain</span>
         <button class="button button-icon button--red" @click="closeModal()">
           <span class="button__icon button__icon--close"></span>
         </button>
@@ -12,7 +12,7 @@
       <!-- BODY -->
       <div class="modal-body flex col">
         <div class="modal-body__content flex col">
-          <span class="subtitle" v-if="!addAppFormVisible">Host informations</span>
+          <span class="subtitle" v-if="!addAppFormVisible">Domain informations</span>
 
           <div class="flex row" v-if="!addAppFormVisible">
             <AppInput :label="'Origin URL'" :obj="originUrl" :test="'testUrl'" :class="'flex1'"></AppInput>
@@ -102,7 +102,7 @@
             </div>
           </div>
           <div class="flex col" v-else>
-            <p>Please select applications to <strong>associate</strong> with web-application host "<strong>{{ webappHost.originUrl }}</strong>"</p>
+            <p>Please select applications to <strong>associate</strong> with the domain "<strong>{{ webappHost.originUrl }}</strong>"</p>
             <div class="flex row">
               <table class="table">
                 <thead>

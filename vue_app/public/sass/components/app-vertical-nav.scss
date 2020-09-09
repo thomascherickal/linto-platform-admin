@@ -60,6 +60,18 @@
             &.nav-link__icon--nlu {
                 @include maskImage('../img/svg/nlu.svg');
             }
+            &.nav-link__icon--single-user {
+                @include maskImage('../img/svg/single-user.svg');
+            }
+            &.nav-link__icon--multi-user {
+                @include maskImage('../img/svg/multi-user.svg');
+            }
+            &.nav-link__icon--terminal {
+                @include maskImage('../img/svg/terminal.svg');
+            }
+            &.nav-link__icon--users {
+                @include maskImage('../img/svg/users.svg');
+            }
         }
         .nav-link__label {
             display: inline-block;

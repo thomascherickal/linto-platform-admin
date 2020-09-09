@@ -175,16 +175,31 @@ export default new Vuex.Store({
             try {
                 let services = state.sttServices || []
                 let languageModels = state.sttLanguageModels || []
-                let availableServices = []
+                let servicesCMD = []
+                let serviceLVOnline = []
+                let serviceLVOffline =   []
                 if (services.length > 0) {
                     services.map(s => {
                         let lm = languageModels.filter(l => l.modelId === s.LModelId)
                         if (lm.length > 0) {
                             if (lm[0].isGenerated === 1 || lm[0].isDirty === 1 && lm[0].isGenerated === 0 && lm[0].updateState >= 0) {
-                                availableServices.push(s)
+                                if (lm[0].type === 'cmd') {
+                                    servicesCMD.push(s)
+                                } else if (lm[0].type === 'lvcsr') {
+                                    if (s.tag === 'online') {
+                                        serviceLVOnline.push(s)
+                                    } else if (s.tag === 'offline') {
+                                        serviceLVOffline.push(s)
+                                    }
+                                }
                             }
                         }
                     })
+                    const availableServices = {
+                        cmd: servicesCMD,
+                        lvOnline: serviceLVOnline,
+                        lvOffline: serviceLVOffline,
+                    }
                     return availableServices
                 } else {
                     throw 'No service found.'

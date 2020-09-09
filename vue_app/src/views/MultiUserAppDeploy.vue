@@ -3,26 +3,84 @@
     <h1>Create a new application</h1>
     <div class="flex col">
       <!-- Workflow name -->
-      <AppInput :label="'Application name'" :obj="workflowName" :test="'testWorkflowName'"></AppInput>
+      <AppInput 
+        :label="'Application name'" 
+        :obj="workflowName" 
+        :test="'testApplicationWorkflowName'"
+      ></AppInput>
 
       <!-- Workflow description -->
-      <AppTextarea :obj="workflowDescription" :label="'Application description'" ></AppTextarea>
+      <AppTextarea 
+        :obj="workflowDescription" 
+        :label="'Application description'"
+      ></AppTextarea>
 
       <!-- Workflow tempalte -->
-      <AppSelect :label="'Workflow template'" :obj="workflowTemplate" :list="workflowTemplates" :params="{key:'_id', value:'name' , optLabel: 'name'}" :disabled="workflowTemplates.length === 0" :disabledTxt="'No application workflow template was found.'"></AppSelect>
+      <AppSelect 
+        :label="'Workflow template'" 
+        :obj="workflowTemplate" 
+        :list="workflowTemplates" 
+        :params="{key:'_id', value:'name' , optLabel: 'name'}" 
+        :disabled="workflowTemplates.length === 0" 
+        :disabledTxt="'No application workflow template was found.'"
+      ></AppSelect>
 
       <!-- STT language -->
-      <AppSelect :label="'Select a language'" :obj="sttServiceLanguage" :list="sttAvailableLanguages" :params="{key:'value', value:'value', optLabel: 'value'}" :disabled="noSttService" :disabledTxt="'Create a STT service'"></AppSelect>
+      <AppSelect 
+        :label="'Select a language'" 
+        :obj="sttServiceLanguage" 
+        :list="sttAvailableLanguages" 
+        :params="{key:'value', value:'value', optLabel: 'value'}" 
+        :disabled="noSttService" 
+        :disabledTxt="'Create a STT service'"
+      ></AppSelect>
 
-      <!-- STT services -->
-      <AppSelect :label="'Select a STT service'" :obj="sttService" :list="sttServiceByLanguage" :params="{key:'_id', value:'serviceId', optLabel: 'serviceId'}" :disabled="sttServiceLanguage.value === ''" :disabledTxt="'Please select a language'"></AppSelect>
+      <!-- STT services command -->
+      <AppSelect 
+        :label="'Select a STT command service'" 
+        :obj="sttService" 
+        :list="sttServiceCmdByLanguage" 
+        :params="{key:'_id', value:'serviceId', optLabel: 'serviceId'}" 
+        :disabled="sttServiceLanguage.value === ''" 
+        :disabledTxt="'Please select a language'"
+      ></AppSelect>
       
+      <!-- LinSTT Large vocabulary online (streaming) -->
+      <AppSelect 
+        :label="'Select a LinSTT Large vocabulary streaming service'" 
+        :obj="sttLVOnlineService" 
+        :list="sttServiceLVOnlineByLanguage" 
+        :params="{key:'_id', value:'serviceId', optLabel: 'serviceId'}" 
+        :disabled="sttServiceLanguage.value === ''" 
+        :disabledTxt="'Please select a language'"
+        :disabled2="sttServiceLVOnlineByLanguage.length === 0" 
+        :disabled2Txt="'No service available'"
+      ></AppSelect>
+
+      <!-- LinSTT Large vocabulary offline (file) -->
+      <AppSelect 
+        :label="'Select a LinSTT Large vocabulary file service'" 
+        :obj="sttLVOfflineService" 
+        :list="sttServiceLVOfflineByLanguage" 
+        :params="{key:'_id', value:'serviceId', optLabel: 'serviceId'}" 
+        :disabled="sttServiceLanguage.value === ''" 
+        :disabledTxt="'Please select a language'"
+        :disabled2="sttServiceLVOfflineByLanguage.length === 0" 
+        :disabled2Txt="'No service available'"
+      ></AppSelect>
+
       <!-- TOCK application -->
-      <AppSelect :label="'Select Tock application'" :obj="tockApplicationName" :list="tockApplications" :params="{key:'name', value:'name', optLabel: 'name'}" :options="{value:'new', label:'Create a new tock application'}"></AppSelect>
+      <AppSelect 
+        :label="'Select Tock application'" 
+        :obj="tockApplicationName" 
+        :list="tockApplications" 
+        :params="{key:'name', value:'name', optLabel: 'name'}" 
+        :options="{value:'new', label:'Create a new tock application'}"
+      ></AppSelect>
 
       <!-- Submit -->
       <div class="flex row">
-        <a href="/admin/clients/application" class="button button-icon-txt button--grey">
+        <a href="/admin/applications/multi" class="button button-icon-txt button--grey">
           <span class="button__icon button__icon--cancel"></span>
           <span class="button__label">Cancel</span>
         </a>
@@ -60,6 +118,16 @@ export default {
         valid: false
       },
       sttService: {
+        value: '',
+        error: null,
+        valid: false
+      },
+      sttLVOnlineService: {
+        value: '',
+        error: null,
+        valid: false
+      },
+      sttLVOfflineService: {
         value: '',
         error: null,
         valid: false
@@ -104,9 +172,8 @@ export default {
     sttAvailableLanguages () {
       if (this.sttServicesLoaded) {
         let sttLang = []
-        if (this.sttServices.length > 0) {
-          this.sttServices.map(service => {
-            
+        if (this.sttServices.cmd.length > 0) {
+          this.sttServices.cmd.map(service => {
             if(sttLang.filter(lang => lang.value === service.lang).length === 0) {
               sttLang.push({ value: service.lang })
             }
@@ -117,9 +184,23 @@ export default {
         return ''
       }
     },
-    sttServiceByLanguage () {
+    sttServiceCmdByLanguage () {
       if (this.sttServiceLanguage.value !== '') {
-        return this.sttServices.filter(service => service.lang === this.sttServiceLanguage.value)
+        return this.sttServices.cmd.filter(service => service.lang === this.sttServiceLanguage.value)
+      } else {
+        return []
+      }
+    },
+    sttServiceLVOnlineByLanguage () {
+      if (this.sttServiceLanguage.value !== '') {
+        return this.sttServices.lvOnline.filter(service => service.lang === this.sttServiceLanguage.value)
+      } else {
+        return []
+      }
+    },
+    sttServiceLVOfflineByLanguage () {
+      if (this.sttServiceLanguage.value !== '') {
+        return this.sttServices.lvOffline.filter(service => service.lang === this.sttServiceLanguage.value)
       } else {
         return []
       }
@@ -157,7 +238,7 @@ export default {
     async handleForm () {
 
       /* Workflow Name */ 
-      this.$options.filters.testStaticWorkflowName(this.workflowName) // Test if workflow name is not used
+      this.$options.filters.testApplicationWorkflowName(this.workflowName) // Test if workflow name is not used
       if (this.workflowName.error === null) {
         this.$options.filters.testName(this.workflowName) // Test if workflow name is valid
       }
@@ -214,7 +295,7 @@ export default {
                     status: 'success',
                     msg: `Application ${this.workflowName.value} has been created`,
                     timeout: 3000,
-                    redirect: `${process.env.VUE_APP_URL}/admin/clients/application`
+                    redirect: `${process.env.VUE_APP_URL}/admin/applications/multi`
                   })
                 }
               }

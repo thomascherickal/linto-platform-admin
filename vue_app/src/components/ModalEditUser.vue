@@ -3,7 +3,7 @@
     <div class="modal">
       <!-- HEADER -->
       <div class="modal-header flex row">
-        <span class="modal-header__tilte flex1">Edit android user - {{ user.email }}</span>
+        <span class="modal-header__tilte flex1">Edit an user</span>
         <button class="button button-icon button--red" @click="closeModal()">
           <span class="button__icon button__icon--close"></span>
         </button>
@@ -75,7 +75,7 @@
             </div>
           </div>
           <div class="flex col" v-else>
-            <p>Please select android applications to <strong>associate</strong> with user "<strong>{{ user.email }}</strong>"</p>
+            <p>Please select applications to <strong>associate</strong> with the user "<strong>{{ user.email }}</strong>"</p>
             <div class="flex col">
               <ul class="checkbox-list">
                 <li v-for="wf in filteredApplicationWorkflows" :key="wf._id">

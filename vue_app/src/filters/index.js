@@ -86,9 +86,10 @@ Vue.filter('testSelectField', function(obj) {
 })
 
 // TEST STATIC WORKFLOW NAME
-Vue.filter('testStaticWorkflowName', function(obj) {
+Vue.filter('testStaticWorkflowName', async function(obj) {
     obj.error = null
     obj.valid = false
+    await store.dispatch('getStaticWorkflows')
     const workflows = store.state.staticWorkflows
     if (workflows.length > 0 && workflows.filter(wf => wf.name === obj.value).length > 0) {
         obj.error = 'This workflow name is already used'
@@ -97,9 +98,10 @@ Vue.filter('testStaticWorkflowName', function(obj) {
 })
 
 // TEST APPLICATION WORKFLOW NAME
-Vue.filter('testApplicationWorkflowName', function(obj) {
+Vue.filter('testApplicationWorkflowName', async function(obj) {
     obj.error = null
     obj.valid = false
+    await store.dispatch('getApplicationWorkflows')
     const workflows = store.state.applicationWorkflows
     if (workflows.length > 0 && workflows.filter(wf => wf.name === obj.value).length > 0) {
         obj.error = 'This workflow name is already used'
@@ -108,9 +110,10 @@ Vue.filter('testApplicationWorkflowName', function(obj) {
 })
 
 // TEST STATIC DEVICE SERIAL NUMBER
-Vue.filter('testStaticClientsSN', function(obj) {
+Vue.filter('testStaticClientsSN', async function(obj) {
     obj.error = null
     obj.valid = false
+    await store.dispatch('getStaticClients')
     const clients = store.state.staticClients
     if (clients.length > 0 && clients.filter(wf => wf.sn === obj.value).length > 0) {
         obj.error = 'This serial number is already used'
@@ -119,9 +122,10 @@ Vue.filter('testStaticClientsSN', function(obj) {
 })
 
 // TEST WORKFLOW TEMPLATE NAME
-Vue.filter('testWorkflowTemplateName', function(obj) {
+Vue.filter('testWorkflowTemplateName', async function(obj) {
     obj.error = null
     obj.valid = false
+    await store.dispatch('getWorkflowsTemplates')
     const workflowsTemplates = store.state.workflowsTemplates
     if (workflowsTemplates.length > 0 && workflowsTemplates.filter(wf => wf.name === obj.value).length > 0) {
         obj.error = 'This workflow template name is already used'
@@ -179,11 +183,12 @@ Vue.filter('testEmail', function(obj) {
 })
 
 // TEST ANDROID USER EMAIL EXIST
-Vue.filter('testAndroidUserEmail', function(obj) {
+Vue.filter('testAndroidUserEmail', async function(obj) {
     obj.valid = false
     obj.error = null
     obj = testEmail(obj)
     if (obj.valid) {
+        await store.dispatch('getAndroidUsers')
         const users = store.state.androidUsers
         const userExist = users.filter(user => user.email === obj.value)
         if (userExist.length > 0) {
@@ -210,11 +215,12 @@ Vue.filter('testContent', function(obj) {
     }
 })
 
-Vue.filter('testUrl', function(obj) {
+Vue.filter('testUrl', async function(obj) {
     obj.valid = false
     obj.error = null
     obj = testUrl(obj)
     if (obj.valid) {
+        await store.dispatch('getWebappHosts')
         const hosts = store.state.webappHosts
         const hostExist = hosts.filter(host => host.originUrl === obj.value)
         if (hostExist.length > 0) {

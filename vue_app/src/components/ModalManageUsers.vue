@@ -3,7 +3,7 @@
     <div class="modal">
       <!-- HEADER -->
       <div class="modal-header flex row">
-        <span class="modal-header__tilte flex1">Manage Android users - "{{ appName }}"</span>
+        <span class="modal-header__tilte flex1">Manage users for application "{{ appName }}"</span>
         <button class="button button-icon button--red" @click="closeModal()">
           <span class="button__icon button__icon--close"></span>
         </button>
@@ -13,13 +13,13 @@
       <div class="modal-body flex col">
         <div class="modal-body__content flex col">
           <div class="flex row button--toggle__container">
-            <span class="button--toggle__label">Android authentication: </span>
+            <span class="button--toggle__label">Users authentication: </span>
             <button class="button--toggle" :class="androidAuth ? 'enabled': 'disabled'" @click="toggleAndroidAuth()">
               <span class="button--toggle__disc"></span>
             </button>
           </div>
 
-          <p v-if="androidRegisteredUsers.length > 0 && !showAddUserForm"> List of <strong>users</strong> registered in "<strong>{{ appName }}</strong>" android application.</p>
+          <p v-if="androidRegisteredUsers.length > 0 && !showAddUserForm"> List of <strong>users</strong> registered in multi-user application"<strong>{{ appName }}</strong>".</p>
           <div class="flex row" v-if="androidRegisteredUsers.length > 0 && !showAddUserForm">
             <table class="table">
               <thead>
@@ -40,12 +40,12 @@
             </table>
           </div>
           
-          <div class="flex col no-content" v-if="androidRegisteredUsers.length === 0 && !showAddUserForm">No android user was found for application.</div>
+          <div class="flex col no-content" v-if="androidRegisteredUsers.length === 0 && !showAddUserForm">No user was found for application.</div>
 
           <div class="flex col android-users-form" v-if="showAddUserForm">
-            <p>Select an user to be <strong>added</strong> in "<strong>{{ appName }}</strong>" application, or <a class="button button-icon-txt button--bluemid" href="/admin/users/android">
+            <p>Select an user to be <strong>added</strong> in "<strong>{{ appName }}</strong>" mutli-user application, or <a class="button button-icon-txt button--bluemid" href="/admin/users">
                   <span class="button__icon button__icon--settings"></span>
-                  <span class="button__label">Manage android users</span>
+                  <span class="button__label">Manage users</span>
                 </a></p>
             <div class="flex col">
               <AppSelect :label="'Select an user'" :obj="userId" :list="androidNotRegisteredUsers" :params="{key:'_id', value:'_id', optLabel: 'email'}" :disabled="androidNotRegisteredUsers.length === 0" :disabledTxt="'No android user was found'"></AppSelect>

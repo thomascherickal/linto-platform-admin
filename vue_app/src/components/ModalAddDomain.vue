@@ -3,7 +3,7 @@
     <div class="modal">
       <!-- HEADER -->
       <div class="modal-header flex row">
-        <span class="modal-header__tilte flex1">Create a webapp host</span>
+        <span class="modal-header__tilte flex1">Add a domain</span>
         <button class="button button-icon button--red" @click="closeModal()">
           <span class="button__icon button__icon--close"></span>
         </button>
@@ -12,7 +12,7 @@
       <!-- BODY -->
       <div class="modal-body flex col" v-if="dataLoaded">
         <div class="modal-body__content flex col" >
-          <p>Please enter a web application host origin url: </p>
+          <p>Please enter a <strong>domain origin url</strong>: </p>
           <div class="flex col">
             <AppInput :label="'Origin url'" :obj="webappHost" :test="'testUrl'"></AppInput>
           </div>
@@ -24,7 +24,7 @@
         <div class="flex flex1 modal-footer-right">
           <button class="button button-icon-txt button--green" @click="handleForm()">
             <span class="button__icon button__icon--apply"></span>
-            <span class="button__label">Create webapp host</span>
+            <span class="button__label">Create domain</span>
           </button>
         </div>
       </div>

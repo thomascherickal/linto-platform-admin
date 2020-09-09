@@ -1,23 +1,17 @@
 <template>
-  <div class="modal-wrapper" v-if="modalVisible && dataLoaded">
+  <div class="modal-wrapper" v-if="modalVisible">
     <div class="modal">
-      <!-- HEADER -->
       <div class="modal-header flex row">
-        <span class="modal-header__tilte flex1">Delete android user</span>
+        <span class="modal-header__tilte flex1">Dissociate a terminal</span>
         <button class="button button-icon button--red" @click="closeModal()">
           <span class="button__icon button__icon--close"></span>
         </button>
       </div>
-      <!-- End HEADER -->
-      <!-- BODY -->
-      <div class="modal-body flex col">
-        <div class="modal-body__content flex col">
-         <p>Are you sure you want to <strong>delete</strong> the android user user "<strong>{{ userEmail }}</strong>"</p>
-        
+      <div class="modal-body">
+        <div class="modal-body__content">
+            Are you sure that you want to <strong>dissociate</strong> the terminal with serial number "<strong>{{ sn }}</strong>" and remove the single user application "<strong>{{workflow.name }}</strong>" ?
         </div>
       </div>
-      <!-- End BODY -->
-      <!-- FOOTER -->
       <div class="modal-footer flex row">
         <div class="flex flex1 modal-footer-left">
           <button class="button button-icon-txt button--grey" @click="closeModal()">
@@ -26,13 +20,12 @@
           </button>
         </div>
         <div class="flex flex1 modal-footer-right">
-          <button class="button button-icon-txt button--red" @click="removeUser()">
-            <span class="button__icon button__icon--trash"></span>
+          <button class="button button-icon-txt button--red" @click="dissociateStaticDevice(sn, workflow)">
+            <span class="button__icon button__icon--delete"></span>
             <span class="button__label">Delete</span>
           </button>
         </div>
       </div>
-    <!-- End FOOTER -->
     </div>
   </div>
 </template>
@@ -43,21 +36,16 @@ export default {
   data () {
     return {
       modalVisible: false,
-      userId: null,
-      userEmail: null
+      sn: null,
+      workflow: null
     }
   },
-  async mounted () {
-    bus.$on('delete_android_user', async (data) => {
+  mounted () {
+    bus.$on('dissociate_static_device', (data) => {
+      this.sn = data.sn
+      this.workflow = data.workflow
       this.showModal()
-      this.userId = data.userId
-      this.userEmail = data.email
     })
-  },
-  computed: {
-    dataLoaded () {
-      return this.userId !== null && this.userEmail !== null
-    }
   },
   methods: {
     showModal () {
@@ -66,28 +54,29 @@ export default {
     closeModal () {
       this.modalVisible = false
     },
-    async removeUser () {
+    async dissociateStaticDevice (sn, workflow) {
       try {
         const payload = {
-          email: this.userEmail
+          sn
         }
-        const removeUser = await axios(`${process.env.VUE_APP_URL}/api/androidusers/${this.userId}`, {
+        const dissociateStaticDevice = await axios(`${process.env.VUE_APP_URL}/api/workflows/static/${workflow._id}`, {
           method: 'delete',
           data: { payload }
         })
-        if (removeUser.data.status === 'success') {
-          this.closeModal()
-          bus.$emit('delete_android_user_success', {})
+        if (dissociateStaticDevice.data.status === 'success') {
           bus.$emit('app_notif', {
             status: 'success',
-            msg: removeUser.data.msg,
+            msg: dissociateStaticDevice.data.msg,
             timeout: false,
             redirect: false
           })
+          this.closeModal()
+          bus.$emit('dissociate_static_device_success', {})
         } else {
-          throw removeUser.data.msg
+          throw dissociateStaticDevice.data.msg
         }
       } catch (error) {
+        console.error(error)
         bus.$emit('app_notif', {
           status: 'error',
           msg: error,

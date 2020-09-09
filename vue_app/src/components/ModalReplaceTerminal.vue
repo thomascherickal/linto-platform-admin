@@ -2,14 +2,14 @@
   <div class="modal-wrapper" v-if="modalVisible">
     <div class="modal">
       <div class="modal-header flex row">
-        <span class="modal-header__tilte flex1">Update enrolled static device</span>
+        <span class="modal-header__tilte flex1">Update associated terminal</span>
         <button class="button button-icon button--red" @click="closeModal()">
           <span class="button__icon button__icon--close"></span>
         </button>
       </div>
       <div class="modal-body">
         <div class="modal-body__content">
-          <p>You're about to replace the actual static device attached to "<strong>{{workflow.name}}</strong>" workflow. If you want to continue, please select a device in the following list and apply your choice.</p>
+          <p>You're about to replace the actual terminal attached to single user application "<strong>{{workflow.name}}</strong>". If you want to continue, please select a terminal in the following list and apply your choice.</p>
           <AppSelect :label="'Select a static device'" :obj="targetDevice" :list="availableStaticClients" :params="{key:'_id', value:'sn', optLabel: 'sn'}" :disabled="noStaticDevice" :disabledTxt="'No static device available'"></AppSelect>
         </div>
       </div>
@@ -84,8 +84,9 @@ export default {
               timeout: 3000,
               redirect: false
             })
+            bus.$emit('update_enrolled_static_device', {})
             this.closeModal()
-            await this.dispatchClients()
+            
           }
         } catch (error) {
           bus.$emit('app_notif', {

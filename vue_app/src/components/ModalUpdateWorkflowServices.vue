@@ -2,7 +2,7 @@
   <div class="modal-wrapper" v-if="modalVisible && dataLoaded">
     <div class="modal">
       <div class="modal-header flex row">
-        <span class="modal-header__tilte flex1">Workflow "{{workflow.name}}" services settings</span>
+        <span class="modal-header__tilte flex1">Application "{{workflow.name}}" services settings</span>
         <button class="button button-icon button--red" @click="closeModal()">
           <span class="button__icon button__icon--close"></span>
         </button>
@@ -15,8 +15,8 @@
           <!-- STT language -->
           <AppSelect :label="'Select a language'" :obj="sttServiceLanguage" :list="sttAvailableLanguages" :params="{key:'value', value:'value', optLabel: 'value'}" :disabled="noSttService" :disabledTxt="'Create a STT service'"></AppSelect>
 
-          <!-- STT services -->
-          <AppSelect :label="'Select a STT service'" :obj="sttService" :list="sttServiceByLanguage" :params="{key:'_id', value:'serviceId', optLabel: 'serviceId'}" :disabled="sttServiceLanguage.value === ''" :disabledTxt="'Please select a language'"></AppSelect>
+          <!-- STT services command -->
+          <AppSelect :label="'Select a STT command service'" :obj="sttService" :list="sttServiceCmdByLanguage" :params="{key:'_id', value:'serviceId', optLabel: 'serviceId'}" :disabled="sttServiceLanguage.value === ''" :disabledTxt="'Please select a language'"></AppSelect>
           
           <!-- TOCK application -->
           <AppSelect :label="'Select Tock application'" :obj="tockApplicationName" :list="tockApplications" :params="{key:'name', value:'name', optLabel: 'name'}" :options="{value:'new', label:'Create a new tock application'}"></AppSelect>
@@ -111,9 +111,8 @@ export default {
     sttAvailableLanguages () {
       if (this.sttServicesLoaded) {
         let sttLang = []
-        if (this.sttServices.length > 0) {
-          this.sttServices.map(service => {
-            
+        if (this.sttServices.cmd.length > 0) {
+          this.sttServices.cmd.map(service => {
             if(sttLang.filter(lang => lang.value === service.lang).length === 0) {
               sttLang.push({ value: service.lang })
             }
@@ -124,9 +123,9 @@ export default {
         return ''
       }
     },
-    sttServiceByLanguage () {
+    sttServiceCmdByLanguage () {
       if (this.sttServiceLanguage.value !== '') {
-        return this.sttServices.filter(service => service.lang === this.sttServiceLanguage.value)
+        return this.sttServices.cmd.filter(service => service.lang === this.sttServiceLanguage.value)
       } else {
         return []
       }
@@ -212,14 +211,15 @@ export default {
           data: { payload }
         })
         if (updateWorkflow.data.status === 'success') {
-            this.closeModal()
             bus.$emit('update_workflow_services_success', {})
-             bus.$emit('app_notif', {
+            bus.$emit('app_notif', {
               status: 'success',
               msg: updateWorkflow.data.msg,
               timeout: 3000,
               redirect: false
             })
+            this.closeModal()
+
         } else {
           throw updateWorkflow
         }
