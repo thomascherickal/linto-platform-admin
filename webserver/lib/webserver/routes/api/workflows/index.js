@@ -87,13 +87,13 @@ module.exports = (webServer) => {
                                 if (updateBls.status === 'success') {
                                     res.json({
                                         status: 'success',
-                                        msg: `The workflow "${payload.workflowName}" has been updated`
+                                        msg: `The single-user application "${payload.workflowName}" has been updated`
                                     })
                                 } else {
-                                    throw `Error on updating workflow ${getWorkflow.name} on Business logic server`
+                                    throw `Error on updating single-user application ${getWorkflow.name} on Business logic server`
                                 }
                             } else {
-                                throw `Error on updating associated static device "${workflowPayload.associated_device}"`
+                                throw `Error on updating associated terminal "${workflowPayload.associated_device}"`
                             }
 
                         } else if (payload.type === 'application') {
@@ -105,14 +105,14 @@ module.exports = (webServer) => {
                             if (updateBls.status === 'success') {
                                 res.json({
                                     status: 'success',
-                                    msg: `The workflow "${payload.workflowName}" has been updated`
+                                    msg: `The mutli-user application "${payload.workflowName}" has been updated`
                                 })
                             } else {
-                                throw `Error on updating workflow ${getWorkflow.name} on Business logic server`
+                                throw `Error on updating mutli-user application ${getWorkflow.name} on Business logic server`
                             }
                         }
                     } else {
-                        throw `Error on updating workflow ${getWorkflow.name}`
+                        throw `Error on updating mutli-user application ${getWorkflow.name}`
                     }
                 } catch (error) {
                     console.error(error)
@@ -165,14 +165,14 @@ module.exports = (webServer) => {
                                 if (lexicalSeeding.status === 'success') {
                                     res.json({
                                         status: 'success',
-                                        msg: `The static workflow "${payload.workflowName}" has been updated`
+                                        msg: `The application "${payload.workflowName}" has been updated`
                                     })
                                 } else {
                                     throw lexicalSeeding
                                 }
                             }
                         } else {
-                            throw 'Error on updating workflow'
+                            throw  `Error on updating application "${payload.workflowName}"`
                         }
                     } else {
                         throw 'Error on updating flow on Business Logic Server'

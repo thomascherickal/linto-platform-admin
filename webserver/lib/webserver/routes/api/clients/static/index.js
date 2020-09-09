@@ -63,7 +63,7 @@ module.exports = (webServer) => {
                     if (addStaticDevice === 'success') {
                         res.json({
                             status: 'success',
-                            msg: `The static client "${sn}" has been added.`
+                            msg: `The terminal with serial number "${sn}" has been added.`
                         })
                     } else {
                         throw addStaticDevice
@@ -126,10 +126,10 @@ module.exports = (webServer) => {
                             if (updateCurrentDevice === 'success' && updateTargetDevice === 'success')  {
                                 res.json({
                                     status: 'success',
-                                    msg: `Static device "${payload.sn}" has been replaced by static device "${payload.targetDevice}"`
+                                    msg: `Terminal "${payload.sn}" has been replaced by terminal "${payload.targetDevice}"`
                                 })
                             } else {
-                                throw 'Error on updating static devices'
+                                throw 'Error on updating terminals'
                             }
                             throw 'Error on updating workflow on Business logic server'
                         }
@@ -173,10 +173,10 @@ module.exports = (webServer) => {
                     if (updateStaticClient === 'success') {
                         res.json({
                             status: 'success',
-                            msg: `Static device "${payload.sn}" has been updated`
+                            msg: `The terminal "${payload.sn}" has been updated`
                         })
                     } else {
-                        throw `Error on updating static device "${payload.sn}"`
+                        throw `Error on updating terminal "${payload.sn}"`
                     }
                 } catch (error) {
                     console.error(error)
@@ -202,10 +202,10 @@ module.exports = (webServer) => {
                     if (deleteClient === 'success') {
                         res.json({
                             status: 'success',
-                            msg: `The static device with serial number "${sn}" has been deleted.`
+                            msg: `The terminal with serial number "${sn}" has been deleted.`
                         })
                     } else {
-                        throw 'Error on deleting static client'
+                        throw 'Error on deleting terminal'
                     }
                 } catch (error) {
                     console.error(error)

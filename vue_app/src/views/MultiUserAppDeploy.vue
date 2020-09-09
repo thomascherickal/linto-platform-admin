@@ -80,7 +80,7 @@
 
       <!-- Submit -->
       <div class="flex row">
-        <a href="/admin/applications/multi" class="button button-icon-txt button--grey">
+        <a href="/admin/applications/multi" class="button button-icon-txt button--grey" style="margin-right: 20px;">
           <span class="button__icon button__icon--cancel"></span>
           <span class="button__label">Cancel</span>
         </a>

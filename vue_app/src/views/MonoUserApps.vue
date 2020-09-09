@@ -1,6 +1,6 @@
 <template>
   <div v-if="dataLoaded">
-    <h1>Single user applications</h1>
+    <h1>Single-user applications</h1>
     <div class="flex col" >
       <h2>Deployed applications</h2>
       <div class="flex row">
@@ -51,7 +51,7 @@
       <div class="flex row">
         <a href="/admin/applications/mono/deploy" class="button button-icon-txt button--green" @click="addStaticDevice()">
           <span class="button__icon button__icon--add"></span>
-          <span class="button__label">Create a single user application</span>
+          <span class="button__label">Create a single-user application</span>
         </a>
       </div>
     </div>

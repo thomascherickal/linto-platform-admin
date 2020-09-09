@@ -9,7 +9,7 @@
       </div>
       <div class="modal-body">
         <div class="modal-body__content">
-          <p>You're about to replace the actual terminal attached to single user application "<strong>{{workflow.name}}</strong>". If you want to continue, please select a terminal in the following list and apply your choice.</p>
+          <p>You're about to replace the actual terminal attached to single-user application "<strong>{{workflow.name}}</strong>". If you want to continue, please select a terminal in the following list and apply your choice.</p>
           <AppSelect :label="'Select a static device'" :obj="targetDevice" :list="availableStaticClients" :params="{key:'_id', value:'sn', optLabel: 'sn'}" :disabled="noStaticDevice" :disabledTxt="'No static device available'"></AppSelect>
         </div>
       </div>

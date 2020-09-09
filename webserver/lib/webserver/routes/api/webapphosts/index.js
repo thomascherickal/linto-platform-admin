@@ -39,7 +39,7 @@ module.exports = (webServer) => {
                     if (createWebappHost === 'success') {
                         res.json({
                             status: 'success',
-                            msg: `The host "${payload.originUrl}" has been created`
+                            msg: `The domain "${payload.originUrl}" has been created`
                         })
                     }
                 } catch (error) {
@@ -68,7 +68,7 @@ module.exports = (webServer) => {
                     if (removeWebappHost === 'success') {
                         res.json({
                             status: 'success',
-                            msg: `The host "${payload.originUrl}" has been removed`
+                            msg: `The domain "${payload.originUrl}" has been removed`
                         })
                     }
                 } catch (error) {
@@ -96,7 +96,7 @@ module.exports = (webServer) => {
                     if (updateWebappHost === 'success') {
                         res.json({
                             status: 'success',
-                            msg: `The host "${payload.originUrl}" has been updated`
+                            msg: `The domain "${payload.originUrl}" has been updated`
                         })
                     }
                 } catch (error) {
@@ -129,10 +129,10 @@ module.exports = (webServer) => {
                     if (updateWebappHost === 'success') {
                         res.json({
                             status: 'success',
-                            msg: `The Web application host "${webappHost.originUrl}" has been dissociated from the application "${applicationWorkflow.name}"`
+                            msg: `The domain "${webappHost.originUrl}" has been dissociated from the application "${applicationWorkflow.name}"`
                         })
                     } else {
-                        throw 'Error on updating Web application host'
+                        throw 'Error on updating domain'
                     }
                 } catch (error) {
                     console.error(error)
@@ -174,10 +174,10 @@ module.exports = (webServer) => {
                     if (updateWebappHost === 'success') {
                         res.json({
                             status: 'success',
-                            msg: `New applications have been attached to Web appliaction host "${webappHost.originUrl}"`
+                            msg: `New applications have been attached to domain "${webappHost.originUrl}"`
                         })
                     } else {
-                        throw 'Error on updating user'
+                        throw 'Error on updating domain applications'
                     }
                 } catch (error) {
                     console.error(error)
@@ -221,10 +221,10 @@ module.exports = (webServer) => {
                     if (updateWebappHost === 'success') {
                         res.json({
                             status: 'success',
-                            msg: `New applications have been attached to Web appliaction host "${webappHost.originUrl}"`
+                            msg: `New applications have been attached to domain "${webappHost.originUrl}"`
                         })
                     } else {
-                        throw 'Error on updating user'
+                        throw 'Error on updating domain applications'
                     }
 
                 } catch (error) {
@@ -259,7 +259,7 @@ module.exports = (webServer) => {
                     if (updateWebappHost === 'success') {
                         res.json({
                             status: 'success',
-                            msg: `The application ${payload.name} has been removed for all web-app hosts`
+                            msg: `The application ${payload.name} has been removed from all registered domains`
                         })
                     } else {
                         throw updateWebappHost
@@ -268,7 +268,7 @@ module.exports = (webServer) => {
                     console.error(error)
                     res.json({
                         status: 'error',
-                        error: 'Error on deleting application from web-app hosts'
+                        error: 'Error on deleting application from registered domains'
                     })
                 }
             }

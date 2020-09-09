@@ -48,7 +48,7 @@
                   <span class="button__label">Manage users</span>
                 </a></p>
             <div class="flex col">
-              <AppSelect :label="'Select an user'" :obj="userId" :list="androidNotRegisteredUsers" :params="{key:'_id', value:'_id', optLabel: 'email'}" :disabled="androidNotRegisteredUsers.length === 0" :disabledTxt="'No android user was found'"></AppSelect>
+              <AppSelect :label="'Select an user'" :obj="userId" :list="androidNotRegisteredUsers" :params="{key:'_id', value:'_id', optLabel: 'email'}" :disabled="androidNotRegisteredUsers.length === 0" :disabledTxt="'No user was found'"></AppSelect>
               <div class="flex row">
                 <button class="button button-icon-txt button--green" @click="updateAndroidUser()">
                   <span class="button__icon button__icon--apply"></span>

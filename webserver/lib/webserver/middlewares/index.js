@@ -14,7 +14,7 @@ function logger(req, res, next) {
     next()
 }
 
-/*function decodeBasicAuth(req, res, next) {
+function decodeBasicAuth(req, res, next) {
     try {
         if (!!req.headers.authorization) {
             const auth = req.headers.authorization
@@ -62,11 +62,21 @@ async function checkBasicAuthLogin(login, password) {
     }
 
 }
-*/
 async function checkAuth(req, res, next) {
     debug(req.url, req.session)
     try {
-        if (!!req.session) {
+        // Basic Auth
+        if (!!req.headers.authorization) {
+            const auth = decodeBasicAuth(req, res, next)
+            if (auth !== null) {
+                const authValid = await checkBasicAuthLogin(auth.login, auth.password)
+                if (authValid) {
+                    next()
+                } else {
+                    throw 'Invalid credentials'
+                }
+            }
+        } else if (!!req.session) {
             if (!!req.session.logged) {
                 if (req.session.logged === 'on' && req.url === '/login') {
                     req.session.save((err) => {
@@ -74,7 +84,7 @@ async function checkAuth(req, res, next) {
                             console.error('Err:', err)
                         }
                     })
-                    res.redirect('/admin/clients/static')
+                    res.redirect('/admin/applications/mono')
                 } else if (req.session.logged === 'on' && req.url !== '/login') {
                     next()
                 } else if (req.session.logged !== 'on' && req.url !== '/login') {

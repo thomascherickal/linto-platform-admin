@@ -48,10 +48,10 @@ module.exports = (webServer) => {
                     if (createUser === 'success') {
                         res.json({
                             status: 'success',
-                            msg: `The Android user "${payload.email}" has been created".`
+                            msg: `The user "${payload.email}" has been created".`
                         })
                     } else {
-                        throw `Error on creating android user "${payload.email}"`
+                        throw `Error on creating user "${payload.email}"`
                     }
                 } catch (error) {
                     console.error(error)
@@ -86,7 +86,7 @@ module.exports = (webServer) => {
                     if (updateAndroidUsers === 'success') {
                         res.json({
                             status: 'success',
-                            msg: `All android users have been removed from application ${payload.name}`
+                            msg: `All users have been removed from application ${payload.name}`
                         })
                     } else {
                         throw updateAndroidUsers.msg
@@ -132,7 +132,7 @@ module.exports = (webServer) => {
                     if (updateUser === 'success') {
                         res.json({
                             status: 'success',
-                            msg: `New android applications have been attached to user "${user.email}"`
+                            msg: `New applications have been attached to user "${user.email}"`
                         })
                     } else {
                         throw 'Error on updating user'
@@ -178,7 +178,7 @@ module.exports = (webServer) => {
                     if (updateUser === 'success') {
                         res.json({
                             status: 'success',
-                            msg: `The user "${user.email}" has been dissociated from android application "${applicationWorkflow.name}"`
+                            msg: `The user "${user.email}" has been dissociated from application "${applicationWorkflow.name}"`
                         })
                     } else {
                         throw 'Error on updating android application user'
@@ -233,7 +233,7 @@ module.exports = (webServer) => {
                     if (updateAndroidUser === 'success') {
                         res.json({
                             status: 'success',
-                            msg: `Android user ${payload.email} has been updated`
+                            msg: `User ${payload.email} has been updated`
                         })
                     }
 
@@ -268,10 +268,10 @@ module.exports = (webServer) => {
                         if (updateUserPswd === 'success') {
                             res.json({
                                 status: 'success',
-                                msg: `Android user ${payload.email} has been updated`
+                                msg: `User ${payload.email} has been updated`
                             })
                         } else {
-                            throw `Error on updating android user ${payload.email}`
+                            throw `Error on updating user ${payload.email}`
                         }
                     } else {
                         throw 'Password and confirmation password don\'t match'
@@ -312,7 +312,7 @@ module.exports = (webServer) => {
                             msg: `Android user ${payload.email} has been removed`
                         })
                     } else {
-                        throw `Error on removing android user ${payload.email}`
+                        throw `Error on removing user ${payload.email}`
                     }
                 } catch (error) {
                     console.error(error)

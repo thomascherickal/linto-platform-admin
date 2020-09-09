@@ -58,7 +58,7 @@ module.exports = (webServer) => {
                     if (postWorkflow === 'success') {
                         res.json({
                             status: 'success',
-                            msg: `Workflow "${payload.workFlowName} has been created`
+                            msg: `The multi-user application "${payload.workFlowName} has been created`
                         })
                     } else {
                         throw postWorkflow
@@ -117,7 +117,7 @@ module.exports = (webServer) => {
                     if (removeApplication === 'success') {
                         res.json({
                             status: 'success',
-                            msg: `The application workflow "${workflowName}" has been removed.`
+                            msg: `The multi-user application "${workflowName}" has been removed.`
                         })
                     } else {
                         throw removeApplication.msg
@@ -180,14 +180,14 @@ module.exports = (webServer) => {
                             if (putBls.status === 'success')  {
                                 res.json({
                                     status: 'success',
-                                    msg: `The applicationWorkflow ${applicationPayload.name} has been updated`
+                                    msg: `The multi-user application ${applicationPayload.name} has been updated`
                                 })
                             }
                         } else  {
-                            throw 'Error on updating application workflow'
+                            throw 'Error on updating multi-user application'
                         }
                     } else  {
-                        throw 'Cannot find android authentication settings'
+                        throw 'Cannot find users authentication settings'
                     }
                 } catch (error) {
                     console.error(error)
@@ -199,8 +199,7 @@ module.exports = (webServer) => {
             }
         },
         {
-            // Get android users list by workflow ID
-            // Link : /api-docs/#/workflows_applications/GetAndroidUserByApplication
+            // update application domains
             path: '/:workflowId/webappAuth',
             method: 'put',
             requireAuth: true,
@@ -224,16 +223,16 @@ module.exports = (webServer) => {
                             if (putBls.status === 'success')  {
                                 res.json({
                                     status: 'success',
-                                    msg: `The applicationWorkflow ${applicationPayload.name} has been updated`
+                                    msg: `The multi-user application ${applicationPayload.name} has been updated`
                                 })
                             }
 
 
                         } else  {
-                            throw 'Error on updating application workflow'
+                            throw 'Error on updating multi-user application'
                         }
                     } else  {
-                        throw 'Cannot find android authentication settings'
+                        throw 'Cannot find domains authentication settings'
                     }
                 } catch (error) {
                     console.error(error)

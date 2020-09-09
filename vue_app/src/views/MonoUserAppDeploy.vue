@@ -1,6 +1,6 @@
 <template>
   <div v-if="dataLoaded">
-    <h1>Deploy a single user applicaiton</h1>
+    <h1>Deploy a single-user applicaiton</h1>
     <div class="flex col">
       <!-- Workflow name -->
       <AppInput 
@@ -88,7 +88,7 @@
 
       <!-- Submit -->
       <div class="flex row">
-        <a href="/admin/applications/mono" class="button button-icon-txt button--grey">
+        <a href="/admin/applications/mono" class="button button-icon-txt button--grey" style="margin-right: 20px;">
           <span class="button__icon button__icon--cancel"></span>
           <span class="button__label">Cancel</span>
         </a>
@@ -316,7 +316,7 @@ export default {
                     this.submitting = false
                     bus.$emit('app_notif', {
                       status: 'success',
-                      msg: `Static client ${this.sn} has been deployed`,
+                      msg: `Terminal ${this.associated_device.value} has been deployed on application ${workflowName}`,
                       timeout: 3000,
                       redirect: `${process.env.VUE_APP_URL}/admin/applications/mono`
                     })
@@ -369,7 +369,7 @@ export default {
         })
         if (postWorkflow.data.status === 'success') {
           this.workflowUpdate = true
-          this.workflowStatus = `The workflow "${payload.workflowName}" has been registered`
+          this.workflowStatus = `The single-user applicaiton "${payload.workflowName}" has been registered`
           return 'success'
         } else if (postWorkflow.data.status === 'error') {
           this.workflowUpdate = false
@@ -403,7 +403,7 @@ export default {
           })
           if(updateStaticDevice.data.status === 'success') {
             this.staticDeviceUpdate = true
-            this.staticDeviceStatus = `The static device "${this.sn}" has been attached to "${payload.workflowName}" workflow`
+            this.staticDeviceStatus = `The terminal "${this.sn}" has been attached to single-user application "${payload.workflowName}"`
             return 'success'
           } else if (updateStaticDevice.data.status === 'error') {
             this.staticDeviceUpdate = false

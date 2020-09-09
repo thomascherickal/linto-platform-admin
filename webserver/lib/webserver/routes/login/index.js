@@ -10,7 +10,7 @@ module.exports = (webServer) => {
             controller: async(req, res, next) => {
                 try {
                     if (!!req.session && req.session.logged === 'on') {
-                        res.redirect('/admin/clients/static')
+                        res.redirect('/admin/applications/mono')
                     } else {
                         const users = await UsersModel.getUsers()
                         if (users.length === 0) {
