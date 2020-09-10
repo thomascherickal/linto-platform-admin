@@ -10,16 +10,53 @@
       <div class="modal-body">
         <div class="modal-body__content">
           <p>Update application <strong>"{{workflow.name}}"</strong> services settings. This will apply modifications to the application workflow.</p>
-          <AppInput :label="'Workflow name'" :obj="workflowName" :test="'testName'"></AppInput>
+          <!-- Application name -->
+          <AppInput 
+            :label="'Application name'" 
+            :obj="workflowName" 
+            :test="'testName'"
+            :required="true"
+          ></AppInput>
           
+          <!-- Descritpion -->
+          <AppTextarea 
+            :obj="workflowDescription" 
+            :label="'Description'"
+            :required="false"
+          ></AppTextarea>
+
+
           <!-- STT language -->
-          <AppSelect :label="'Select a language'" :obj="sttServiceLanguage" :list="sttAvailableLanguages" :params="{key:'value', value:'value', optLabel: 'value'}" :disabled="noSttService" :disabledTxt="'Create a STT service'"></AppSelect>
+          <AppSelect 
+            :label="'Select a language'" 
+            :obj="sttServiceLanguage" 
+            :list="sttAvailableLanguages" 
+            :params="{key:'value', value:'value', optLabel: 'value'}" 
+            :disabled="noSttService" 
+            :disabledTxt="'Create a STT service'"
+            :required="true"
+          ></AppSelect>
 
           <!-- STT services command -->
-          <AppSelect :label="'Select a STT command service'" :obj="sttService" :list="sttServiceCmdByLanguage" :params="{key:'_id', value:'serviceId', optLabel: 'serviceId'}" :disabled="sttServiceLanguage.value === ''" :disabledTxt="'Please select a language'"></AppSelect>
+          <AppSelect 
+            :label="'Select a STT command service'" 
+            :obj="sttService" 
+            :list="sttServiceCmdByLanguage" 
+            :params="{key:'_id', value:'serviceId', optLabel: 'serviceId'}" 
+            :disabled="sttServiceLanguage.value === ''" 
+            :disabledTxt="'Please select a language'"
+            :required="true"
+          ></AppSelect>
           
           <!-- TOCK application -->
-          <AppSelect :label="'Select Tock application'" :obj="tockApplicationName" :list="tockApplications" :params="{key:'name', value:'name', optLabel: 'name'}" :options="{value:'new', label:'Create a new tock application'}"></AppSelect>
+          <AppSelect 
+            :label="'Select Tock application'" 
+            :obj="tockApplicationName" 
+            :list="tockApplications" 
+            :params="{key:'name', value:'name', optLabel: 'name'}" 
+            :options="{value:'new', label:'Create a new tock application'}"
+            :required="true"
+          ></AppSelect>
           
         </div>
       </div>
@@ -37,6 +74,7 @@
 <script>
 import AppInput from '@/components/AppInput.vue'
 import AppSelect from '@/components/AppSelect.vue'
+import AppTextarea from '@/components/AppTextarea.vue'
 import { bus } from '../main.js'
 import axios from 'axios'
 export default {
@@ -48,6 +86,11 @@ export default {
       workflowType: null,
       workflowInit: false,
       workflowName: {
+        value: '',
+        error: null,
+        valid: false
+      },
+      workflowDescription: {
         value: '',
         error: null,
         valid: false
@@ -77,6 +120,7 @@ export default {
   },
   
   async mounted () {
+    
     bus.$on('update_workflow_services', async (data) => {
       if (!!data.sn && data.type === 'static') {
         this.sn = data.sn
@@ -88,6 +132,12 @@ export default {
         error: null,
         valid: true
       }
+      this.workflowDescription = {
+        value: this.workflow.description,
+        error: null,
+        valid: true
+      }
+
       await this.refreshStore()
       this.showModal()
     })
@@ -137,7 +187,7 @@ export default {
       return this.$store.state.tockApplications
     },
     formValid () {
-      return (this.workflowName.valid && this.sttServiceLanguage.valid && this.sttService.valid && this.tockApplicationName.valid)
+      return (this.workflowName.valid && this.workflowDescription.valid && this.sttServiceLanguage.valid && this.sttService.valid && this.tockApplicationName.valid)
     }
   },
   watch: {
@@ -193,6 +243,13 @@ export default {
       // Test Tock application name 
       this.$options.filters.testSelectField(this.tockApplicationName)
 
+      if (this.workflowDescription.value.length > 0) {
+       this.$options.filters.testContent(this.workflowDescription)
+
+      } else {
+        this.workflowDescription.valid = true
+      }
+
       if (this.formValid) {
         await this.updateWorkflowSettings()
       }
@@ -200,6 +257,7 @@ export default {
     async updateWorkflowSettings () {
       const payload = {
         workflowName: this.workflowName.value,
+        workflowDescription: this.workflowDescription.value,
         sttServiceLanguage: this.sttServiceLanguage.value,
         sttService: this.sttService.value,
         tockApplicationName: this.tockApplicationName.value,
@@ -290,7 +348,8 @@ export default {
   },
   components: {
     AppInput,
-    AppSelect
+    AppSelect,
+    AppTextarea
   }
 }
 </script>

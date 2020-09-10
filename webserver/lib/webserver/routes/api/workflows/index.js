@@ -38,6 +38,7 @@ module.exports = (webServer) => {
 
                     // set worlflow name
                     workflowPayload.name = payload.workflowName
+                    workflowPayload.description = payload.workflowDescription
                     workflowPayload.flow.label = payload.workflowName
 
                     // set worlflow language
@@ -105,14 +106,14 @@ module.exports = (webServer) => {
                             if (updateBls.status === 'success') {
                                 res.json({
                                     status: 'success',
-                                    msg: `The mutli-user application "${payload.workflowName}" has been updated`
+                                    msg: `The multi-user application "${payload.workflowName}" has been updated`
                                 })
                             } else {
-                                throw `Error on updating mutli-user application ${getWorkflow.name} on Business logic server`
+                                throw `Error on updating multi-user application ${getWorkflow.name} on Business logic server`
                             }
                         }
                     } else {
-                        throw `Error on updating mutli-user application ${getWorkflow.name}`
+                        throw `Error on updating multi-user application ${getWorkflow.name}`
                     }
                 } catch (error) {
                     console.error(error)

@@ -133,7 +133,8 @@ export default {
       bus.$emit('update_workflow_services', {
         workflow: {
           _id: workflow._id, 
-          name: workflow.name
+          name: workflow.name,
+          description: workflow.description
         },
         type:'application'
       })

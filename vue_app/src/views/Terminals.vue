@@ -107,9 +107,6 @@ export default {
     bus.$on('update_enrolled_static_device_success', async (data) => {
       await this.refreshStore()
     })
-    bus.$on('update_workflow_services_success', async (data) => {
-      await this.refreshStore()
-    })
     bus.$on('dissociate_static_device_success', async (data) => {
       await this.refreshStore()
     })
@@ -117,9 +114,6 @@ export default {
       await this.refreshStore()
     })
 
-    setTimeout(() => {
-      console.log('>', this.staticClients)
-    }, 1000);
   },
   computed: {
     staticClients () {

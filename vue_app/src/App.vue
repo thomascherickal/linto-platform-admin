@@ -14,7 +14,7 @@
     <ModalDissociateTerminal v-if="path.indexOf('/admin/applications/device') >= 0 || path.indexOf('/admin/devices') >= 0"></ModalDissociateTerminal>
 
     <!-- Multi user applications --> 
-    <ModalDeleteMutliUserApp v-if="path.indexOf('/admin/applications/multi') >= 0"></ModalDeleteMutliUserApp>
+    <ModalDeleteMultiUserApp v-if="path.indexOf('/admin/applications/multi') >= 0"></ModalDeleteMultiUserApp>
     
     <ModalUpdateWorkflowServices v-if="path.indexOf('/admin/applications/device') >= 0 || path.indexOf('/admin/applications/multi') >= 0"></ModalUpdateWorkflowServices>
     
@@ -57,7 +57,7 @@
   import ModalAddUsers from '@/components/ModalAddUsers.vue'
   import ModalEditUser from '@/components/ModalEditUser.vue'
   import ModalDeleteUser from '@/components/ModalDeleteUser.vue'
-  import ModalDeleteMutliUserApp from '@/components/ModalDeleteMutliUserApp.vue'
+  import ModalDeleteMultiUserApp from '@/components/ModalDeleteMultiUserApp.vue'
   import ModalManageWorkflowTemplates from '@/components/ModalManageWorkflowTemplates.vue'
   import ModalAddDomain from '@/components/ModalAddDomain.vue'
   import ModalDeleteDomain from '@/components/ModalDeleteDomain.vue'
@@ -90,7 +90,7 @@
       ModalSaveAsWorkflowTemplate,
       ModalManageWorkflowTemplates,
       // Applications
-      ModalDeleteMutliUserApp,
+      ModalDeleteMultiUserApp,
       // Android users Modal
       ModalAddUsers,
       ModalManageUsers,

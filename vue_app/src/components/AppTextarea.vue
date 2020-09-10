@@ -4,7 +4,7 @@
     <textarea
       class="form__textarea"
       v-model="obj.value"
-      :class="[obj.error !== null ? 'form__textarea--error' : '']"
+      :class="[obj.error !== null ? 'form__textarea--error' : '', obj.value.length > 0 && obj.valid ? 'form__textarea--valid': '']"
       @change="testContent(obj)"
     ></textarea>
     <span class="form__error-field">{{ obj.error }}</span>

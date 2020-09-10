@@ -253,7 +253,6 @@ export default {
   },
   async mounted () {
     if (!!this.$route.params.sn) {
-      console.log('route SN')
       this.sn = this.$route.params.sn
       this.associated_device.value = this.sn
       this.associated_device.valid = true

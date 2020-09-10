@@ -13,7 +13,7 @@
     <div class="vertical-nav-item flex col" :class="routePath.indexOf(applicationsUrl) >= 0 ? 'active' : ''">
       <a class="vertical-nav-item__link vertical-nav-item__link" :href="applicationsUrl">
         <span class="nav-link__icon nav-link__icon--multi-user "></span>
-        <span class="nav-link__label">Mutli-user applications</span>
+        <span class="nav-link__label">Multi-user applications</span>
       </a>
     </div>
     

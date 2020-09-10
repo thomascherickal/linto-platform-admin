@@ -32,7 +32,7 @@
                 </a>
               </td>
               <td class="center">
-                <button class="button button-icon-txt button--blue button--with-desc bottom" data-desc="Edit services parameters" @click="updateWorkflowServicesSettings(wf.associated_device, {name: wf.name, _id: wf._id})">
+                <button class="button button-icon-txt button--blue button--with-desc bottom" data-desc="Edit services parameters" @click="updateWorkflowServicesSettings(wf.associated_device, {name: wf.name, _id: wf._id, description: wf.description})">
                   <span class="button__icon button__icon--settings"></span>
                   <span class="button__label">Edit</span>
                 </button>
@@ -61,11 +61,13 @@
 <script>
 import { bus } from '../main.js'
 import axios from 'axios'
+import io from 'socket.io-client'
 export default {
   data () {
     return {
       staticClientsLoaded: false,
-      staticWorkflowsLoaded: false
+      staticWorkflowsLoaded: false,
+      socket: null
     }
   },
   async created () {
@@ -86,6 +88,11 @@ export default {
     bus.$on('dissociate_static_device_success', async (data) => {
       await this.refreshStore()
     })
+
+    setTimeout(()=>{
+      this.initSocket()
+      
+    }, 1000)
   },
   computed: {
     staticClients () {
@@ -130,6 +137,17 @@ export default {
           redirect: false
         })
       }
+    },
+    async initSocket() {
+      this.socket = new io(`${process.env.VUE_APP_URL}`)
+      this.socket.on('linto_status', async (data)  => {
+        const topicArray = data.topicArray
+        const targetSn = topicArray[2]
+
+        await this.refreshStore()
+        if (this.staticClients.filter(client => client.sn === targetSn).length > 0) {
+        }
+      })
     },
     async dispatchStore (topic) {
       try {
