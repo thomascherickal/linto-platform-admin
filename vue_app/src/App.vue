@@ -11,7 +11,7 @@
 
     <!-- Mono user applications -->
     <ModalReplaceTerminal v-if="path.indexOf('/admin/applications/mono') >= 0"></ModalReplaceTerminal>
-    <ModalDissociateTerminal v-if="path.indexOf('/admin/applications/mono') >= 0 || path.indexOf('/admin/terminals') >= 0"></ModalDissociateTerminal>
+    <ModalDissociateTerminal v-if="path.indexOf('/admin/applications/mono') >= 0 || path.indexOf('/admin/devices') >= 0"></ModalDissociateTerminal>
 
     <!-- Multi user applications --> 
     <ModalDeleteMutliUserApp v-if="path.indexOf('/admin/applications/multi') >= 0"></ModalDeleteMutliUserApp>
@@ -19,8 +19,8 @@
     <ModalUpdateWorkflowServices v-if="path.indexOf('/admin/applications/mono') >= 0 || path.indexOf('/admin/applications/multi') >= 0"></ModalUpdateWorkflowServices>
     
     <!-- Terminals -->
-    <ModalAddTerminal v-if="path.indexOf('/admin/terminals') >= 0"></ModalAddTerminal>
-    <ModalDeleteTerminal v-if="path.indexOf('/admin/terminals') >= 0"></ModalDeleteTerminal>
+    <ModalAddTerminal v-if="path.indexOf('/admin/devices') >= 0"></ModalAddTerminal>
+    <ModalDeleteTerminal v-if="path.indexOf('/admin/devices') >= 0"></ModalDeleteTerminal>
 
     <!-- Users -->
     <ModalManageUsers v-if="path.indexOf('/admin/applications/multi') >= 0"></ModalManageUsers>

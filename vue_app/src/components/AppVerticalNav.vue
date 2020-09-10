@@ -5,7 +5,7 @@
     <div class="vertical-nav-item flex col" :class="routePath.indexOf(staticClientsUrl) >= 0 ? 'active' : ''">
       <a  class="vertical-nav-item__link vertical-nav-item__link" :href="staticClientsUrl" >
         <span class="nav-link__icon nav-link__icon--single-user "></span>
-        <span class="nav-link__label">Single-user applications</span>
+        <span class="nav-link__label">Single-device applications</span>
       </a>
     </div>
     
@@ -23,7 +23,7 @@
     <div class="vertical-nav-item flex col" :class="routePath.indexOf(terminalsUrl) >= 0 ? 'active' : ''">
       <a class="vertical-nav-item__link vertical-nav-item__link" :href="terminalsUrl">
         <span class="nav-link__icon nav-link__icon--terminal"></span>
-        <span class="nav-link__label">Terminals</span>
+        <span class="nav-link__label">Devices</span>
       </a>
     </div>
 
@@ -77,7 +77,7 @@ export default {
       nluUrl: '/admin/nlu',
       androidUsersUrl: '/admin/users',
       webAppHostsUrl:  '/admin/domains',
-      terminalsUrl: '/admin/terminals',
+      terminalsUrl: '/admin/devices',
       routePath: ''
     }
   },

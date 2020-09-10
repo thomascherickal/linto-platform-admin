@@ -2,14 +2,14 @@
   <div class="modal-wrapper" v-if="modalVisible">
     <div class="modal">
       <div class="modal-header flex row">
-        <span class="modal-header__tilte flex1">Dissociate a terminal</span>
+        <span class="modal-header__tilte flex1">Dissociate a device</span>
         <button class="button button-icon button--red" @click="closeModal()">
           <span class="button__icon button__icon--close"></span>
         </button>
       </div>
       <div class="modal-body">
         <div class="modal-body__content">
-            Are you sure that you want to <strong>dissociate</strong> the terminal with serial number "<strong>{{ sn }}</strong>" and remove the single-user application "<strong>{{workflow.name }}</strong>" ?
+            Are you sure that you want to <strong>dissociate</strong> the device with serial number "<strong>{{ sn }}</strong>" and remove the single-device application "<strong>{{workflow.name }}</strong>" ?
         </div>
       </div>
       <div class="modal-footer flex row">

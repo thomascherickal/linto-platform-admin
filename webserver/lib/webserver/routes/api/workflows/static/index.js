@@ -115,7 +115,7 @@ module.exports = (webServer) => {
                     if (postWorkflow === 'success') {
                         res.json({
                             status: 'success',
-                            msg: `The single-user application "${payload.workFlowName} has been created`
+                            msg: `The single-device application "${payload.workFlowName} has been created`
                         })
                     } else {
                         throw postWorkflow
@@ -154,13 +154,13 @@ module.exports = (webServer) => {
                         if (deleteStaticWorkflow === 'success') {
                             res.json({
                                 status: 'success',
-                                msg: `The terminal "${staticDeviceSn}" has been dissociated from single-user application "${getWorkflow.name}"`
+                                msg: `The device "${staticDeviceSn}" has been dissociated from single-device application "${getWorkflow.name}"`
                             })
                         } else {
-                            throw `Error on updating terminal "${staticDeviceSn}"`
+                            throw `Error on updating device "${staticDeviceSn}"`
                         }
                     } else {
-                        throw `Error on deleting single-user application "${getWorkflow.name}"`
+                        throw `Error on deleting single-device application "${getWorkflow.name}"`
                     }
                 } catch (error) {
                     console.error(error)

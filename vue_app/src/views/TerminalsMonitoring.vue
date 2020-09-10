@@ -1,6 +1,6 @@
 <template>
   <div v-if="dataLoaded">
-    <h1>Terminal - {{ sn }} - Monitoring</h1>
+    <h1>Device - {{ sn }} - Monitoring</h1>
     <div class="flex col">
 
       <h2>Device informations</h2>

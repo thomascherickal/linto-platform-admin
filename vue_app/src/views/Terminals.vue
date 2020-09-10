@@ -1,9 +1,9 @@
 <template>
   <div v-if="dataLoaded">
-    <h1>Terminals and static devices</h1>
+    <h1>Devices</h1>
     <div class="flex col" >
       <!-- Associated devices --> 
-      <h2>Associated terminals</h2>
+      <h2>Associated devices</h2>
       <div class="flex row">
         <table class="table" v-if="associatedStaticClients.length > 0">
           <thead>
@@ -34,14 +34,14 @@
                 </a>
               </td>
               <td class="center">
-                <button class="button button-icon button--red button--with-desc bottom" data-desc="Dissociate terminal and delete workflow" @click="dissociateStaticDevice(client.sn, client.associated_workflow)">
+                <button class="button button-icon button--red button--with-desc bottom" data-desc="Dissociate device and delete workflow" @click="dissociateStaticDevice(client.sn, client.associated_workflow)">
                   <span class="button__icon button__icon--close"></span>
                 </button>
               </td>
             </tr>
           </tbody>
         </table>
-        <div class="no-content" v-else>No associated terminal was found.</div>
+        <div class="no-content" v-else>No associated device was found.</div>
       </div>
       <div class="divider"></div>
       <!-- Provisionning --> 
@@ -72,13 +72,13 @@
             </tr>
           </tbody>
         </table>
-        <div class="no-content" v-else>No available terminal was found.</div>
+        <div class="no-content" v-else>No available device was found.</div>
       </div>
       <div class="divider"></div>
       <div class="flex row">
         <button class="button button-icon-txt button--green" @click="addStaticDevice()">
           <span class="button__icon button__icon--add"></span>
-          <span class="button__label">Add a terminal</span>
+          <span class="button__label">Add a device</span>
         </button>
       </div>
     </div>
@@ -116,6 +116,10 @@ export default {
     bus.$on('add_static_device_success', async (data) => {
       await this.refreshStore()
     })
+
+    setTimeout(() => {
+      console.log('>', this.staticClients)
+    }, 1000);
   },
   computed: {
     staticClients () {

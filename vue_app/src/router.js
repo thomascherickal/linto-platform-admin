@@ -121,12 +121,12 @@ const router = new Router({
             }
         },
         {
-            path: '/admin/terminals',
-            name: 'Terminals - statice devices',
+            path: '/admin/devices',
+            name: 'Devices - statice devices',
             component: Terminals,
             meta: [{
                     name: 'title',
-                    content: 'Terminals and static devices'
+                    content: 'Devices and static devices'
                 },
                 {
                     name: 'robots',

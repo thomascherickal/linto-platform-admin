@@ -1,6 +1,6 @@
 <template>
   <div v-if="dataLoaded">
-    <h1>Deploy a single-user applicaiton</h1>
+    <h1>Deploy a single-device applicaiton</h1>
     <div class="flex col">
       <!-- Workflow name -->
       <AppInput 
@@ -15,14 +15,14 @@
         :label="'Workflow description'"
       ></AppTextarea>
 
-      <!-- Terminal -->
+      <!-- device -->
       <AppSelect 
-        :label="'Choose a terminal'" 
+        :label="'Choose a device'" 
         :obj="associated_device" 
         :list="availableStatiDevices" 
         :params="{key:'_id', value:'sn' , optLabel: 'sn'}"
         :disabled="availableStatiDevices.length === 0"
-        :disabledTxt="'No terminal available'"
+        :disabledTxt="'No device available'"
       ></AppSelect>
       
 
@@ -316,7 +316,7 @@ export default {
                     this.submitting = false
                     bus.$emit('app_notif', {
                       status: 'success',
-                      msg: `Terminal ${this.associated_device.value} has been deployed on application ${workflowName}`,
+                      msg: `device ${this.associated_device.value} has been deployed on application ${workflowName}`,
                       timeout: 3000,
                       redirect: `${process.env.VUE_APP_URL}/admin/applications/mono`
                     })
@@ -369,7 +369,7 @@ export default {
         })
         if (postWorkflow.data.status === 'success') {
           this.workflowUpdate = true
-          this.workflowStatus = `The single-user applicaiton "${payload.workflowName}" has been registered`
+          this.workflowStatus = `The single-device applicaiton "${payload.workflowName}" has been registered`
           return 'success'
         } else if (postWorkflow.data.status === 'error') {
           this.workflowUpdate = false
@@ -403,7 +403,7 @@ export default {
           })
           if(updateStaticDevice.data.status === 'success') {
             this.staticDeviceUpdate = true
-            this.staticDeviceStatus = `The terminal "${this.sn}" has been attached to single-user application "${payload.workflowName}"`
+            this.staticDeviceStatus = `The device "${this.sn}" has been attached to single-device application "${payload.workflowName}"`
             return 'success'
           } else if (updateStaticDevice.data.status === 'error') {
             this.staticDeviceUpdate = false

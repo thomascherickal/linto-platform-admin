@@ -2,14 +2,14 @@
   <div class="modal-wrapper" v-if="modalVisible">
     <div class="modal">
       <div class="modal-header flex row">
-        <span class="modal-header__tilte flex1">Delete a terminal</span>
+        <span class="modal-header__tilte flex1">Delete a device</span>
         <button class="button button-icon button--red" @click="closeModal()">
           <span class="button__icon button__icon--close"></span>
         </button>
       </div>
       <div class="modal-body">
         <div class="modal-body__content">
-            Are you sure that you want to <strong>delete</strong> the terminal with serial number "<strong>{{ sn }}</strong>" ?
+            Are you sure that you want to <strong>delete</strong> the device with serial number "<strong>{{ sn }}</strong>" ?
         </div>
       </div>
       <div class="modal-footer flex row">
