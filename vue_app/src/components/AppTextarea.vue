@@ -1,6 +1,6 @@
 <template>
   <div class="flex col">
-    <span class="form__label">{{ label }} :</span>
+    <span class="form__label">{{ label }} <strong v-if="required">*</strong>:</span>
     <textarea
       class="form__textarea"
       v-model="obj.value"
@@ -12,11 +12,9 @@
 </template>
 <script>
  export default {
-   props: ['obj', 'label', 'test'],
+   props: ['obj', 'label', 'required'],
    data () {
-     return {
-       
-     }
+     return {}
    },
    methods: {
      testContent(obj) {

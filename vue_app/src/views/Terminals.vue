@@ -22,13 +22,13 @@
                   :class="client.connexion"
                   :data-label="client.connexion === 'online' ? 'up since ' + client.last_up : 'down since ' + client.last_down"
                 ></span>
-                <a class="client-status__link" :href="`/admin/applications/mono/${client.sn}/monitoring`"> more...</a>
+                <a class="client-status__link" :href="`/admin/applications/device/${client.sn}/monitoring`"> more...</a>
               </td>
               <td>
                 <strong class="button__label">{{ client.sn }}</strong>
               </td>
               <td>
-                <a :href="`/admin/applications/mono/workflow/${client.associated_workflow._id}`" class="button button-icon-txt button--bluemid button--with-desc bottom" data-desc="Edit on Node-red interface">
+                <a :href="`/admin/applications/device/workflow/${client.associated_workflow._id}`" class="button button-icon-txt button--bluemid button--with-desc bottom" data-desc="Edit on Node-red interface">
                   <span class="button__icon button__icon--workflow"></span>
                   <span class="button__label">{{ client.associated_workflow.name }}</span>
                 </a>
@@ -59,7 +59,7 @@
             <tr v-for="client in provisionning" :key="client._id">
               <td><strong>{{ client.sn }}</strong></td>
               <td>
-                <a :href="`/admin/applications/mono/deploy/${client.sn}`" class="button button-icon-txt button--green">
+                <a :href="`/admin/applications/device/deploy/${client.sn}`" class="button button-icon-txt button--green">
                   <span class="button__icon button__icon--deploy"></span>
                   <span class="button__label">Deploy</span>
                 </a>

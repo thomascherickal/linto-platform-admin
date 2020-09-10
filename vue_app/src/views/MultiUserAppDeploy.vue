@@ -1,18 +1,20 @@
 <template>
   <div v-if="dataLoaded">
-    <h1>Create a new application</h1>
+    <h1>Deploy a multi-user application</h1>
     <div class="flex col">
       <!-- Workflow name -->
       <AppInput 
         :label="'Application name'" 
         :obj="workflowName" 
         :test="'testApplicationWorkflowName'"
+        :required="true"
       ></AppInput>
 
       <!-- Workflow description -->
       <AppTextarea 
         :obj="workflowDescription" 
         :label="'Application description'"
+        :required="false"
       ></AppTextarea>
 
       <!-- Workflow tempalte -->
@@ -23,6 +25,7 @@
         :params="{key:'_id', value:'name' , optLabel: 'name'}" 
         :disabled="workflowTemplates.length === 0" 
         :disabledTxt="'No application workflow template was found.'"
+        :required="true"
       ></AppSelect>
 
       <!-- STT language -->
@@ -33,6 +36,7 @@
         :params="{key:'value', value:'value', optLabel: 'value'}" 
         :disabled="noSttService" 
         :disabledTxt="'Create a STT service'"
+        :required="true"
       ></AppSelect>
 
       <!-- STT services command -->
@@ -43,6 +47,7 @@
         :params="{key:'_id', value:'serviceId', optLabel: 'serviceId'}" 
         :disabled="sttServiceLanguage.value === ''" 
         :disabledTxt="'Please select a language'"
+        :required="true"
       ></AppSelect>
       
       <!-- LinSTT Large vocabulary online (streaming) -->
@@ -55,6 +60,7 @@
         :disabledTxt="'Please select a language'"
         :disabled2="sttServiceLVOnlineByLanguage.length === 0" 
         :disabled2Txt="'No service available'"
+        :required="false"
       ></AppSelect>
 
       <!-- LinSTT Large vocabulary offline (file) -->
@@ -67,6 +73,7 @@
         :disabledTxt="'Please select a language'"
         :disabled2="sttServiceLVOfflineByLanguage.length === 0" 
         :disabled2Txt="'No service available'"
+        :required="false"
       ></AppSelect>
 
       <!-- TOCK application -->
@@ -76,6 +83,7 @@
         :list="tockApplications" 
         :params="{key:'name', value:'name', optLabel: 'name'}" 
         :options="{value:'new', label:'Create a new tock application'}"
+        :required="true"
       ></AppSelect>
 
       <!-- Submit -->

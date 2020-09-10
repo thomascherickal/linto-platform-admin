@@ -5,7 +5,7 @@
     <div class="vertical-nav-item flex col" :class="routePath.indexOf(staticClientsUrl) >= 0 ? 'active' : ''">
       <a  class="vertical-nav-item__link vertical-nav-item__link" :href="staticClientsUrl" >
         <span class="nav-link__icon nav-link__icon--single-user "></span>
-        <span class="nav-link__label">Single-device applications</span>
+        <span class="nav-link__label">Device applications</span>
       </a>
     </div>
     
@@ -71,7 +71,7 @@ export default {
   data () {
     return {
       clientsUrl: '/admin/clients',
-      staticClientsUrl: '/admin/applications/mono',
+      staticClientsUrl: '/admin/applications/device',
       applicationsUrl:  '/admin/applications/multi',
       workflowEditorUrl: '/admin/workflow-editor',
       nluUrl: '/admin/nlu',

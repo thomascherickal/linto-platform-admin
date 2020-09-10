@@ -106,7 +106,7 @@ export default {
         data: payload
       })
       if (userAuth.data.status === 'success') {
-        window.location.href = process.env.VUE_APP_URL + '/admin/applications/mono'
+        window.location.href = process.env.VUE_APP_URL + '/admin/applications/device'
       } else {
         this.loginError = "The login/password combination is invalid."
       }

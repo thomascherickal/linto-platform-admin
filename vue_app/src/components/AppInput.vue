@@ -1,6 +1,7 @@
 <template>
   <div class="flex col">
-    <span class="form__label">{{ label }} :</span>
+    <span class="form__label">{{ label }} <strong v-if="required">*</strong> :</span>
+    
     <input
       :type="type || 'text'"
       class="form__input"
@@ -13,7 +14,7 @@
 </template>
 <script>
 export default {
-  props: ['label', 'obj', 'test', 'lintos', 'patterns', 'type', 'compare', 'workflowId'],
+  props: ['label', 'obj', 'test', 'lintos', 'patterns', 'type', 'compare', 'workflowId', 'required'],
   data () {
     return {}
   },

@@ -87,10 +87,10 @@ module.exports = (webServer) => {
                                 if (updateBls.status === 'success') {
                                     res.json({
                                         status: 'success',
-                                        msg: `The single-device application "${payload.workflowName}" has been updated`
+                                        msg: `The device application "${payload.workflowName}" has been updated`
                                     })
                                 } else {
-                                    throw `Error on updating single-device application ${getWorkflow.name} on Business logic server`
+                                    throw `Error on updating device application ${getWorkflow.name} on Business logic server`
                                 }
                             } else {
                                 throw `Error on updating associated device "${workflowPayload.associated_device}"`

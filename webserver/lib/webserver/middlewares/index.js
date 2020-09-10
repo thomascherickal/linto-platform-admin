@@ -84,7 +84,7 @@ async function checkAuth(req, res, next) {
                             console.error('Err:', err)
                         }
                     })
-                    res.redirect('/admin/applications/mono')
+                    res.redirect('/admin/applications/device')
                 } else if (req.session.logged === 'on' && req.url !== '/login') {
                     next()
                 } else if (req.session.logged !== 'on' && req.url !== '/login') {

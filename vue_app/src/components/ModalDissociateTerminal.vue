@@ -9,7 +9,7 @@
       </div>
       <div class="modal-body">
         <div class="modal-body__content">
-            Are you sure that you want to <strong>dissociate</strong> the device with serial number "<strong>{{ sn }}</strong>" and remove the single-device application "<strong>{{workflow.name }}</strong>" ?
+            Are you sure that you want to <strong>dissociate</strong> the device with serial number "<strong>{{ sn }}</strong>" and remove the device application "<strong>{{workflow.name }}</strong>" ?
         </div>
       </div>
       <div class="modal-footer flex row">

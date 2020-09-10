@@ -2,14 +2,14 @@
   <div class="modal-wrapper" v-if="modalVisible && dataLoaded">
     <div class="modal">
       <div class="modal-header flex row">
-        <span class="modal-header__tilte flex1">Application "{{workflow.name}}" services settings</span>
+        <span class="modal-header__tilte flex1">Application services settings</span>
         <button class="button button-icon button--red" @click="closeModal()">
           <span class="button__icon button__icon--close"></span>
         </button>
       </div>
       <div class="modal-body">
         <div class="modal-body__content">
-          Services settings : 
+          <p>Update application <strong>"{{workflow.name}}"</strong> services settings. This will apply modifications to the application workflow.</p>
           <AppInput :label="'Workflow name'" :obj="workflowName" :test="'testName'"></AppInput>
           
           <!-- STT language -->

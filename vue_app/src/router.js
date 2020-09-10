@@ -19,7 +19,7 @@ Vue.use(Router)
 const router = new Router({
     mode: 'history',
     routes: [{
-            path: '/admin/applications/mono',
+            path: '/admin/applications/device',
             name: 'Static devices overview',
             component: MonoUserApps,
             meta: [{
@@ -33,7 +33,7 @@ const router = new Router({
             ]
         },
         {
-            path: '/admin/applications/mono/workflow/:workflowId',
+            path: '/admin/applications/device/workflow/:workflowId',
             name: 'Static device flow editor',
             component: MonoUserAppWorkflowEditor,
             meta: [{
@@ -51,19 +51,19 @@ const router = new Router({
                     const workflowId = to.params.workflowId
                     const getWorkflow = await axios(`${process.env.VUE_APP_URL}/api/workflows/static/${workflowId}`)
                     if (!!getWorkflow.data.error) {
-                        next('/admin/applications/mono')
+                        next('/admin/applications/device')
                     } else {
                         next()
                     }
                 } catch (error) {
                     console.error(error)
-                    next('/admin/applications/mono')
+                    next('/admin/applications/device')
 
                 }
             }
         },
         {
-            path: '/admin/applications/mono/deploy',
+            path: '/admin/applications/device/deploy',
             name: 'Static devices - deployment',
             component: MonoUserAppDeploy,
             meta: [{
@@ -81,18 +81,18 @@ const router = new Router({
                     const sn = to.params.sn
                     const getStaticDevice = await axios(`${process.env.VUE_APP_URL}/api/clients/static/${sn}`)
                     if (getStaticDevice.data.associated_workflow !== null) {
-                        next('/admin/applications/mono')
+                        next('/admin/applications/device')
                     } else {
                         next()
                     }
                 } catch (error) {
                     console.error(error)
-                    next('/admin/applications/mono')
+                    next('/admin/applications/device')
                 }
             }*/
         },
         {
-            path: '/admin/applications/mono/deploy/:sn',
+            path: '/admin/applications/device/deploy/:sn',
             name: 'Static devices - deployment by id',
             component: MonoUserAppDeploy,
             meta: [{
@@ -110,13 +110,13 @@ const router = new Router({
                     const sn = to.params.sn
                     const getStaticDevice = await axios(`${process.env.VUE_APP_URL}/api/clients/static/${sn}`)
                     if (getStaticDevice.data.associated_workflow !== null) {
-                        next('/admin/applications/mono')
+                        next('/admin/applications/device')
                     } else {
                         next()
                     }
                 } catch (error) {
                     console.error(error)
-                    next('/admin/applications/mono')
+                    next('/admin/applications/device')
                 }
             }
         },
@@ -135,7 +135,7 @@ const router = new Router({
             ]
         },
         {
-            path: '/admin/applications/mono/:sn/monitoring',
+            path: '/admin/applications/device/:sn/monitoring',
             name: 'Static devices - monitoring',
             component: TerminalsMonitoring,
             meta: [{
@@ -153,13 +153,13 @@ const router = new Router({
                     const sn = to.params.sn
                     const getStaticDevice = await axios(`${process.env.VUE_APP_URL}/api/clients/static/${sn}`)
                     if (getStaticDevice.data.associated_workflow === null) {
-                        next('/admin/applications/mono')
+                        next('/admin/applications/device')
                     } else {
                         next()
                     }
                 } catch (error) {
                     console.error(error)
-                    next('/admin/applications/mono')
+                    next('/admin/applications/device')
                 }
             }
         },

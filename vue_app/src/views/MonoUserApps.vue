@@ -1,6 +1,6 @@
 <template>
   <div v-if="dataLoaded">
-    <h1>Single-device applications</h1>
+    <h1>Device applications</h1>
     <div class="flex col" >
       <h2>Deployed applications</h2>
       <div class="flex row">
@@ -26,7 +26,7 @@
               </td>
               <td class="table--desc">{{ !!wf.description && wf.description.length > 0 ? wf.description : 'No description'}}</td>
               <td>
-                <a :href="`/admin/applications/mono/workflow/${wf._id}`" class="button button-icon-txt button--bluemid button--with-desc bottom" data-desc="Edit on Node-red interface">
+                <a :href="`/admin/applications/device/workflow/${wf._id}`" class="button button-icon-txt button--bluemid button--with-desc bottom" data-desc="Edit on Node-red interface">
                   <span class="button__icon button__icon--workflow"></span>
                   <span class="button__label">{{wf.name}}</span>
                 </a>
@@ -45,13 +45,13 @@
             </tr>
           </tbody>
         </table>
-        <div class="no-content" v-else>No single-device application found</div>
+        <div class="no-content" v-else>No device application found</div>
       </div>
       <div class="divider"></div>
       <div class="flex row">
-        <a href="/admin/applications/mono/deploy" class="button button-icon-txt button--green" @click="addStaticDevice()">
+        <a href="/admin/applications/device/deploy" class="button button-icon-txt button--green" @click="addStaticDevice()">
           <span class="button__icon button__icon--add"></span>
-          <span class="button__label">Create a single-device application</span>
+          <span class="button__label">Create a device application</span>
         </a>
       </div>
     </div>

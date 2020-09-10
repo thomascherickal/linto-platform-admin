@@ -1,18 +1,20 @@
 <template>
   <div v-if="dataLoaded">
-    <h1>Deploy a single-device applicaiton</h1>
+    <h1>Deploy a device applicaiton</h1>
     <div class="flex col">
       <!-- Workflow name -->
       <AppInput 
-        :label="'Workflow name'" 
+        :label="'Application name'" 
         :obj="workflowName" 
         :test="'testStaticWorkflowName'"
+        :required="true"
       ></AppInput>
       
       <!-- Workflow description -->
       <AppTextarea 
         :obj="workflowDescription" 
-        :label="'Workflow description'"
+        :label="'Description'"
+        :required="false"
       ></AppTextarea>
 
       <!-- device -->
@@ -23,6 +25,7 @@
         :params="{key:'_id', value:'sn' , optLabel: 'sn'}"
         :disabled="availableStatiDevices.length === 0"
         :disabledTxt="'No device available'"
+        :required="true"
       ></AppSelect>
       
 
@@ -32,6 +35,7 @@
         :obj="workflowTemplate" 
         :list="workflowTemplates" 
         :params="{key:'_id', value:'name' , optLabel: 'name'}"
+        :required="true"
       ></AppSelect>
 
       <!-- LinSTT language -->
@@ -42,6 +46,7 @@
         :params="{key:'value', value:'value', optLabel: 'value'}" 
         :disabled="noSttService" 
         :disabledTxt="'Create a LinSTT service'"
+        :required="true"
       ></AppSelect> 
 
       <!-- LinSTT service command -->
@@ -51,6 +56,7 @@
         :params="{key:'_id', value:'serviceId', optLabel: 'serviceId'}" 
         :disabled="sttServiceLanguage.value === ''" 
         :disabledTxt="'Please select a language'"
+        :required="true"
       ></AppSelect>
       
       <!-- LinSTT Large vocabulary online (streaming) -->
@@ -63,6 +69,7 @@
         :disabledTxt="'Please select a language'"
         :disabled2="sttServiceLVOnlineByLanguage.length === 0" 
         :disabled2Txt="'No service available'"
+        :required="false"
       ></AppSelect>
 
       <!-- LinSTT Large vocabulary offline (file) -->
@@ -75,6 +82,7 @@
         :disabledTxt="'Please select a language'"
         :disabled2="sttServiceLVOfflineByLanguage.length === 0" 
         :disabled2Txt="'No service available'"
+        :required="false"
       ></AppSelect>
 
       <!-- TOCK application -->
@@ -84,11 +92,12 @@
         :list="tockApplications" 
         :params="{key:'name', value:'name', optLabel: 'name'}" 
         :options="{value:'new', label:'Create a new tock application'}"
+        :required="true"
       ></AppSelect>
 
       <!-- Submit -->
       <div class="flex row">
-        <a href="/admin/applications/mono" class="button button-icon-txt button--grey" style="margin-right: 20px;">
+        <a href="/admin/applications/device" class="button button-icon-txt button--grey" style="margin-right: 20px;">
           <span class="button__icon button__icon--cancel"></span>
           <span class="button__label">Cancel</span>
         </a>
@@ -163,7 +172,6 @@ export default {
       tockApplicationsLoaded: false,
       workflowTemplatesLoaded: false,
       staticClientsLoaded: false,
-      // Workflow creation steps
       submitting: false,
       blsFlowUpdate: false,
       blsFlowStatus: 'Posting workflow on Business logic Server',
@@ -245,6 +253,7 @@ export default {
   },
   async mounted () {
     if (!!this.$route.params.sn) {
+      console.log('route SN')
       this.sn = this.$route.params.sn
       this.associated_device.value = this.sn
       this.associated_device.valid = true
@@ -266,6 +275,12 @@ export default {
       }
       /* Workflow description */
       this.$options.filters.testContent(this.workflowDescription)
+
+      /* Device serial number */
+      this.$options.filters.testStaticClientsSN(this.associated_device)
+      if (this.associated_device.error === null) {
+        this.$options.filters.testName(this.associated_device)
+      }
 
       /* Workflow Template */ 
       this.$options.filters.testSelectField(this.workflowTemplate)
@@ -318,7 +333,7 @@ export default {
                       status: 'success',
                       msg: `device ${this.associated_device.value} has been deployed on application ${workflowName}`,
                       timeout: 3000,
-                      redirect: `${process.env.VUE_APP_URL}/admin/applications/mono`
+                      redirect: `${process.env.VUE_APP_URL}/admin/applications/device`
                     })
                   }
                 }
@@ -369,7 +384,7 @@ export default {
         })
         if (postWorkflow.data.status === 'success') {
           this.workflowUpdate = true
-          this.workflowStatus = `The single-device applicaiton "${payload.workflowName}" has been registered`
+          this.workflowStatus = `The device applicaiton "${payload.workflowName}" has been registered`
           return 'success'
         } else if (postWorkflow.data.status === 'error') {
           this.workflowUpdate = false
@@ -403,7 +418,7 @@ export default {
           })
           if(updateStaticDevice.data.status === 'success') {
             this.staticDeviceUpdate = true
-            this.staticDeviceStatus = `The device "${this.sn}" has been attached to single-device application "${payload.workflowName}"`
+            this.staticDeviceStatus = `The device "${this.sn}" has been attached to device application "${payload.workflowName}"`
             return 'success'
           } else if (updateStaticDevice.data.status === 'error') {
             this.staticDeviceUpdate = false

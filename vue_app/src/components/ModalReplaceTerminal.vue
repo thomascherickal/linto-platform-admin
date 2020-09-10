@@ -9,7 +9,7 @@
       </div>
       <div class="modal-body">
         <div class="modal-body__content">
-          <p>You're about to replace the actual device attached to single-device application "<strong>{{workflow.name}}</strong>". If you want to continue, please select a device in the following list and apply your choice.</p>
+          <p>You're about to replace the actual device attached to device application "<strong>{{workflow.name}}</strong>". If you want to continue, please select a device in the following list and apply your choice.</p>
           <AppSelect :label="'Select a device'" :obj="targetDevice" :list="availableStaticClients" :params="{key:'_id', value:'sn', optLabel: 'sn'}" :disabled="noStaticDevice" :disabledTxt="'No device available'"></AppSelect>
         </div>
       </div>
