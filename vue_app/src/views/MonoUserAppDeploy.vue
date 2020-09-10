@@ -331,7 +331,7 @@ export default {
                     this.submitting = false
                     bus.$emit('app_notif', {
                       status: 'success',
-                      msg: `device ${this.associated_device.value} has been deployed on application ${workflowName}`,
+                      msg: `device ${this.associated_device.value} has been deployed on application ${payload.workflowName}`,
                       timeout: 3000,
                       redirect: `${process.env.VUE_APP_URL}/admin/applications/device`
                     })
