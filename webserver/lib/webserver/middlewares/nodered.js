@@ -61,6 +61,12 @@ function generateStaticWorkflowFromTemplate(flow, payload) {
             f.host = process.env.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE
             f.api = 'linstt'
             f.service = payload.stt.service_name
+
+            /*
+              f.service_lv_streaming = payload.stt.lv_online
+              f.service_lv_file = payload.stt.lv_offline
+            */
+
         }
         // uppdate NLU node
         else if (f.type === 'linto-config-evaluate') {

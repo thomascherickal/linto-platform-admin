@@ -59,7 +59,7 @@
         :required="true"
       ></AppSelect>
       
-      <!-- LinSTT Large vocabulary online (streaming) -->
+      <!-- LinSTT Large vocabulary online (streaming)
       <AppSelect 
         :label="'Select a LinSTT Large vocabulary streaming service'" 
         :obj="sttLVOnlineService" 
@@ -72,7 +72,7 @@
         :required="false"
       ></AppSelect>
 
-      <!-- LinSTT Large vocabulary offline (file) -->
+      >!-- LinSTT Large vocabulary offline (file) 
       <AppSelect 
         :label="'Select a LinSTT Large vocabulary file service'" 
         :obj="sttLVOfflineService" 
@@ -83,7 +83,7 @@
         :disabled2="sttServiceLVOfflineByLanguage.length === 0" 
         :disabled2Txt="'No service available'"
         :required="false"
-      ></AppSelect>
+      ></AppSelect> -->
 
       <!-- TOCK application -->
       <AppSelect 

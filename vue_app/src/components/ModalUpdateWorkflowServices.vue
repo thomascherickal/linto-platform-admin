@@ -259,7 +259,7 @@ export default {
         workflowName: this.workflowName.value,
         workflowDescription: this.workflowDescription.value,
         sttServiceLanguage: this.sttServiceLanguage.value,
-        sttService: this.sttService.value,
+        sttCommandService: this.sttService.value,
         tockApplicationName: this.tockApplicationName.value,
         type: this.workflowType
       }
