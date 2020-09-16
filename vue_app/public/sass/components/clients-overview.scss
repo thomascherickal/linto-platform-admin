@@ -4,32 +4,46 @@
     &:after {
         display: none;
     }
-    &:hover {
-        &:after {
-            content: attr(data-label);
-            display: inline-block;
-            width: 200px;
-            padding: 5px;
-            @include borderRadius(3px);
-            background-color: #ccc;
-            position: absolute;
-            top: -8px;
-            left: 20px;
-            color: #fff;
-            font-size: 12px;
-            font-weight: 600;
-            z-index: 20;
-        }
-        &.offline {
+    &.icon--status__with-desc {
+        &:hover {
             &:after {
-                background-color: $error;
+                content: attr(data-label);
+                display: inline-block;
+                width: 200px;
+                padding: 5px;
+                @include borderRadius(3px);
+                background-color: #ccc;
+                position: absolute;
+                top: -8px;
+                left: 20px;
+                color: #fff;
+                font-size: 12px;
+                font-weight: 600;
+                z-index: 20;
+            }
+            &.offline {
+                &:after {
+                    background-color: $error;
+                }
+            }
+            &.online {
+                &:after {
+                    background-color: $valid;
+                }
             }
         }
-        &.online {
-            &:after {
-                background-color: $valid;
-            }
-        }
+    }
+}
+
+.icon--status__label {
+    display: inline-block;
+    line-height: 20px;
+    padding-left: 5px;
+    &.label--green {
+        color: $valid;
+    }
+    &.label--red {
+        color: $error;
     }
 }
 

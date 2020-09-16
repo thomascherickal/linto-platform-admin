@@ -61,7 +61,6 @@
 <script>
 import { bus } from '../main.js'
 import axios from 'axios'
-import io from 'socket.io-client'
 export default {
   data () {
     return {
@@ -89,10 +88,7 @@ export default {
       await this.refreshStore()
     })
 
-    setTimeout(()=>{
-      this.initSocket()
-      
-    }, 1000)
+    
   },
   computed: {
     staticClients () {
@@ -138,17 +134,7 @@ export default {
         })
       }
     },
-    async initSocket() {
-      this.socket = new io(`${process.env.VUE_APP_URL}`)
-      this.socket.on('linto_status', async (data)  => {
-        const topicArray = data.topicArray
-        const targetSn = topicArray[2]
-
-        await this.refreshStore()
-        if (this.staticClients.filter(client => client.sn === targetSn).length > 0) {
-        }
-      })
-    },
+    
     async dispatchStore (topic) {
       try {
         const dispatch = await this.$options.filters.dispatchStore(topic)

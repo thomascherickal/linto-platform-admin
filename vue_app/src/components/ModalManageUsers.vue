@@ -120,7 +120,13 @@ export default {
       return this.$store.getters.APP_WORKFLOW_BY_ID(this.workflowId)
     },
     androidAuth () {
-      return this.applicationWorkflow.flow.nodes[this.applicationWorkflow.flow.nodes.findIndex(f => f.type === 'linto-application-in')].auth_android
+      const nodeIndex = this.applicationWorkflow.flow.nodes.findIndex(f => f.type === 'linto-application-in')
+
+      if(nodeIndex >= 0 && this.applicationWorkflow.flow.nodes[nodeIndex].auth_android) {
+        return this.applicationWorkflow.flow.nodes[nodeIndex].auth_android
+      } else {
+        return false
+      }
     },
     
   },

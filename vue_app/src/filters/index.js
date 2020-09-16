@@ -49,9 +49,14 @@ const testUrl = (obj) => {
 }
 
 // DISPATCH STORE
-Vue.filter('dispatchStore', async function(label) {
+Vue.filter('dispatchStore', async function(label, data) {
     try {
-        const req = await store.dispatch(label)
+        let req = null
+        if (!!data) {
+            req = await store.dispatch(label, data)
+        } else {
+            req = await store.dispatch(label)
+        }
         if (!!req.error) {
             throw req.error
         }
@@ -206,11 +211,26 @@ Vue.filter('testContent', function(obj) {
     if (obj.value.length === 0) {
         obj.valid = true
     } else {
-        const regex = /[0-9A-Za-z\?\!\@\#\$\%\-\_\.\/\:\;\(\)\[\]\=\+\s]+$/g
+        const regex = /[0-9A-Za-z\?\!\@\#\$\%\-\_\.\/\,\:\;\(\)\[\]\=\+\s]+$/g
         if (obj.value.match(regex)) {
             obj.valid = true
         } else {
             obj.error = 'Invalid content. Unauthorized characters.'
+        }
+    }
+})
+
+Vue.filter('testContentSay', function(obj) {
+    obj.valid = false
+    obj.error = null
+    if (obj.value.length === 0) {
+        obj.valid = true
+    } else {
+        const regex = /[0-9A-Za-z\?\!\-\.\:\,\;\s]+$/g
+        if (obj.value.match(regex)) {
+            obj.valid = true
+        } else {
+            obj.error = 'Unauthorized characters.'
         }
     }
 })

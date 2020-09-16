@@ -72,6 +72,9 @@ export default {
     testUrl (obj) {
       this.$options.filters.testUrl(obj)
     },
+    testContentSay(obj) {
+       this.$options.filters.testContentSay(obj)
+    },
     exec (functionName) {
       switch(functionName) {
         case 'testName':
@@ -103,6 +106,9 @@ export default {
           break
         case 'testUrl':
           this.testUrl(this.obj)
+          break
+        case 'testContentSay':
+          this.testContentSay(this.obj)
           break
         default:
           return

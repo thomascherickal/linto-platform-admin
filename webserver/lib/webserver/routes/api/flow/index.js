@@ -117,8 +117,7 @@ module.exports = (webServer) => {
                     // Get selected nodered flow template object
                     const workflowTemplate = await workflowTemplatesModel.getWorkflowTemplateByName(payload.workflowTemplate)
 
-                    // Format flow to be posted on BLS
-                    const formattedFlow = nodered.generateStaticWorkflowFromTemplate(workflowTemplate.flow, {
+                    const flowPayload = {
                         sn: payload.sn,
                         workflowName: payload.workflowName,
                         language: payload.sttServiceLanguage,
@@ -126,9 +125,14 @@ module.exports = (webServer) => {
                             app_name: payload.tockApplicationName
                         },
                         stt: {
-                            service_name: payload.sttService
+                            service_name: payload.sttCommandService,
+                            lv_online: payload.sttLVOnlineService,
+                            lv_offline: payload.sttLVOfflineService
                         }
-                    })
+                    }
+
+                    // Format flow to be posted on BLS
+                    const formattedFlow = nodered.generateStaticWorkflowFromTemplate(workflowTemplate.flow, flowPayload)
 
                     // Request
                     const postFlowOnBLS = await nodered.postBLSFlow(formattedFlow)

@@ -135,7 +135,7 @@ const router = new Router({
             ]
         },
         {
-            path: '/admin/applications/device/:sn/monitoring',
+            path: '/admin/device/:sn/monitoring',
             name: 'Static devices - monitoring',
             component: TerminalsMonitoring,
             meta: [{

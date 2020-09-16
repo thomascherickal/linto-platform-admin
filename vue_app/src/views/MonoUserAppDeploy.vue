@@ -305,7 +305,9 @@ export default {
           workflowDescription: this.workflowDescription.value.replace(/\n/g,' '),
           workflowTemplate: this.workflowTemplate.value,
           sttServiceLanguage: this.sttServiceLanguage.value,
-          sttService: this.sttService.value,
+          sttCommandService: this.sttService.value,
+          sttLVOnlineService: this.sttLVOnlineService.value,
+          sttLVOfflineService: this.sttLVOfflineService.value,
           tockApplicationName: this.tockApplicationName.value !== 'new' ? this.tockApplicationName.value : this.workflowName.value.replace(/[\s\_]/g, '-').toLowerCase()
         }
         this.submitting = true
@@ -462,7 +464,7 @@ export default {
       try {
         const payload = { 
             flowId: data.flowId,
-            service_name: data.sttService
+            service_name: data.sttCommandService
           }
         const sttLexSeed = await axios(`${process.env.VUE_APP_URL}/api/stt/lexicalseeding`, {
           method: 'post', 

@@ -18,11 +18,11 @@
             <tr v-for="client in associatedStaticClients" :key="client._id">
               <td class="center status">
                 <span 
-                  class="icon icon--status"
+                  class="icon icon--status icon--status__with-desc"
                   :class="client.connexion"
                   :data-label="client.connexion === 'online' ? 'up since ' + client.last_up : 'down since ' + client.last_down"
                 ></span>
-                <a class="client-status__link" :href="`/admin/applications/device/${client.sn}/monitoring`"> more...</a>
+                <a class="client-status__link" :href="`/admin/device/${client.sn}/monitoring`"> more...</a>
               </td>
               <td>
                 <strong class="button__label">{{ client.sn }}</strong>
@@ -88,16 +88,13 @@
 <script>
 import { bus } from '../main.js'
 import axios from 'axios'
+
 export default {
   data () {
     return {
       staticClientsLoaded: false,
       staticWorkflowsLoaded: false
     }
-  },
-  async created () {
-    // Request store
-    await this.refreshStore()
   },
   async mounted () {
     // Events
@@ -113,7 +110,12 @@ export default {
     bus.$on('add_static_device_success', async (data) => {
       await this.refreshStore()
     })
-
+    setTimeout(() => {
+      this.initSocket()
+    }, 200)
+    
+    await this.refreshStore()
+    
   },
   computed: {
     staticClients () {
@@ -145,6 +147,20 @@ export default {
     addStaticDevice () {
       bus.$emit('add_static_device', {})
     },
+    async initSocket() {
+      // Init socket
+      this.socket = this.$parent.socket
+      // Subscribe to mqtt scope
+      this.socket.emit('linto_subscribe_all', {})
+      // On receiving 'status'
+      this.socket.on('linto_status', async (data)  => {
+        const topicArray = data.topicArray
+        const targetSn = topicArray[2]
+        if (this.staticClients.filter(client => client.sn === targetSn).length > 0) {
+          await this.refreshStore()
+        }
+      })
+    },
     async refreshStore () {
       try {
         await this.dispatchStore('getStaticClients')
@@ -158,9 +174,16 @@ export default {
         })
       }
     },
-    async dispatchStore (topic) {
+    async dispatchStore (topic, data) {
       try {
-        const dispatch = await this.$options.filters.dispatchStore(topic)
+        let dispatch = null
+        if (!!data) {
+           dispatch = await this.$options.filters.dispatchStore(topic, data)
+
+        } else {
+          dispatch = await this.$options.filters.dispatchStore(topic)
+        }
+        
         const dispatchSuccess = dispatch.status == 'success' ? true : false
         if (dispatch.status === 'error') {
           throw dispatch.msg

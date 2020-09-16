@@ -64,6 +64,8 @@
   import ModalEditDomain from '@/components/ModalEditDomain.vue'
   import ModalManageDomains from '@/components/ModalManageDomains.vue'
   import { bus } from './main.js'
+  import io from 'socket.io-client'
+  import axios from 'axios'
   export default {
     data () {
       return {
@@ -71,10 +73,29 @@
         path: ''
       }
     },
-    created () {
-      setTimeout(() => {
+    async created () {
+      setTimeout(async () => {
         this.path = this.$route.fullPath
+
+        // If we're not on a "device" path, check MQTT subscribtion
+        if (this.path.indexOf('/admin/device') < 0) {
+          this.socket.emit('linto_unsubscribe_all', {})
+        } 
       }, 500)
+    },
+    mounted () {
+      bus.$on('iframe-set-fullscreen', () => {
+        this.fullScreenFrame = true
+      })
+      bus.$on('iframe-unset-fullscreen', () => {
+        this.fullScreenFrame = false
+      })
+      this.socket = new io(`${process.env.VUE_APP_URL}`)
+    },
+    methods: {
+      async initSocket() {
+        this.socket = new io(`${process.env.VUE_APP_URL}`)
+      }
     },
     components: {
       AppHeader,
@@ -101,14 +122,7 @@
       ModalDeleteDomain,
       ModalEditDomain,
       ModalManageDomains
-    },
-    mounted () {
-      bus.$on('iframe-set-fullscreen', () => {
-        this.fullScreenFrame = true
-      })
-      bus.$on('iframe-unset-fullscreen', () => {
-        this.fullScreenFrame = false
-      })
     }
+    
   }
 </script>

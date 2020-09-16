@@ -110,6 +110,9 @@
         &.button__icon--edit {
             @include maskImage('../img/svg/edit.svg');
         }
+        &.button__icon--say {
+            @include maskImage('../img/svg/say.svg');
+        }
         &.button__icon--loading {
             @include maskImage('../img/svg/loading.svg');
             @include rotate();
