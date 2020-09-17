@@ -10,7 +10,7 @@
       <div class="modal-body">
         <div class="modal-body__content">
           <AppInput :label="'Workflow template name'" :obj="workflowTemplateName" :test="'testWorkflowTemplateName'"></AppInput>
-          <AppSelect :label="'Workflow type'" :obj="workflowType" :list="workflowTypes" :params="{key:'value', value:'value', optLabel: 'value'}"></AppSelect>
+          <AppSelect :label="'Workflow type'" :obj="workflowType" :list="workflowTypes" :params="{key:'value', value:'value', optLabel: 'label'}"></AppSelect>
         </div>
       </div>
       <div class="modal-footer flex row">
@@ -45,7 +45,7 @@ export default {
         error: null,
         valid: false
       },
-      workflowTypes: [{value: 'static'}, {value: 'application'}]
+      workflowTypes: [{value: 'static', label:'device'}, {value: 'application', label: 'mutli-user'}]
     }
   },
   computed: {
