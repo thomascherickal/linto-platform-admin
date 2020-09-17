@@ -157,7 +157,10 @@ export default {
         const topicArray = data.topicArray
         const targetSn = topicArray[2]
         if (this.staticClients.filter(client => client.sn === targetSn).length > 0) {
-          await this.refreshStore()
+          setTimeout(async () => {
+            await this.refreshStore()
+          }, 200)
+          
         }
       })
     },

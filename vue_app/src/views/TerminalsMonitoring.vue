@@ -187,7 +187,9 @@ export default {
     setTimeout(() => {
       this.initSocket()
       this.socket.on('linto_pong', async (data) => {
-        if(this.pingProcessing && data.sn === this.staticClient.sn) {
+        const topicArray = data.topicArray
+        const targetSn = topicArray[2]
+        if(this.pingProcessing && targetSn === this.staticClient.sn) {
           this.pongDate = new Date().getTime()
           const timeDiff = this.pongDate - this.pingDate
           this.pingClass = ''
@@ -301,8 +303,6 @@ export default {
           }
         }
       })
-
-        
     },
     async refreshStore () {
       try {
