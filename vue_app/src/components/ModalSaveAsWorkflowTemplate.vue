@@ -66,6 +66,16 @@ export default {
   methods: {
     showModal () {
       this.modalVisible = true
+      this.workflowTemplateName = {
+        value: '',
+        error: null,
+        valid: false
+      }
+      this.workflowType = {
+        value: '',
+        error: null,
+        valid: false
+      }
     },
     closeModal () {
       this.modalVisible = false

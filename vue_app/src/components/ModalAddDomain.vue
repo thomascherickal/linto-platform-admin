@@ -68,15 +68,15 @@ export default {
   methods: {
     showModal () {
       this.modalVisible = true
-    },
-    closeModal () {
-      this.modalVisible = false
       // Reset values
       this.webappHost = {
         value:'',
         error: null,
         valid: false
       }
+    },
+    closeModal () {
+      this.modalVisible = false
     },
     async handleForm () {
       this.$options.filters.testUrl(this.webappHost)
@@ -89,7 +89,6 @@ export default {
         const payload = {
           originUrl: this.webappHost.value
         }
-
         const createWebappHost = await axios(`${process.env.VUE_APP_URL}/api/webapphosts`, { 
             method: 'post',
             data: { payload }

@@ -127,8 +127,7 @@ export default {
       } else {
         return false
       }
-    },
-    
+    }
   },
   methods: {
     showModal () {

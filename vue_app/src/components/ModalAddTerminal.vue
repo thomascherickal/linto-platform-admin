@@ -53,14 +53,14 @@ export default {
   methods: {
     showModal () {
       this.modalVisible = true
-    },
-    closeModal () {
-      this.modalVisible = false
       this.sn = {
         value: '',
         error: null,
         valid: false
       }
+    },
+    closeModal () {
+      this.modalVisible = false
     },
     async handleForm () {
       this.$options.filters.testStaticClientsSN(this.sn)

@@ -98,6 +98,24 @@ export default {
   methods: {
     showModal () {
       this.modalVisible = true
+      this.userEmail = {
+        value: '',
+        error: null,
+        valid: false
+      }
+      this.userPswd = {
+        value: '',
+        error: null,
+        valid: false
+      }
+      this.userPswdConfirm = {
+        value: '',
+        error: null,
+        valid: false
+      }
+      this.userApps = {
+        value: []
+      }
     },
     closeModal () {
       this.modalVisible = false

@@ -272,17 +272,17 @@ export default {
     },
     showModal () {
       this.modalVisible = true
-      this.hideAddAppForm()
-    },
-    closeModal () {
-      this.modalVisible = false
       this.originUrl = {
         value: '',
         error: null,
         valid: false
       },
-      this.editingIds = [],
+      this.editingIds = []
       this.editingObj = []
+    },
+    closeModal () {
+      this.modalVisible = false
+      this.hideAddAppForm()
     },
     showAddAppForm () {
       this.addAppFormVisible = true

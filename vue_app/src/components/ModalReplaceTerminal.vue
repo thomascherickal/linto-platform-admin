@@ -60,6 +60,11 @@ export default {
   methods: {
     showModal () {
       this.modalVisible = true
+      thus.targetDevice = {
+        value: '',
+        error: null,
+        valid: false
+      }
     },
     closeModal () {
       this.modalVisible = false

@@ -70,11 +70,6 @@ export default {
       modalVisible: false,
       workflowId: null,
       appName: null,
-      webappHostId: {
-        value: '',
-        error: null,
-        valid: false
-      },
       webappHostsLoaded: false,
       applicationWorkflowLoaded: false
     }
@@ -86,7 +81,6 @@ export default {
       this.appName = data.appName
       await this.refreshStore()
     })
-    
   },
   computed: {
     dataLoaded () {
