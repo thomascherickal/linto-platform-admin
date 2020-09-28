@@ -50,7 +50,9 @@ module.exports = (webServer) => {
                     // set STT service 
                     const nodeSttConfig = workflowPayload.flow.configs.filter(node => node.type === 'linto-config-transcribe')
                     if (nodeSttConfig.length > 0) {
-                        nodeSttConfig[0].service = payload.sttCommandService
+                        nodeSttConfig[0].commandOffline = payload.sttCommandService
+                        nodeSttConfig[0].largeVocabOffline = payload.largeVocabStreaming
+                        nodeSttConfig[0].largeVocabOffline = payload.largeVocabOffline
                     }
 
                     // set Tock application

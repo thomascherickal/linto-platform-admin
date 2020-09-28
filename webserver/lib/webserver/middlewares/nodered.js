@@ -60,13 +60,9 @@ function generateStaticWorkflowFromTemplate(flow, payload) {
             f.id = sttId
             f.host = process.env.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE
             f.api = 'linstt'
-            f.service = payload.stt.service_name
-
-            /*
-              f.service_lv_streaming = payload.stt.lv_online
-              f.service_lv_file = payload.stt.lv_offline
-            */
-
+            f.commandOffline = payload.stt.service_name
+            f.largeVocabStreaming = payload.stt.lv_online
+            f.largeVocabOffline = payload.stt.lv_offline
         }
         // uppdate NLU node
         else if (f.type === 'linto-config-evaluate') {
@@ -171,7 +167,9 @@ function generateApplicationWorkflowFromTemplate(flow, payload) {
             f.id = sttId
             f.host = process.env.LINTO_STACK_STT_SERVICE_MANAGER_SERVICE
             f.api = 'linstt'
-            f.service = payload.stt.service_name
+            f.commandOffline = payload.stt.service_name
+            f.largeVocabStreaming = payload.stt.lv_online
+            f.largeVocabOffline = payload.stt.lv_offline
         }
         // uppdate NLU node
         else if (f.type === 'linto-config-evaluate') {

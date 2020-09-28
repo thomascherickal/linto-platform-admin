@@ -42,7 +42,7 @@
       <!-- STT services command -->
       <AppSelect 
         :label="'Select a STT command service'" 
-        :obj="sttService" 
+        :obj="sttCommandService" 
         :list="sttServiceCmdByLanguage" 
         :params="{key:'_id', value:'serviceId', optLabel: 'serviceId'}" 
         :disabled="sttServiceLanguage.value === ''" 
@@ -50,31 +50,31 @@
         :required="true"
       ></AppSelect>
       
-      <!-- LinSTT Large vocabulary online (streaming) 
-      <AppSelect 
-        :label="'Select a LinSTT Large vocabulary streaming service'" 
-        :obj="sttLVOnlineService" 
-        :list="sttServiceLVOnlineByLanguage" 
-        :params="{key:'_id', value:'serviceId', optLabel: 'serviceId'}" 
-        :disabled="sttServiceLanguage.value === ''" 
-        :disabledTxt="'Please select a language'"
-        :disabled2="sttServiceLVOnlineByLanguage.length === 0" 
-        :disabled2Txt="'No service available'"
-        :required="false"
-      ></AppSelect>
+    <!-- LinSTT Large vocabulary online (streaming) -->
+    <AppSelect 
+      :label="'Select a LinSTT Large vocabulary streaming service'" 
+      :obj="sttLVOnlineService" 
+      :list="sttServiceLVOnlineByLanguage" 
+      :params="{key:'_id', value:'serviceId', optLabel: 'serviceId'}" 
+      :disabled="sttServiceLanguage.value === ''" 
+      :disabledTxt="'Please select a language'"
+      :disabled2="sttServiceLVOnlineByLanguage.length === 0" 
+      :disabled2Txt="'No service available'"
+      :required="false"
+    ></AppSelect>
 
-       LinSTT Large vocabulary offline (file) 
-      <AppSelect 
-        :label="'Select a LinSTT Large vocabulary file service'" 
-        :obj="sttLVOfflineService" 
-        :list="sttServiceLVOfflineByLanguage" 
-        :params="{key:'_id', value:'serviceId', optLabel: 'serviceId'}" 
-        :disabled="sttServiceLanguage.value === ''" 
-        :disabledTxt="'Please select a language'"
-        :disabled2="sttServiceLVOfflineByLanguage.length === 0" 
-        :disabled2Txt="'No service available'"
-        :required="false"
-      ></AppSelect> -->
+    <!-- LinSTT Large vocabulary offline (file) -->
+    <AppSelect 
+      :label="'Select a LinSTT Large vocabulary file service'" 
+      :obj="sttLVOfflineService" 
+      :list="sttServiceLVOfflineByLanguage" 
+      :params="{key:'_id', value:'serviceId', optLabel: 'serviceId'}" 
+      :disabled="sttServiceLanguage.value === ''" 
+      :disabledTxt="'Please select a language'"
+      :disabled2="sttServiceLVOfflineByLanguage.length === 0" 
+      :disabled2Txt="'No service available'"
+      :required="false"
+    ></AppSelect>
 
       <!-- TOCK application -->
       <AppSelect 
@@ -125,7 +125,7 @@ export default {
         error: null,
         valid: false
       },
-      sttService: {
+      sttCommandService: {
         value: '',
         error: null,
         valid: false
@@ -223,7 +223,7 @@ export default {
       return this.$store.getters.WORKFLOW_TEMPLATES_BY_TYPE('application')
     },
     formValid () {
-      return (this.workflowName.valid && this.workflowTemplate.valid && this.sttServiceLanguage.valid && this.sttService.valid && this.tockApplicationName.valid && this.workflowDescription.valid)
+      return (this.workflowName.valid && this.workflowTemplate.valid && this.sttServiceLanguage.valid && this.sttCommandService.valid && this.tockApplicationName.valid && this.workflowDescription.valid)
     },
     deployLabel () {
       if (this.submitting) {
@@ -261,7 +261,7 @@ export default {
       this.$options.filters.testSelectField(this.sttServiceLanguage)
 
       /* STT service */ 
-      this.$options.filters.testSelectField(this.sttService)
+      this.$options.filters.testSelectField(this.sttCommandService)
     
       /* Tock application */ 
       this.$options.filters.testSelectField(this.tockApplicationName)
@@ -278,7 +278,9 @@ export default {
           workflowDescription: this.workflowDescription.value.replace(/\n/g,' '),
           workflowTemplate: this.workflowTemplate.value,
           sttServiceLanguage: this.sttServiceLanguage.value,
-          sttService: this.sttService.value,
+          sttCommandService: this.sttCommandService.value,
+          sttLVOnlineService: this.sttLVOnlineService.value,
+          sttLVOfflineService: this.sttLVOfflineService.value,
           tockApplicationName: this.tockApplicationName.value !== 'new' ? this.tockApplicationName.value : this.workflowName.value.replace(/[\s\_]/g, '-').toLowerCase()
         }
 
@@ -393,7 +395,7 @@ export default {
           data: { 
             payload : {
               flowId: payload.flowId,
-              service_name: payload.sttService
+              service_name: payload.sttCommandService
             }
           }
         })

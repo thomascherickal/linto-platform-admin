@@ -52,14 +52,14 @@
       <!-- LinSTT service command -->
       <AppSelect 
         :label="'Select a LinSTT COMMAND service'" 
-        :obj="sttService" :list="sttServiceCmdByLanguage" 
+        :obj="sttCommandService" :list="sttServiceCmdByLanguage" 
         :params="{key:'_id', value:'serviceId', optLabel: 'serviceId'}" 
         :disabled="sttServiceLanguage.value === ''" 
         :disabledTxt="'Please select a language'"
         :required="true"
       ></AppSelect>
       
-      <!-- LinSTT Large vocabulary online (streaming)
+      <!-- LinSTT Large vocabulary online (streaming) -->
       <AppSelect 
         :label="'Select a LinSTT Large vocabulary streaming service'" 
         :obj="sttLVOnlineService" 
@@ -72,7 +72,7 @@
         :required="false"
       ></AppSelect>
 
-      >!-- LinSTT Large vocabulary offline (file) 
+      <!-- LinSTT Large vocabulary offline (file) -->
       <AppSelect 
         :label="'Select a LinSTT Large vocabulary file service'" 
         :obj="sttLVOfflineService" 
@@ -83,7 +83,7 @@
         :disabled2="sttServiceLVOfflineByLanguage.length === 0" 
         :disabled2Txt="'No service available'"
         :required="false"
-      ></AppSelect> -->
+      ></AppSelect> 
 
       <!-- TOCK application -->
       <AppSelect 
@@ -140,7 +140,7 @@ export default {
         error: null,
         valid: false
       },
-      sttService: {
+      sttCommandService: {
         value: '',
         error: null,
         valid: false
@@ -238,7 +238,7 @@ export default {
       return this.$store.getters.WORKFLOW_TEMPLATES_BY_TYPE('static')
     },
     formValid () {
-      return (this.workflowName.valid && this.workflowTemplate.valid && this.sttServiceLanguage.valid && this.sttService.valid && this.tockApplicationName.valid)
+      return (this.workflowName.valid && this.workflowTemplate.valid && this.sttServiceLanguage.valid && this.sttCommandService.valid && this.tockApplicationName.valid)
     },
     deployLabel () {
       if (this.submitting) {
@@ -288,7 +288,7 @@ export default {
       this.$options.filters.testSelectField(this.sttServiceLanguage)
 
       /* STT service */ 
-      this.$options.filters.testSelectField(this.sttService)
+      this.$options.filters.testSelectField(this.sttCommandService)
     
       /* Tock application */ 
       this.$options.filters.testSelectField(this.tockApplicationName)
@@ -305,7 +305,7 @@ export default {
           workflowDescription: this.workflowDescription.value.replace(/\n/g,' '),
           workflowTemplate: this.workflowTemplate.value,
           sttServiceLanguage: this.sttServiceLanguage.value,
-          sttCommandService: this.sttService.value,
+          sttCommandService: this.sttCommandService.value,
           sttLVOnlineService: this.sttLVOnlineService.value,
           sttLVOfflineService: this.sttLVOfflineService.value,
           tockApplicationName: this.tockApplicationName.value !== 'new' ? this.tockApplicationName.value : this.workflowName.value.replace(/[\s\_]/g, '-').toLowerCase()
@@ -461,11 +461,13 @@ export default {
       }
     },
     async sttLexicalSeeding (data) {
+        
       try {
         const payload = { 
             flowId: data.flowId,
             service_name: data.sttCommandService
-          }
+        }
+        
         const sttLexSeed = await axios(`${process.env.VUE_APP_URL}/api/stt/lexicalseeding`, {
           method: 'post', 
           data: { payload }

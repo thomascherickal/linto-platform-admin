@@ -181,7 +181,9 @@ module.exports = (webServer) => {
                             app_name: payload.tockApplicationName
                         },
                         stt: {
-                            service_name: payload.sttService
+                            service_name: payload.sttCommandService,
+                            lv_online: payload.sttLVOnlineService,
+                            lv_offline: payload.sttLVOfflineService
                         }
                     })
 

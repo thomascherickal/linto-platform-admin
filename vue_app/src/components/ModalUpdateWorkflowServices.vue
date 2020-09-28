@@ -40,14 +40,40 @@
           <!-- STT services command -->
           <AppSelect 
             :label="'Select a STT command service'" 
-            :obj="sttService" 
+            :obj="sttCommandService" 
             :list="sttServiceCmdByLanguage" 
             :params="{key:'_id', value:'serviceId', optLabel: 'serviceId'}" 
             :disabled="sttServiceLanguage.value === ''" 
             :disabledTxt="'Please select a language'"
             :required="true"
           ></AppSelect>
-          
+      
+          <!-- LinSTT Large vocabulary online (streaming) -->
+          <AppSelect 
+            :label="'Select a LinSTT Large vocabulary streaming service'" 
+            :obj="largeVocabStreaming" 
+            :list="sttServiceLVOnlineByLanguage" 
+            :params="{key:'_id', value:'serviceId', optLabel: 'serviceId'}" 
+            :disabled="sttServiceLanguage.value === ''" 
+            :disabledTxt="'Please select a language'"
+            :disabled2="sttServiceLVOnlineByLanguage.length === 0" 
+            :disabled2Txt="'No service available'"
+            :required="false"
+          ></AppSelect>
+
+          <!-- LinSTT Large vocabulary offline (file) -->
+          <AppSelect 
+            :label="'Select a LinSTT Large vocabulary file service'" 
+            :obj="largeVocabOffline" 
+            :list="sttServiceLVOfflineByLanguage" 
+            :params="{key:'_id', value:'serviceId', optLabel: 'serviceId'}" 
+            :disabled="sttServiceLanguage.value === ''" 
+            :disabledTxt="'Please select a language'"
+            :disabled2="sttServiceLVOfflineByLanguage.length === 0" 
+            :disabled2Txt="'No service available'"
+            :required="false"
+          ></AppSelect>
+      
           <!-- TOCK application -->
           <AppSelect 
             :label="'Select Tock application'" 
@@ -100,7 +126,17 @@ export default {
         error: null,
         valid: false
       },
-      sttService: {
+      largeVocabStreaming :{
+        value: '',
+        error: null,
+        valid: false
+      },
+      largeVocabOffline :{
+        value: '',
+        error: null,
+        valid: false
+      },
+      sttCommandService: {
         value: '',
         error: null,
         valid: false
@@ -180,6 +216,20 @@ export default {
         return []
       }
     },
+    sttServiceLVOnlineByLanguage () {
+      if (this.sttServiceLanguage.value !== '') {
+        return this.sttServices.lvOnline.filter(service => service.lang === this.sttServiceLanguage.value)
+      } else {
+        return []
+      }
+    },
+    sttServiceLVOfflineByLanguage () {
+      if (this.sttServiceLanguage.value !== '') {
+        return this.sttServices.lvOffline.filter(service => service.lang === this.sttServiceLanguage.value)
+      } else {
+        return []
+      }
+    },
     noSttService () {
       return !this.sttServicesLoaded || this.sttServices.length === 0
     },
@@ -187,7 +237,7 @@ export default {
       return this.$store.state.tockApplications
     },
     formValid () {
-      return (this.workflowName.valid && this.workflowDescription.valid && this.sttServiceLanguage.valid && this.sttService.valid && this.tockApplicationName.valid)
+      return (this.workflowName.valid && this.workflowDescription.valid && this.sttServiceLanguage.valid && this.sttCommandService.valid && this.tockApplicationName.valid)
     }
   },
   watch: {
@@ -207,9 +257,12 @@ export default {
             
             // get STT service 
             const nodeSttConfig = this.currentWorkflow.flow.configs.filter(node => node.type === 'linto-config-transcribe')
-            if (nodeSttConfig.length > 0 && !!nodeSttConfig[0].service) {
-              this.sttService.value = nodeSttConfig[0].service
-              this.sttService.valid = true
+            
+            if (nodeSttConfig.length > 0 && !!nodeSttConfig[0].commandOffline) {
+              this.sttCommandService.value = nodeSttConfig[0].commandOffline
+              this.largeVocabStreaming.value = nodeSttConfig[0].largeVocabStreaming
+              this.largeVocabOffline.value = nodeSttConfig[0].largeVocabOffline
+              this.sttCommandService.valid = true
             }
             
             // get Tock application
@@ -237,9 +290,9 @@ export default {
       // Test STT language
       this.$options.filters.testSelectField(this.sttServiceLanguage)
 
-      // Test STT service 
-      this.$options.filters.testSelectField(this.sttService)
-    
+      // Test STT services
+      this.$options.filters.testSelectField(this.sttCommandService)
+
       // Test Tock application name 
       this.$options.filters.testSelectField(this.tockApplicationName)
 
@@ -259,7 +312,9 @@ export default {
         workflowName: this.workflowName.value,
         workflowDescription: this.workflowDescription.value,
         sttServiceLanguage: this.sttServiceLanguage.value,
-        sttCommandService: this.sttService.value,
+        sttCommandService: this.sttCommandService.value,
+        largeVocabStreaming: this.largeVocabStreaming.value,
+        largeVocabOffline: this.largeVocabOffline.value,
         tockApplicationName: this.tockApplicationName.value,
         type: this.workflowType
       }
