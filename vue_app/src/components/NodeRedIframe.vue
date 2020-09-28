@@ -22,7 +22,6 @@
           <span class="button__icon button__icon--settings"></span>
           <span class="button__label">Manage workflow templates</span>
         </button>
-        
       </div>
       <div class="flex1 flex row iframe__controls-right">
 
@@ -92,14 +91,11 @@ export default {
     }
 
     bus.$on('iframe_reload', () => {
-        this.iframeUrl = ''
-        const newUrl = this.blsurl + '?rdm=' + randomstring.generate(8)
-        this.iframeUrl = ""
-          setTimeout(() => {
-            this.iframeUrl = newUrl
-          }, 200)
-
-          
+      const url = this.blsurl
+      this.iframeUrl = ""
+        setTimeout(() => {
+          this.iframeUrl = url
+        }, 200)
     })
   },
   methods: {
