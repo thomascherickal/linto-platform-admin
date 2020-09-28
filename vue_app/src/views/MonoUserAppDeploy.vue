@@ -70,6 +70,7 @@
         :disabled2="sttServiceLVOnlineByLanguage.length === 0" 
         :disabled2Txt="'No service available'"
         :required="false"
+        :resetValue="true"
       ></AppSelect>
 
       <!-- LinSTT Large vocabulary offline (file) -->
@@ -83,6 +84,7 @@
         :disabled2="sttServiceLVOfflineByLanguage.length === 0" 
         :disabled2Txt="'No service available'"
         :required="false"
+        :resetValue="true"
       ></AppSelect> 
 
       <!-- TOCK application -->

@@ -14,7 +14,7 @@
 </template>
 <script>
 export default {
-  props: ['label', 'obj', 'test', 'lintos', 'patterns', 'type', 'compare', 'workflowId', 'required'],
+  props: ['label', 'obj', 'test', 'type', 'compare', 'required'],
   data () {
     return {}
   },

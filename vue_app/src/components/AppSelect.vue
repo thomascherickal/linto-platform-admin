@@ -12,6 +12,7 @@
       @change="testSelectField(obj)"
       :disabled="disabled || disabled2 ? 'disabled' : false"
     >
+      <option v-if="!!resetValue && resetValue === true" value="">None</option>
       <option 
         v-for="l in list"
         :key="l[params.key]"
@@ -41,7 +42,7 @@
 </template>
 <script>
 export default {
-  props: ['label','obj','list','params','options', 'disabled', 'disabledTxt', 'disabled2', 'disabled2Txt', 'type', 'min','max', 'extraClass', 'noLabel', 'required'],
+  props: ['label','obj','list','options','params', 'disabled', 'disabledTxt', 'disabled2', 'disabled2Txt', 'type', 'min','max', 'extraClass', 'noLabel', 'required', 'resetValue'],
   data () {
     return {
       numberArray: []
@@ -56,7 +57,9 @@ export default {
   },
   methods: {
     testSelectField (obj) {
-      this.$options.filters.testSelectField(obj)
+      if(!this.resetValue) {
+        this.$options.filters.testSelectField(obj)
+      }
     },
     testInteger (obj) {
       this.$options.filters.testInteger(obj)
