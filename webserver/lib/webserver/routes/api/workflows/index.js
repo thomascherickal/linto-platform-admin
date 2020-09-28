@@ -159,12 +159,11 @@ module.exports = (webServer) => {
                                 updated_date: moment().format()
                             })
                         }
-
                         if (updateWorkflow === 'success') {
                             // Lexical Seeding
                             const sttService = formattedFlow.nodes.filter(f => f.type === 'linto-config-transcribe')
-                            if (sttService.length > 0 && !!sttService[0].service) {
-                                const lexicalSeeding = await lexSeed.doLexicalSeeding(sttService[0].service, payload.noderedFlowId)
+                            if (sttService.length > 0 && !!sttService[0].commandOffline) {
+                                const lexicalSeeding = await lexSeed.doLexicalSeeding(sttService[0].commandOffline, payload.noderedFlowId)
                                 if (lexicalSeeding.status === 'success') {
                                     res.json({
                                         status: 'success',

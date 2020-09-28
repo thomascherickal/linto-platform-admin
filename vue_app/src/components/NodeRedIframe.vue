@@ -55,6 +55,7 @@
 </template>
 <script>
 import axios from 'axios'
+import randomstring from 'randomstring'
 import { bus } from '../main.js'
 export default {
   props: ['contextFrame','blsurl','noderedFlowId','workflowId', 'workflowName'],
@@ -68,6 +69,7 @@ export default {
   mounted () {
     if (this.blsurl !== null && typeof(this.blsurl) !== 'undefined') {
       this.iframeUrl = this.blsurl
+      
     } else {
       this.iframeUrl = process.env.VUE_APP_NODERED
     }
@@ -90,13 +92,14 @@ export default {
     }
 
     bus.$on('iframe_reload', () => {
-      setTimeout(() => {
-        const url = this.iframeUrl
+        this.iframeUrl = ''
+        const newUrl = this.blsurl + '?rdm=' + randomstring.generate(8)
         this.iframeUrl = ""
           setTimeout(() => {
-            this.iframeUrl = url
-          },100)
-        },100)
+            this.iframeUrl = newUrl
+          }, 200)
+
+          
     })
   },
   methods: {
@@ -125,7 +128,6 @@ export default {
             method: 'post',
             data: { payload: this.payload }
           })
-
           if (saveAndPublish.data.status === 'success') {
             bus.$emit('app_notif', {
               status: 'success',
@@ -141,7 +143,7 @@ export default {
         console.error(error)
         bus.$emit('app_notif', {
           status: 'error',
-          msg: error,
+          msg: !!error.data.msg ? error.data.msg : error,
           timeout: false,
           redirect: false
         })
