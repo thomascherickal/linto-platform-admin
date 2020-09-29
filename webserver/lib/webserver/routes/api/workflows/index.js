@@ -170,7 +170,10 @@ module.exports = (webServer) => {
                                         msg: `The application "${payload.workflowName}" has been updated`
                                     })
                                 } else {
-                                    throw lexicalSeeding
+                                    throw {
+                                        msg: 'Workflow updated but error on lexical seeding',
+                                        lexicalSeeding
+                                    }
                                 }
                             }
                         } else {

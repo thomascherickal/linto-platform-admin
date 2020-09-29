@@ -105,13 +105,13 @@ async function sttLexicalSeeding(flowId, service_name) {
                 })
             }
         } else {
-            throw 'Error on updating langage model'
+            throw 'Error on updating language model'
         }
     } catch (error) {
         console.error(error)
         return ({
             status: 'error',
-            msg: 'Error on updating language model',
+            msg: !!error.msg ? error.msg : error,
             error: error
         })
     }
@@ -319,13 +319,11 @@ async function doLexicalSeeding(sttServiceName, flowId) {
         if (nluLexSeed.status !== 'success') {
             throw !!nluLexSeed.msg ? nluLexSeed.msg : nluLexSeed
         }
-
         // STT lexical seeding 
         const sttLexSeed = await sttLexicalSeeding(flowId, sttServiceName)
         if (sttLexSeed.status !== 'success') {
             throw !!sttLexSeed.msg ? sttLexSeed.msg : sttLexSeed
         }
-
         // Success
         if (sttLexSeed.status === 'success' && nluLexSeed.status === 'success') {
             return ({
