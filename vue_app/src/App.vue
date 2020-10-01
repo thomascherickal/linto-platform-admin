@@ -27,13 +27,13 @@
     <ModalAddUsers v-if="path.indexOf('/admin/users') >= 0"></ModalAddUsers>
     <ModalEditUser v-if="path.indexOf('/admin/users') >= 0"></ModalEditUser>
     <ModalDeleteUser v-if="path.indexOf('/admin/users') >= 0"></ModalDeleteUser>
-
+    <ModalEditUserApps v-if="path.indexOf('/admin/users') >= 0"></ModalEditUserApps>
     <!-- Domains -->
     <ModalAddDomain v-if="path.indexOf('/admin/domains') >= 0"></ModalAddDomain>
     <ModalDeleteDomain v-if="path.indexOf('/admin/domains') >= 0"></ModalDeleteDomain>
     <ModalEditDomain v-if="path.indexOf('/admin/domains') >= 0"></ModalEditDomain>
     <ModalManageDomains v-if="path.indexOf('/admin/applications/multi') >= 0"></ModalManageDomains>
-
+    <ModalEditDomainApplications v-if="path.indexOf('/admin/domains') >= 0"></ModalEditDomainApplications>
     <!-- Worflows templates -->
     <ModalSaveAsWorkflowTemplate v-if="path.indexOf('admin/workflow-editor') >= 0 || path.indexOf('/admin/applications/') >= 0"></ModalSaveAsWorkflowTemplate>
     <ModalManageWorkflowTemplates v-if="path.indexOf('admin/workflow-editor') >= 0"></ModalManageWorkflowTemplates>
@@ -56,13 +56,17 @@
   import ModalManageUsers from '@/components/ModalManageUsers.vue'
   import ModalAddUsers from '@/components/ModalAddUsers.vue'
   import ModalEditUser from '@/components/ModalEditUser.vue'
+  import ModalEditUserApps from '@/components/ModalEditUserApps.vue'
   import ModalDeleteUser from '@/components/ModalDeleteUser.vue'
   import ModalDeleteMultiUserApp from '@/components/ModalDeleteMultiUserApp.vue'
   import ModalManageWorkflowTemplates from '@/components/ModalManageWorkflowTemplates.vue'
   import ModalAddDomain from '@/components/ModalAddDomain.vue'
   import ModalDeleteDomain from '@/components/ModalDeleteDomain.vue'
   import ModalEditDomain from '@/components/ModalEditDomain.vue'
+  import ModalEditDomainApplications from '@/components/ModalEditDomainApplications.vue'
   import ModalManageDomains from '@/components/ModalManageDomains.vue'
+  
+
   import { bus } from './main.js'
   import io from 'socket.io-client'
   import axios from 'axios'
@@ -116,11 +120,13 @@
       ModalAddUsers,
       ModalManageUsers,
       ModalEditUser,
+      ModalEditUserApps,
       ModalDeleteUser,
       // Webapp hosts
       ModalAddDomain,
       ModalDeleteDomain,
       ModalEditDomain,
+      ModalEditDomainApplications,
       ModalManageDomains
     }
     

@@ -9,7 +9,8 @@
             <tr>
               <th>User</th>
               <th>Applications</th>
-              <th>Manage</th>
+              <th>User settings</th>
+              <th>Manage applications</th>
               <th>Delete</th>
             </tr>
           </thead>
@@ -19,15 +20,22 @@
               <td>
                 <ul class="array-list" v-if="user.applications.length > 0">
                   <li v-for="app in user.applications" :key="app">
-                    {{ workflowByName[app] }}
+                    {{ workflowByName[app].name }}
                   </li>
                 </ul>
                 <span class="none" v-else>none</span>
               </td>
               <td class="center">
                 <button class="button button-icon-txt button--blue" @click="editAndroidUser(user)">
-                  <span class="button__icon button__icon--user-settings"></span>
-                  <span class="button__label">Settings</span>
+                  <span class="button__icon button__icon--edit"></span>
+                  <span class="button__label">Edit</span>
+                </button>
+              </td>
+
+              <td class="center">
+                <button class="button button-icon-txt button--bluemid" @click="editAndroidUserApplications(user)">
+                  <span class="button__icon button__icon--settings"></span>
+                  <span class="button__label">Manage</span>
                 </button>
               </td>
               <td class="center">
@@ -95,6 +103,11 @@ export default {
       bus.$emit('delete_android_user', {
         userId: data._id,
         email: data.email
+      })
+    },
+    editAndroidUserApplications (data) {
+      bus.$emit('edit_android_user_applications', {
+        user: data
       })
     },
     async refreshStore () {

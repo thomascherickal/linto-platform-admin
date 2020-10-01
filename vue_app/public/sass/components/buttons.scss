@@ -113,6 +113,12 @@
         &.button__icon--say {
             @include maskImage('../img/svg/say.svg');
         }
+        &.button__icon--goto {
+            @include maskImage('../img/svg/goto.svg');
+        }
+        &.button__icon--mutli-user {
+            @include maskImage('../img/svg/multi-user.svg');
+        }
         &.button__icon--loading {
             @include maskImage('../img/svg/loading.svg');
             @include rotate();

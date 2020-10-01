@@ -17,15 +17,28 @@
           <AppInput :label="'Password confirmation'" :obj="userPswdConfirm" :test="'testPasswordConfirm'" :compare="userPswd" :type="'password'"></AppInput>
           <div class="flex col">
             <span class="form__label">Select applications :</span>
-            <ul class="checkbox-list">
-              <li v-for="app in applicationWorkflows" :key="app._id">
-                <input type="checkbox" name="app-wf" :value="app._id" @change="selectApp($event, app._id)"> 
-                <span class="checkbox__label">{{ app.name }}</span>
-              </li>
-            </ul>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Add</th>
+                  <th>Application name</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr 
+                  v-for="app in applicationWorkflows" 
+                  :key="app._id"
+                  :class="userApps.value.indexOf(app._id) >= 0 ? 'active' : ''"
+                >
+                  <td><input type="checkbox" name="app-wf" :value="app._id" @change="selectApp($event, app._id)"></td>
+                  <td><strong>{{app.name }}</strong></td>
+                  <td><span class="checkbox__label">{{app.description.length > 0 ? app.descirption : 'No descritpion' }}</span></td>
+                </tr>
+              </tbody>
+            </table>
            <span class="form__error-field">{{ userApps.error }}</span>
           </div>
-          
         </div>
       </div>
       <!-- End BODY -->

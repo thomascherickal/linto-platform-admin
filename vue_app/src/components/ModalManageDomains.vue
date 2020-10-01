@@ -51,7 +51,7 @@
       <div class="modal-footer flex row">
         <div class="flex flex1 modal-footer-right">
           <a href="/admin/domains" class="button button-icon-txt button--blue">
-            <span class="button__icon button__icon--settings"></span>
+            <span class="button__icon button__icon--goto"></span>
             <span class="button__label">Manage domains</span>
           </a>
         </div>
@@ -130,7 +130,7 @@ export default {
           bus.$emit('app_notif', {
             status: 'success',
             msg: updateWebappAuth.data.msg,
-            timeout: false,
+            timeout: 3000,
             redirect: false
           })
           await this.refreshStore()

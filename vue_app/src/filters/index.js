@@ -260,11 +260,12 @@ Vue.filter('testInteger', function(obj) {
         obj.valid = false
         obj.error = 'This field is required'
     } else {
-        if (typeof(obj.value) !== 'number') {
-            obj.valid = false
-            obj.error = 'the value of the field must be a number'
-        } else {
+        const regex = /[0-9]+$/g
+        if (obj.value.toString().match(regex)) {
             obj.valid = true
+        } else {
+            obj.valid = false
+            obj.error = 'This value must be an integer'
         }
     }
 })

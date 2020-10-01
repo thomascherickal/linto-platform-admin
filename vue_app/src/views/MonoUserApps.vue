@@ -11,14 +11,14 @@
               <th>Associated device</th>
               <th>Description</th>
               <th>Deployed workflow</th>
-              <th>Services parameters</th>
+              <th>Application parameters</th>
               <th>Dissociate</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="wf in staticWorkflows" :key="wf._id">
               <td><strong>{{wf.name}}</strong></td>
-              <td class="center">
+              <td class="right">
                 <strong class="button__label">{{ wf.associated_device }}</strong>
                 <button class="button button-icon button--bluemid button--with-desc bottom" data-desc="Use an other device" @click="updateEnrolledStaticDevice(wf.associated_device, {name: wf.name, _id: wf._id})">
                   <span class="button__icon button__icon--settings"></span>
@@ -33,7 +33,7 @@
               </td>
               <td class="center">
                 <button class="button button-icon-txt button--blue button--with-desc bottom" data-desc="Edit services parameters" @click="updateWorkflowServicesSettings(wf.associated_device, {name: wf.name, _id: wf._id, description: wf.description})">
-                  <span class="button__icon button__icon--settings"></span>
+                  <span class="button__icon button__icon--edit"></span>
                   <span class="button__label">Edit</span>
                 </button>
               </td>

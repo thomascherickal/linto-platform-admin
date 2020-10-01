@@ -6,15 +6,16 @@
       :type="type || 'text'"
       class="form__input"
       v-model="obj.value"
-      :class="[obj.error !== null ? 'form__input--error' : '', obj.valid ? 'form__input--valid' : '']"
+      :class="[obj.error !== null ? 'form__input--error' : '', obj.valid ? 'form__input--valid' : '', !!extraClass ? extraClass : '']"
       @blur="exec(test)"
+      :min="type == 'number' ? 0 : ''"
     />
     <span class="form__error-field">{{ obj.error }}</span>
   </div>
 </template>
 <script>
 export default {
-  props: ['label', 'obj', 'test', 'type', 'compare', 'required'],
+  props: ['label', 'obj', 'test', 'type', 'compare', 'required', 'extraClass'],
   data () {
     return {}
   },
@@ -75,6 +76,9 @@ export default {
     testContentSay(obj) {
        this.$options.filters.testContentSay(obj)
     },
+    testInteger (obj) {
+      this.$options.filters.testInteger(obj)
+    },
     exec (functionName) {
       switch(functionName) {
         case 'testName':
@@ -110,6 +114,8 @@ export default {
         case 'testContentSay':
           this.testContentSay(this.obj)
           break
+        case 'testInteger':
+          this.testInteger(this.obj)
         default:
           return
       }

@@ -9,7 +9,8 @@
             <tr>
               <th>Domain</th>
               <th>Applications</th>
-              <th>Manage</th>
+              <th>Domain settings</th>
+              <th>Manage applications</th>
               <th>Delete</th>
             </tr>
           </thead>
@@ -19,15 +20,21 @@
               <td>
                 <ul class="array-list" v-if="webapp.applications.length > 0">
                   <li v-for="app in webapp.applications" :key="app.applicationId">
-                    {{ workflowByName[app.applicationId] }}
+                    {{workflowByName[app.applicationId].name }}
                   </li>
                 </ul>
                 <span class="none" v-else>none</span>
               </td>
               <td class="center">
                 <button class="button button-icon-txt button--blue" @click="editWebappHost(webapp)">
-                  <span class="button__icon button__icon--user-settings"></span>
-                  <span class="button__label">Settings</span>
+                  <span class="button__icon button__icon--edit"></span>
+                  <span class="button__label">Edit</span>
+                </button>
+              </td>
+              <td>
+                <button class="button button-icon-txt button--bluemid" @click="editWebappHostApplications(webapp)">
+                  <span class="button__icon button__icon--settings"></span>
+                  <span class="button__label">Manage</span>
                 </button>
               </td>
               <td class="center">
@@ -73,6 +80,11 @@ export default {
     bus.$on('delete_webapp_host_success', async (data) => {
       await this.refreshStore()
     })
+
+    setTimeout(() => {
+        console.log(this.webappHosts)
+        console.log(this.workflowByName)
+    }, 500);
   },
   computed: {
     dataLoaded () {
@@ -94,7 +106,9 @@ export default {
     },
     editWebappHost (webapp) {
       bus.$emit('edit_webapp_host', { webappHost : webapp })
-      
+    },
+    editWebappHostApplications (webapp) {
+      bus.$emit('edit_webapp_host_applications', { webappHost : webapp })
     },
     async refreshStore () {
       try {
@@ -127,6 +141,7 @@ export default {
             return
         }
       } catch (error) {
+        console.error(error)
         bus.$emit('app_notif', {
           status: 'error',
           msg: error.error,

@@ -67,7 +67,7 @@ export default {
           bus.$emit('app_notif', {
             status: 'success',
             msg: dissociateStaticDevice.data.msg,
-            timeout: false,
+            timeout: 3000,
             redirect: false
           })
           this.closeModal()

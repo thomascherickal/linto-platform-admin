@@ -12,7 +12,7 @@
               <th>Users</th>
               <th>Domains</th>
               <th>Deployed workflow</th>
-              <th>Services Parameters</th>
+              <th>Application Parameters</th>
               <th>Delete</th>
             </tr>
           </thead>
@@ -46,7 +46,7 @@
               </td>
               <td class="center">
                 <button class="button button-icon-txt button--blue button--with-desc bottom" data-desc="Edit services parameters" @click="updateWorkflowServicesSettings(app)">
-                  <span class="button__icon button__icon--settings"></span>
+                  <span class="button__icon button__icon--edit"></span>
                   <span class="button__label">Edit</span>
                 </button>
               </td>

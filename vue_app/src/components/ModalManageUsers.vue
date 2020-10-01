@@ -19,8 +19,8 @@
             </button>
           </div>
 
-          <p v-if="androidRegisteredUsers.length > 0 && !showAddUserForm"> List of <strong>users</strong> registered in multi-user application"<strong>{{ appName }}</strong>".</p>
-          <div class="flex row" v-if="androidRegisteredUsers.length > 0 && !showAddUserForm">
+          <p v-if="androidRegisteredUsers.length > 0"> List of <strong>users</strong> registered in multi-user application"<strong>{{ appName }}</strong>".</p>
+          <div class="flex row" v-if="androidRegisteredUsers.length > 0">
             <table class="table">
               <thead>
                 <tr>
@@ -40,8 +40,9 @@
             </table>
           </div>
           
-          <div class="flex col no-content" v-if="androidRegisteredUsers.length === 0 && !showAddUserForm">No user was found for application.</div>
+          <div class="flex col no-content" v-if="androidRegisteredUsers.length === 0">No user was found for application.</div>
 
+          <!--
           <div class="flex col android-users-form" v-if="showAddUserForm">
             <p>Select an user to be <strong>added</strong> in "<strong>{{ appName }}</strong>" multi-user application, or <a class="button button-icon-txt button--bluemid" href="/admin/users">
                   <span class="button__icon button__icon--settings"></span>
@@ -56,21 +57,18 @@
                 </button>
               </div>
             </div>
-          </div>
+          </div>-->
+
         </div>
       </div>
       <!-- End BODY -->
       <!-- FOOTER -->
       <div class="modal-footer flex row">
         <div class="flex flex1 modal-footer-right">
-          <button class="button button-icon-txt button--green" @click="showAndroidUsersForm()" v-if="!showAddUserForm">
-            <span class="button__icon button__icon--add"></span>
-            <span class="button__label">Add an user</span>
-          </button>
-          <button class="button button-icon-txt button--orange" @click="hideAndroidUsersForm()" v-else>
-            <span class="button__icon button__icon--back"></span>
-            <span class="button__label">Back to list</span>
-          </button>
+          <a class="button button-icon-txt button--blue" href="/admin/users">
+            <span class="button__icon button__icon--goto"></span>
+            <span class="button__label">Manage users</span>
+          </a>
         </div>
       </div>
     <!-- End FOOTER -->
@@ -92,7 +90,6 @@ export default {
         error: null,
         valid: false
       },
-     showAddUserForm: false,
      androidUsersLoaded: false,
      applicationWorkflowLoaded: false
      
@@ -132,17 +129,9 @@ export default {
   methods: {
     showModal () {
       this.modalVisible = true
-      this.hideAndroidUsersForm()
     },
     closeModal () {
       this.modalVisible = false
-      this.hideAndroidUsersForm()
-    },
-    showAndroidUsersForm () {
-      this.showAddUserForm = true
-    },
-    hideAndroidUsersForm () {
-      this.showAddUserForm = false
     },
     async toggleAndroidAuth () {
       try {
@@ -154,7 +143,7 @@ export default {
           bus.$emit('app_notif', {
             status: 'success',
             msg: updateAndroidAuth.data.msg,
-            timeout: false,
+            timeout: 3000,
             redirect: false
           })
           await this.refreshStore()
@@ -185,15 +174,13 @@ export default {
             bus.$emit('app_notif', {
               status: 'success',
               msg: updateUser.data.msg,
-              timeout: false,
+              timeout: 3000,
               redirect: false
             })
-            this.hideAndroidUsersForm()
             await this.refreshStore()
           }
         }
       } catch (error) {
-        console.error(error)
         bus.$emit('app_notif', {
           status: 'error',
           msg: error,

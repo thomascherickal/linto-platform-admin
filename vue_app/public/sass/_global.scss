@@ -256,10 +256,13 @@ ul {
                 &.center {
                     text-align: center;
                 }
+                &.right {
+                    text-align: right;
+                }
                 &.status {
                     width: 100px;
                 }
-                &::last-child {
+                &:last-child {
                     border: none;
                 }
                 &.table--desc {

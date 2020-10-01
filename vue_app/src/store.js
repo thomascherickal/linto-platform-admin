@@ -368,7 +368,10 @@ export default new Vuex.Store({
                 let workflowNames = []
                 if (workflows.length > 0) {
                     workflows.map(wf => {
-                        workflowNames[wf._id] = wf.name
+                        workflowNames[wf._id] = {
+                            name: wf.name,
+                            description: wf.description
+                        }
                     })
                 }
                 return workflowNames
