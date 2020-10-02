@@ -14,6 +14,8 @@ function logger(req, res, next) {
     next()
 }
 
+
+/*
 function decodeBasicAuth(req, res, next) {
     try {
         if (!!req.headers.authorization) {
@@ -35,7 +37,6 @@ function decodeBasicAuth(req, res, next) {
         console.error(error)
     }
 }
-
 async function checkBasicAuthLogin(login, password) {
     try {
         const getUser = await UsersModel.getUserByName(login)
@@ -60,23 +61,11 @@ async function checkBasicAuthLogin(login, password) {
         console.error(error)
         return false
     }
-
 }
+*/
 async function checkAuth(req, res, next) {
-    debug(req.url, req.session)
     try {
-        // Basic Auth
-        if (!!req.headers.authorization) {
-            const auth = decodeBasicAuth(req, res, next)
-            if (auth !== null) {
-                const authValid = await checkBasicAuthLogin(auth.login, auth.password)
-                if (authValid) {
-                    next()
-                } else {
-                    throw 'Invalid credentials'
-                }
-            }
-        } else if (!!req.session) {
+        if (!!req.session) {
             if (!!req.session.logged) {
                 if (req.session.logged === 'on' && req.url === '/login') {
                     req.session.save((err) => {

@@ -80,11 +80,6 @@ export default {
     bus.$on('delete_webapp_host_success', async (data) => {
       await this.refreshStore()
     })
-
-    setTimeout(() => {
-        console.log(this.webappHosts)
-        console.log(this.workflowByName)
-    }, 500);
   },
   computed: {
     dataLoaded () {
