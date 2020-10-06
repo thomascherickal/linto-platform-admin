@@ -158,12 +158,8 @@ module.exports = (webServer) => {
                                 flow: getUdpatedFlow,
                                 updated_date: moment().format()
                             })
-                            res.json({
-                                status: 'success',
-                                msg: `The application "${payload.workflowName}" has been updated`
-                            })
                         }
-                        /*if (updateWorkflow === 'success') {
+                        if (updateWorkflow === 'success') {
                             // Lexical Seeding
                             const sttService = formattedFlow.nodes.filter(f => f.type === 'linto-config-transcribe')
                             if (sttService.length > 0 && !!sttService[0].commandOffline) {
@@ -182,7 +178,7 @@ module.exports = (webServer) => {
                             }
                         } else {
                             throw  `Error on updating application "${payload.workflowName}"`
-                        }*/
+                        }
                     } else {
                         throw 'Error on updating flow on Business Logic Server'
                     }
