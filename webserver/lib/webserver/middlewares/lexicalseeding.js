@@ -245,7 +245,7 @@ async function updateLangModel(payload, modelId) {
     }
 }
 
-async function nluLexicalSeeding(flowId) {
+async function nluLexicalSeedingApplications(flowId) {
     try {
         // Get lexical seeding object to send to TOCK
         const accessToken = await nodered.getBLSAccessToken()
@@ -260,23 +260,24 @@ async function nluLexicalSeeding(flowId) {
             }
         })
 
-        const jsonContent = JSON.stringify(getNluLexicalSeeding.data.application)
-            // get Tock auth token
+        // get Tock auth token
         const token = middlewares.basicAuthToken(process.env.LINTO_STACK_TOCK_USER, process.env.LINTO_STACK_TOCK_PASSWORD)
 
-        // Tmp json file path
-        const filePath = process.cwd() + '/public/tockapp.json'
 
-        return new Promise((resolve, reject) => {
-            fs.writeFile(filePath, jsonContent, async(err) => {
+        // Tmp json file path
+        const jsonApplicationContent = `{"application": ${JSON.stringify(getNluLexicalSeeding.data.application)}}`
+        const appFilePath = process.cwd() + '/public/tockapp.json'
+
+        let postApp = await new Promise((resolve, reject) => {
+            fs.writeFile(appFilePath, jsonApplicationContent, async(err) => {
                 if (err) {
                     console.error(err)
                     throw err
                 } else {
                     const formData = new FormData()
-                    formData.append('file', fs.createReadStream(filePath))
+                    formData.append('file', fs.createReadStream(appFilePath))
                     axios({
-                        url: `${middlewares.useSSL() + process.env.LINTO_STACK_TOCK_SERVICE}:${process.env.LINTO_STACK_TOCK_SERVICE_PORT}/rest/admin/dump/sentences`,
+                        url: `${middlewares.useSSL() + process.env.LINTO_STACK_TOCK_SERVICE}:${process.env.LINTO_STACK_TOCK_SERVICE_PORT}/rest/admin/dump/application`,
                         method: 'post',
                         data: formData,
                         headers: {
@@ -284,7 +285,7 @@ async function nluLexicalSeeding(flowId) {
                             'Content-Type': formData.getHeaders()['content-type']
                         }
                     }).then((res) => {
-                        fs.unlinkSync(filePath)
+                        //fs.unlinkSync(appFilePath)
                         if (res.status === 200) {
                             resolve({
                                 status: 'success',
@@ -303,7 +304,113 @@ async function nluLexicalSeeding(flowId) {
                 }
             })
         })
+        return postApp
     } catch (error) {
+        return ({
+            status: 'error',
+            msg: 'Error on updating Tock application',
+            error
+        })
+    }
+}
+
+async function nluLexicalSeedingSentences(flowId) {
+    try {
+        // Get lexical seeding object to send to TOCK
+        const accessToken = await nodered.getBLSAccessToken()
+        const getNluLexicalSeeding = await axios(`${middlewares.useSSL() + process.env.LINTO_STACK_BLS_SERVICE}/red/${flowId}/dataset/tock`, {
+            method: 'get',
+            headers: {
+                'charset': 'utf-8',
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Node-RED-Deployment-Type': 'flows',
+                'Authorization': accessToken
+            }
+        })
+
+        // get Tock auth token
+        const token = middlewares.basicAuthToken(process.env.LINTO_STACK_TOCK_USER, process.env.LINTO_STACK_TOCK_PASSWORD)
+
+
+        // Tmp json file path
+        const jsonSentencesContent = JSON.stringify(getNluLexicalSeeding.data.sentences)
+        const sentencesFilePath = process.cwd() + '/public/tocksentences.json'
+
+        let postSentences = await new Promise((resolve, reject) => {
+            fs.writeFile(sentencesFilePath, jsonSentencesContent, async(err) => {
+                if (err) {
+                    console.error(err)
+                    throw err
+                } else {
+                    const formData = new FormData()
+                    formData.append('file', fs.createReadStream(sentencesFilePath))
+                    axios({
+                        url: `${middlewares.useSSL() + process.env.LINTO_STACK_TOCK_SERVICE}:${process.env.LINTO_STACK_TOCK_SERVICE_PORT}/rest/admin/dump/sentences`,
+                        method: 'post',
+                        data: formData,
+                        headers: {
+                            'Authorization': token,
+                            'Content-Type': formData.getHeaders()['content-type']
+                        }
+                    }).then((res) => {
+                        //fs.unlinkSync(sentencesFilePath)
+                        if (res.status === 200) {
+                            resolve({
+                                status: 'success',
+                                msg: 'Tock application has been updated'
+                            })
+                        } else {
+                            reject({
+                                status: 'error',
+                                msg: 'Error on updating Tock application'
+                            })
+                        }
+                    }).catch((error) => {
+                        console.error(error)
+                        reject(error)
+                    })
+                }
+            })
+        })
+        return postSentences
+    } catch (error) {
+        return ({
+            status: 'error',
+            msg: 'Error on updating Tock application sentences',
+            error
+        })
+    }
+}
+async function nluLexicalSeeding(flowId) {
+    try {
+        const postApp = await nluLexicalSeedingApplications(flowId)
+        const postSentences = await nluLexicalSeedingSentences(flowId)
+        let errors = []
+        let status = 'success'
+        let postAppValid = true
+        let postSentencesValid = true
+        if (postApp.status !== 'success') {
+            postAppValid = false
+            status = 'error'
+            errors.push({ 'application': postApp })
+        }
+        if (postSentences.status !== 'success') {
+            postSentencesValid = false
+            status = 'error'
+            errors.push({ 'sentences': postSentences })
+        }
+
+        if (postAppValid && postSentencesValid) {
+            return ({
+                status,
+                msg: 'NLU updated'
+            })
+        } else {
+            throw errors
+        }
+    } catch (error) {
+        console.error(error)
         return ({
             status: 'error',
             msg: 'Error on updating Tock application',
