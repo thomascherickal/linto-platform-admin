@@ -3,9 +3,9 @@ import Router from 'vue-router'
 import axios from 'axios'
 
 // Views
-import MonoUserApps from './views/MonoUserApps.vue'
-import MonoUserAppDeploy from './views/MonoUserAppDeploy.vue'
-import MonoUserAppWorkflowEditor from './views/MonoUserAppWorkflowEditor.vue'
+import DeviceApps from './views/DeviceApps.vue'
+import DeviceAppDeploy from './views/DeviceAppDeploy.vue'
+import DeviceAppWorkflowEditor from './views/DeviceAppWorkflowEditor.vue'
 import MultiUserApps from './views/MultiUserApps.vue'
 import MultiUserAppDeploy from './views/MultiUserAppDeploy.vue'
 import MultiUserAppWorkflowEditor from './views/MultiUserAppWorkflowEditor.vue'
@@ -21,7 +21,7 @@ const router = new Router({
     routes: [{
             path: '/admin/applications/device',
             name: 'Static devices overview',
-            component: MonoUserApps,
+            component: DeviceApps,
             meta: [{
                     name: 'title',
                     content: 'LinTO Admin - Static clients'
@@ -35,7 +35,7 @@ const router = new Router({
         {
             path: '/admin/applications/device/workflow/:workflowId',
             name: 'Static device flow editor',
-            component: MonoUserAppWorkflowEditor,
+            component: DeviceAppWorkflowEditor,
             meta: [{
                     name: 'title',
                     content: 'LinTO Admin - Static clients workflow editor'
@@ -65,7 +65,7 @@ const router = new Router({
         {
             path: '/admin/applications/device/deploy',
             name: 'Static devices - deployment',
-            component: MonoUserAppDeploy,
+            component: DeviceAppDeploy,
             meta: [{
                     name: 'title',
                     content: 'LinTO Admin - Static clients deployment'
@@ -94,7 +94,7 @@ const router = new Router({
         {
             path: '/admin/applications/device/deploy/:sn',
             name: 'Static devices - deployment by id',
-            component: MonoUserAppDeploy,
+            component: DeviceAppDeploy,
             meta: [{
                     name: 'title',
                     content: 'LinTO Admin - Static clients deployment'

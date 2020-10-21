@@ -195,7 +195,7 @@ export default {
       return this.$store.getters.STT_SERVICES_AVAILABLE
     },
     sttAvailableLanguages () {
-      if (this.sttServicesLoaded) {
+      if (this.sttServicesLoaded && !!this.sttServices.cmd) {
         let sttLang = []
         if (this.sttServices.cmd.length > 0) {
           this.sttServices.cmd.map(service => {

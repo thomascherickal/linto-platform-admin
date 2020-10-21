@@ -19,11 +19,18 @@ module.exports = (webServer) => {
                     })
                     res.json(getTockApplications.data)
                 } catch (error) {
-                    console.error(error)
-                    res.json({
-                        status: 'error',
-                        msg: 'Error on getting tock applications'
-                    })
+                    if (error.response === undefined || (!!error.code && error.code === 'ECONNREFUSED')) {
+                        res.json({
+                            status: 'error',
+                            msg: 'Tock service unvavailable'
+                        })
+                    } else {
+                        res.json({
+                            status: 'error',
+                            msg: 'Error on getting tock applications'
+                        })
+                    }
+
                 }
             }
         },

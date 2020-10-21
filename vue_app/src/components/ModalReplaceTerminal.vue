@@ -50,17 +50,18 @@ export default {
       return this.availableStaticClients.length === 0
     }
   },
-  mounted () {
-    bus.$on('update_enrolled_static_device', (data) => {
+  async mounted () {
+    bus.$on('update_enrolled_static_device', async (data) => {
       this.sn = data.sn
       this.workflow = data.workflow
       this.showModal()
+      await this.dispatchClients()
     })
   },
   methods: {
     showModal () {
       this.modalVisible = true
-      thus.targetDevice = {
+      this.targetDevice = {
         value: '',
         error: null,
         valid: false

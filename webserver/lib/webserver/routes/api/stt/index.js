@@ -36,8 +36,11 @@ module.exports = (webServer) => {
                     })
                     res.json(getServices.data.data)
                 } catch (error) {
-                    console.error(error)
-                    res.json({ error: error.toString() })
+                    if (!!error.response.status && error.response.status === 404) {
+                        res.json({ error: 'STT service unvavailable' })
+                    } else {
+                        res.json({ error: error.toString() })
+                    }
                 }
             }
         },
@@ -60,7 +63,11 @@ module.exports = (webServer) => {
                     })
                     res.json(getLanguageModels.data.data)
                 } catch (error) {
-                    res.json({ error: error.toString() })
+                    if (!!error.response.status && error.response.status === 404) {
+                        res.json({ error: 'STT service unvavailable' })
+                    } else {
+                        res.json({ error: error.toString() })
+                    }
                 }
             }
         },
@@ -83,8 +90,12 @@ module.exports = (webServer) => {
                         }
                     })
                     res.json(getACModels.data.data)
-                } catch (e) {
-                    res.json({ error: e })
+                } catch (error) {
+                    if (!!error.response.status && error.response.status === 404) {
+                        res.json({ error: 'STT service unvavailable' })
+                    } else {
+                        res.json({ error: error.toString() })
+                    }
                 }
             }
         },

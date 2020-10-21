@@ -87,8 +87,6 @@ export default {
     bus.$on('dissociate_static_device_success', async (data) => {
       await this.refreshStore()
     })
-
-    
   },
   computed: {
     staticClients () {
