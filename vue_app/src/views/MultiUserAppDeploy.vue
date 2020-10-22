@@ -101,7 +101,10 @@
       </div>
     </div>
   </div>
-  <div v-else>Loading...</div>
+  <div v-else>
+    <span v-if="sttError.length > 0" v-html="sttError"></span>
+    <span v-else>Loading...</span>
+  </div>
 </template>
 <script>
 import AppInput from '@/components/AppInput.vue'
@@ -216,7 +219,7 @@ export default {
       }
     },
     noSttService () {
-      return !this.sttServicesLoaded || this.sttServices.length === 0
+      return !this.sttServicesLoaded ||(!!this.sttServices.cmd && this.sttServices.cmd.length === 0)
     },
     tockApplications () {
       return this.$store.state.tockApplications

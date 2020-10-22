@@ -45,6 +45,8 @@
             :params="{key:'_id', value:'serviceId', optLabel: 'serviceId'}" 
             :disabled="sttServiceLanguage.value === ''" 
             :disabledTxt="'Please select a language'"
+            :disabled2="noSttService"
+            :disabled2Txt="'Create a STT service'"
             :required="true"
           ></AppSelect>
       
@@ -233,7 +235,7 @@ export default {
       }
     },
     noSttService () {
-      return !this.sttServicesLoaded || this.sttServices.length === 0
+      return !this.sttServicesLoaded ||(!!this.sttServices.cmd && this.sttServices.cmd.length === 0)
     },
     tockApplications () {
       return this.$store.state.tockApplications

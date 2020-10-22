@@ -110,7 +110,10 @@
       </div>
     </div>
   </div>
-  <div v-else>Loading...</div>
+  <div v-else>
+    <span v-if="sttError.length > 0" v-html="sttError"></span>
+    <span v-else>Loading...</span>
+  </div>
 </template>
 <script>
 import AppInput from '@/components/AppInput.vue'
@@ -184,7 +187,8 @@ export default {
       nluLexSeedUpdate: false,
       nluLexSeedStatus: 'Updating natural language understanding dictionnaries',
       sttLexSeedUpdate: false,
-      sttLexSeedStatus: 'Updating STT service dictionnaries'
+      sttLexSeedStatus: 'Updating STT service dictionnaries',
+      sttError: ''
     }
   },
   computed: {
@@ -231,7 +235,7 @@ export default {
       }
     },
     noSttService () {
-      return !this.sttServicesLoaded || this.sttServices.length === 0
+      return !this.sttServicesLoaded ||(!!this.sttServices.cmd && this.sttServices.cmd.length === 0)
     },
     tockApplications () {
       return this.$store.state.tockApplications
@@ -251,6 +255,14 @@ export default {
     },
     availableStatiDevices () {
       return this.$store.getters.STATIC_CLIENTS_AVAILABLE
+    }
+  },
+  watch : {
+    sttServices (data) {
+      if(!!data.cmd && data.cmd.length === 0) {
+        this.sttServicesLoaded = false
+        this.sttError = 'No STT service found. Please create one before creating an application. <a href="https://doc.linto.ai/#/services/linstt_howtouse" target="_blank">Documentation</a>'
+      }
     }
   },
   async mounted () {
@@ -524,14 +536,14 @@ export default {
             this.workflowTemplatesLoaded = dispatchSuccess
             break
           case 'getSttServices':
-              this.sttServicesLoaded = dispatchSuccess
-              break
+            this.sttServicesLoaded = dispatchSuccess
+            break
           case 'getTockApplications': 
             this.tockApplicationsLoaded = dispatchSuccess
             break
           case 'getSttLanguageModels':
-              this.sttLanguageModelsLoaded = dispatchSuccess
-              break
+            this.sttLanguageModelsLoaded = dispatchSuccess
+            break
           default:
             return
         }  
