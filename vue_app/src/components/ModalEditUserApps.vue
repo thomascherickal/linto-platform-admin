@@ -65,7 +65,7 @@
                   >
                     <td><input type="checkbox" :value="wf._id" name="app-workflow" @change="updateSelectedApps($event, wf._id)"></td>
                     <td><strong>{{ wf.name }}</strong></td>
-                    <td><span class="checkbox__label">{{ wf.description.length > 0 ? wf.descirption : 'No descritpion' }}</span></td>
+                    <td><span class="checkbox__label">{{ wf.description.length > 0 ? wf.description : 'No descritpion' }}</span></td>
                   </tr>
                 </tbody>
               </table>

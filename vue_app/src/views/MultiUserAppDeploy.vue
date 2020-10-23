@@ -172,7 +172,8 @@ export default {
       nluLexSeedUpdate: false,
       nluLexSeedStatus: 'Updating natural language understanding dictionnaries',
       sttLexSeedUpdate: false,
-      sttLexSeedStatus: 'Updating LinSTT service dictionnaries'
+      sttLexSeedStatus: 'Updating LinSTT service dictionnaries',
+      sttError: ''
     }
   },
   computed: {
@@ -185,7 +186,7 @@ export default {
     sttAvailableLanguages () {
       if (this.sttServicesLoaded && !!this.sttServices.cmd) {
         let sttLang = []
-        if (this.sttServices.cmd.length > 0) {
+        if (!!this.sttServices.cmd && this.sttServices.cmd.length > 0) {
           this.sttServices.cmd.map(service => {
             if(sttLang.filter(lang => lang.value === service.lang).length === 0) {
               sttLang.push({ value: service.lang })
