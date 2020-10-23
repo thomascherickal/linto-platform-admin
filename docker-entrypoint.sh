@@ -36,8 +36,6 @@ while [ "$1" != "" ]; do
             VUE_APP_NODERED_USER=$LINTO_STACK_BLS_USER
             VUE_APP_NODERED_PASSWORD=$LINTO_STACK_BLS_PASSWORD" >.env.production
         fi
-        npm install &&
-            npm install --save node-sass &&
             npm run build-app
         ;;
     --rebuild-vue-app-dev)
@@ -60,9 +58,12 @@ while [ "$1" != "" ]; do
             VUE_APP_NODERED_USER=$LINTO_STACK_BLS_USER
             VUE_APP_NODERED_PASSWORD=$LINTO_STACK_BLS_PASSWORD" >.env.development
         fi
-        npm install &&
-            npm install --save node-sass &&
             npm run build-dev
+        ;;
+    --reinstall-vue-app)
+        cd /usr/src/app/linto-admin/vue_app
+        echo "REINSTALL VUE APP"
+        npm install
         ;;
     --reinstall-webserver)
         echo "REBUILDING WEBSERVER APP"
