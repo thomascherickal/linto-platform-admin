@@ -282,7 +282,7 @@ export default {
     },
     async handleForm () {
       /* Workflow Name */ 
-      this.$options.filters.testStaticWorkflowName(this.workflowName) // Test if workflow name is not used
+      await this.$options.filters.testStaticWorkflowName(this.workflowName) // Test if workflow name is not used
       if (this.workflowName.error === null) {
         this.$options.filters.testName(this.workflowName) // Test if workflow name is valid
       }
@@ -290,7 +290,7 @@ export default {
       this.$options.filters.testContent(this.workflowDescription)
 
       /* Device serial number */
-      this.$options.filters.testStaticClientsSN(this.associated_device)
+      await this.$options.filters.testStaticClientsSN(this.associated_device)
       if (this.associated_device.error === null) {
         this.$options.filters.testName(this.associated_device)
       }
@@ -348,7 +348,8 @@ export default {
                       status: 'success',
                       msg: `device ${this.associated_device.value} has been deployed on application ${payload.workflowName}`,
                       timeout: 3000,
-                      redirect: `${process.env.VUE_APP_URL}/admin/applications/device`
+                      //redirect: `${process.env.VUE_APP_URL}/admin/applications/device`
+                      redirect: false
                     })
                   }
                 }

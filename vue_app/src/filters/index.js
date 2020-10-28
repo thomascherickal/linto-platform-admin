@@ -120,7 +120,7 @@ Vue.filter('testStaticClientsSN', async function(obj) {
     obj.valid = false
     await store.dispatch('getStaticClients')
     const clients = store.state.staticClients
-    if (clients.length > 0 && clients.filter(wf => wf.sn === obj.value).length > 0) {
+    if (clients.length > 0 && clients.filter(wf => wf.sn === obj.value && wf.associated_workflow !== null).length > 0) {
         obj.error = 'This serial number is already used'
         obj.valid = false
     }
@@ -205,6 +205,7 @@ Vue.filter('testAndroidUserEmail', async function(obj) {
         }
     }
 })
+
 Vue.filter('testContent', function(obj) {
     obj.valid = false
     obj.error = null
