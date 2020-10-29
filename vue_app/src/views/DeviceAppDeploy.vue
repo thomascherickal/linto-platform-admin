@@ -1,6 +1,6 @@
 <template>
   <div v-if="dataLoaded">
-    <h1>Deploy a device applicaiton</h1>
+    <h1>Deploy a device application</h1>
     <div class="flex col">
       <!-- Workflow name -->
       <AppInput 
@@ -400,7 +400,7 @@ export default {
         })
         if (postWorkflow.data.status === 'success') {
           this.workflowUpdate = true
-          this.workflowStatus = `The device applicaiton "${payload.workflowName}" has been registered`
+          this.workflowStatus = `The device application "${payload.workflowName}" has been registered`
           return 'success'
         } else if (postWorkflow.data.status === 'error') {
           this.workflowUpdate = false
